@@ -1,0 +1,47 @@
+# Virtual Environment
+myenv/
+myenv/**/*
+venv/
+ENV/
+.venv
+*.dll
+*.lib
+*.so
+*.dylib
+
+# PyTorch specific
+**/torch/lib/*.dll
+**/torch/lib/*.lib
+**/torch/lib/*.so
+**/torch/lib/*.dylib
+**/torch_cpu.dll
+**/dnnl.lib
+**/torch/lib/*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.idea/
+.vscode/
+
+# Jupyter Notebooks
+notebooks/
+.ipynb_checkpoints
+*.ipynb
+
+# Model files and cache
+*.pt
+*.pth
+.cache/
+transformers/
+
+# Logs
+logs/
+*.log 

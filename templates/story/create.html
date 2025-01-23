@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Create Story - StoryTales{% endblock %}
+
+{% block content %}
+<div class="story-creator">
+    <h1>Create Your Story</h1>
+    <div class="keyword-input">
+        <label for="keywords">Enter keywords for your story:</label>
+        <input type="text" id="keywords" placeholder="e.g., dragon, princess, garden">
+        <button onclick="generateStory()">Generate Story</button>
+    </div>
+    
+    <div id="story-output" class="story-output" style="display: none;">
+        <h2>Your Story</h2>
+        <div id="story-content"></div>
+    </div>
+</div>
+
+<script>
+function generateStory() {
+    const keywords = document.getElementById('keywords').value;
+    if (!keywords) {
+        alert('Please enter some keywords');
+        return;
+    }
+    
+    fetch('/story/generate', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ keywords: keywords })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+        
+        const storyOutput = document.getElementById('story-output');
+        const storyContent = document.getElementById('story-content');
+        storyContent.textContent = data.story;
+        storyOutput.style.display = 'block';
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to generate story');
+    });
+}
+</script>
+
+<style>
+.story-creator {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+.keyword-input {
+    margin-bottom: 2rem;
+}
+
+.keyword-input input {
+    width: 100%;
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+}
+
+.keyword-input button {
+    padding: 0.5rem 1rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.story-output {
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    white-space: pre-wrap;
+}
+</style>
+{% endblock %} 

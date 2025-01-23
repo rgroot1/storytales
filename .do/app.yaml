@@ -1,0 +1,11 @@
+name: storytales
+services:
+- name: web
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: your-username/AI
+  dockerfile_path: storytales/Dockerfile
+  http_port: 8080
+  instance_count: 1
+  instance_size_slug: basic-xxs 
