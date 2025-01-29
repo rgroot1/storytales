@@ -7,8 +7,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-ENV PORT=8080
-ENV FLASK_APP=src.app:create_app
 ENV FLASK_ENV=production
 
-CMD flask run --host=0.0.0.0 --port=${PORT} 
+CMD ["python", "wsgi.py"] 

@@ -69,19 +69,11 @@ def construct_prompt(data):
         "Important: Write the story as continuous text without section headers or chapter markers.\n\n"
         f"Story length: Keep the story between {target_length} total words.\n\n"
         f"Writing style: {complexity}\n\n"
-        f"Main story elements: {main_story}\n"
-        f"{'\nTone/Setting: ' + vibe if vibe else ''}"
-        f"{'\nFriend/Sidekick to include: ' + creature if creature else ''}"
-        f"{'\nMagical elements to incorporate: ' + magic if magic else ''}"
-        f"{'\nMoral lesson to include: ' + moral if moral else ''}"
-        
-        "\n\nPlease create a magical and creative story that:"
-        "\n- Is easy to understand for young children"
-        "\n- Has a clear beginning, middle, and end"
-        "\n- Includes some gentle humor or playful elements"
-        f"{'\n- Weaves in this moral: ' + moral if moral else '\n- Include a gentle positive message'}"
-        "\n- Uses vivid descriptions to engage the imagination"
-        f"{'' if magic else '\n\nFeel free to add magical elements or whimsical details to make the story more enchanting and memorable.'}"
+        f"Main story elements: {main_story}\n" +
+        (f"\nTone/Setting: {vibe}" if vibe else "") +
+        (f"\nFriend/Sidekick to include: {creature}" if creature else "") +
+        (f"\nMagical elements to incorporate: {magic}" if magic else "") +
+        (f"\nMoral lesson to include: {moral}" if moral else "")
     )
     return prompt
 
