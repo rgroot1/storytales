@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from config.settings import Config
 from src.app.utils.limiter import limiter
+from flask_talisman import Talisman
 import os
 
 db = SQLAlchemy()
@@ -15,6 +16,7 @@ def create_app(config_class=Config):
 
     db.init_app(app)
     limiter.init_app(app)
+    Talisman(app, force_https=True)
 
     from src.app.routes import story, main
     app.register_blueprint(main.bp)
