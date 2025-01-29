@@ -4,8 +4,15 @@ services:
   github:
     branch: main
     deploy_on_push: true
-    repo: your-username/AI
+    repo: your-actual-github-username/your-actual-repo-name
   dockerfile_path: storytales/Dockerfile
   http_port: 8080
   instance_count: 1
-  instance_size_slug: basic-xxs 
+  instance_size_slug: basic-xxs
+  envs:
+  - key: PERPLEXITY_API_KEY
+    scope: RUN_TIME
+    type: SECRET
+  - key: FLASK_ENV
+    scope: RUN_TIME
+    value: production 
