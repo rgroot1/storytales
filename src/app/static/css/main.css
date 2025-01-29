@@ -1,0 +1,17 @@
+/* Basic styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-wrapper {
+    background-color: #333;
+    padding: 1rem;
+}
+
+.brand-logo {
+    color: white;
+    text-decoration: none;
+    font-size: 1.5rem;
+} 

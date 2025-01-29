@@ -5,21 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}StoryTales{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <nav>
         <div class="nav-wrapper">
             <a href="{{ url_for('main.index') }}" class="brand-logo">StoryTales</a>
-            <ul class="nav-links">
-                {% if current_user.is_authenticated %}
-                    <li><a href="{{ url_for('story.create') }}">Create Story</a></li>
-                    <li><a href="{{ url_for('user.profile') }}">Profile</a></li>
-                    <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
-                {% else %}
-                    <li><a href="{{ url_for('auth.login') }}">Login</a></li>
-                    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-                {% endif %}
-            </ul>
         </div>
     </nav>
 
