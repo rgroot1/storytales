@@ -1,0 +1,1 @@
+// This file can be empty for now, or we can move the JavaScript from create.html here later 

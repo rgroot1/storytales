@@ -16,7 +16,53 @@ def create_app(config_class=Config):
 
     db.init_app(app)
     limiter.init_app(app)
-    Talisman(app, force_https=True)
+    csp = {
+        'default-src': ['\'self\''],
+        'script-src': [
+            '\'self\'',
+            '\'unsafe-inline\'',
+            'https://cdnjs.cloudflare.com'
+        ],
+        'style-src': [
+            '\'self\'',
+            '\'unsafe-inline\'',
+            'https://fonts.googleapis.com',
+            'https://cdnjs.cloudflare.com'
+        ],
+        'font-src': [
+            '\'self\'',
+            'https://fonts.gstatic.com',
+            'https://cdnjs.cloudflare.com'
+        ],
+        'img-src': ['\'self\'', 'data:', 'https:'],
+        'connect-src': ['\'self\''],
+        'form-action': ['\'self\''],
+        'frame-ancestors': ['\'self\''],
+        'base-uri': ['\'self\''],
+        'object-src': ['\'none\'']
+    }
+    
+    Talisman(
+        app,
+        force_https=True,
+        content_security_policy=csp,
+        content_security_policy_nonce_in=['script-src'],
+        feature_policy={
+            'geolocation': '\'none\'',
+            'midi': '\'none\'',
+            'notifications': '\'none\'',
+            'push': '\'none\'',
+            'sync-xhr': '\'none\'',
+            'microphone': '\'none\'',
+            'camera': '\'none\'',
+            'magnetometer': '\'none\'',
+            'gyroscope': '\'none\'',
+            'speaker': '\'none\'',
+            'vibrate': '\'none\'',
+            'fullscreen': '\'self\'',
+            'payment': '\'none\''
+        }
+    )
 
     from src.app.routes import story, main
     app.register_blueprint(main.bp)

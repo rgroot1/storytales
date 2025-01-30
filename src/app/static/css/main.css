@@ -1,8 +1,168 @@
-/* Basic styles */
+/* Reset and base styles */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Lora', serif;
+    background: #f8f9fa;
+    color: #2d3436;
     margin: 0;
     padding: 0;
+}
+
+/* Hero Section */
+.hero-section {
+    text-align: center;
+    padding: 4rem 1rem;
+    background: linear-gradient(135deg, #A29BFE 0%, #74B9FF 100%);
+    border-radius: 0 0 2rem 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hero-section h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 44px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.hero-subtitle {
+    font-family: 'Lora', serif;
+    font-size: 22px;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 2rem;
+}
+
+/* Main Layout */
+.story-creator {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 0.5rem;
+}
+
+.main-input-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+/* Form Elements */
+.main-prompt {
+    font-family: 'Lora', serif;
+    font-size: 16px !important;
+    padding: 1rem !important;
+    border: 2px solid #e0e0e0 !important;
+    border-radius: 0.5rem !important;
+    flex: 1 1 100% !important;
+    min-height: 100px !important;
+    margin-bottom: 0 !important;
+    resize: vertical;
+}
+
+.controls-row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    width: 100%;
+}
+
+.age-select {
+    font-family: 'Lora', serif;
+    font-size: 16px;
+    padding: 0.5rem 1rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    flex: 0 0 auto;
+}
+
+/* Buttons */
+.secondary-button {
+    font-family: 'Lora', serif;
+    font-size: 16px;
+    background: none;
+    border: 2px solid #A29BFE;
+    color: #A29BFE;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 1rem 0;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.secondary-button:hover {
+    background: #A29BFE;
+    color: white;
+}
+
+.generate-button {
+    background: linear-gradient(135deg, #A29BFE 0%, #74B9FF 100%);
+    font-family: 'Poppins', sans-serif;
+    color: white;
+    border: none;
+    width: 100%;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    font-size: 17px;
+    font-weight: 600;
+    margin-top: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.generate-button:hover {
+    transform: translateY(-2px);
+}
+
+/* Additional Fields */
+.additional-fields {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    margin-top: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    display: none;
+}
+
+.additional-fields .input-field {
+    margin-bottom: 1.5rem;
+}
+
+.additional-fields label {
+    font-family: 'Lora', serif;
+    font-size: 16px;
+    color: #4a5568;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.additional-fields textarea {
+    font-family: 'Lora', serif;
+    font-size: 16px !important;
+    padding: 0.8rem !important;
+    border: 2px solid #e0e0e0 !important;
+    border-radius: 0.5rem !important;
+    width: 100% !important;
+    min-height: 60px !important;
+    resize: vertical;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .hero-section h1 {
+        font-size: 32px;
+    }
+    .hero-subtitle {
+        font-size: 18px;
+    }
 }
 
 .nav-wrapper {
@@ -14,4 +174,28 @@ body {
     color: white;
     text-decoration: none;
     font-size: 1.5rem;
+}
+
+/* Story Output */
+.story-output {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    margin-top: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    font-family: 'Lora', serif;
+    line-height: 1.6;
+}
+
+.story-output h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 24px;
+    color: #2d3436;
+    margin-bottom: 1rem;
+}
+
+.story-output #story-content {
+    font-size: 16px;
+    color: #2d3436;
+    white-space: pre-wrap;
 } 
