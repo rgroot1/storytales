@@ -35,7 +35,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         generateBtn.disabled = true;
-        generateBtn.textContent = 'Creating your story...';
+        let loadingDots = 0;
+        const loadingInterval = setInterval(() => {
+            loadingDots = (loadingDots + 1) % 4;
+            generateBtn.textContent = 'Creating your story' + '.'.repeat(loadingDots);
+        }, 500);
         
         try {
             const response = await fetch('/story/generate', {
@@ -57,6 +61,11 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (!response.ok) {
                 throw new Error(data.error || 'Failed to generate story');
+            }
+            
+            // Log if story was from cache
+            if (data.cached) {
+                console.log('Retrieved story from cache');
             }
             
             // Hide additional fields if they're open
@@ -81,6 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             alert(error.message);
         } finally {
+            clearInterval(loadingInterval);
             generateBtn.disabled = false;
             generateBtn.textContent = 'Generate Story';
         }
