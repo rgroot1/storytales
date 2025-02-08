@@ -94,6 +94,12 @@ def ratelimit_handler(e):
 @bp.route('/artwork/analyze', methods=['POST'])
 def analyze_artwork():
     try:
+        # Debug environment variables
+        api_key = os.getenv('OPENROUTER_API_KEY')
+        current_app.logger.debug(f"Environment variables:")
+        current_app.logger.debug(f"OPENROUTER_API_KEY present: {bool(api_key)}")
+        current_app.logger.debug(f"All env vars: {list(os.environ.keys())}")
+        
         current_app.logger.debug(f"Files in request: {request.files}")
         current_app.logger.debug(f"Form data: {request.form}")
         
@@ -105,7 +111,7 @@ def analyze_artwork():
             return jsonify({'error': 'No selected file'}), 400
             
         # Verify API key before making request
-        if not os.getenv('OPENROUTER_API_KEY'):
+        if not api_key:
             current_app.logger.error('OpenRouter API key not configured')
             return jsonify({'error': 'Service configuration error'}), 500
             

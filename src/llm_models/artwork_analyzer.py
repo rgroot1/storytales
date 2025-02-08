@@ -104,9 +104,11 @@ Keywords provided by parent: {keywords}"""
             dict: Analysis results including comments, questions, and story elements
         """
         try:
-            # Validate API key
-            if not current_app.config.get('OPENROUTER_API_KEY'):
-                raise ValueError("OpenRouter API key not configured")
+            # Debug API key
+            api_key = os.getenv('OPENROUTER_API_KEY')
+            current_app.logger.debug(f"API Key present: {bool(api_key)}")
+            if not api_key:
+                raise ValueError("OpenRouter API key not found in environment")
             
             # Validate file size
             image_file.seek(0, 2)  # Go to end of file
@@ -134,7 +136,7 @@ Keywords provided by parent: {keywords}"""
 
             # Prepare headers
             headers = {
-                "Authorization": f"Bearer {os.getenv('OPENROUTER_API_KEY')}",
+                "Authorization": f"Bearer {api_key}",
                 "HTTP-Referer": "https://storytales.kids",  # Your site URL
                 "X-Title": "StoryTales",  # Your site name
                 "Content-Type": "application/json"

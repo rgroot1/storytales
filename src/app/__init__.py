@@ -9,6 +9,9 @@ from dotenv import load_dotenv
 db = SQLAlchemy()
 
 def create_app(config_class=Config):
+    # Load environment variables first
+    load_dotenv()
+    
     app = Flask(__name__,
         template_folder='templates',
         static_folder='static'
@@ -18,13 +21,15 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
     app.config.update(config_class.FEATURES)  # Add features to config
 
-    # Load environment variables
-    load_dotenv()
-    
+    # Add API key to config
+    app.config['OPENROUTER_API_KEY'] = os.getenv('OPENROUTER_API_KEY')
+
     # Verify API key is loaded
     OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY')
+    app.logger.debug(f"API Key loaded: {bool(OPENROUTER_API_KEY)}")
     if not OPENROUTER_API_KEY:
-        raise ValueError("OPENROUTER_API_KEY environment variable is not set")
+        app.logger.error("OPENROUTER_API_KEY environment variable is not set")
+        # Don't raise error, just log it
 
     db.init_app(app)
     limiter.init_app(app)
