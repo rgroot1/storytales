@@ -138,7 +138,14 @@ def analyze_artwork():
     except Exception as e:
         current_app.logger.error(f'Artwork analysis failed: {str(e)}')
         if '401' in str(e) or 'credentials' in str(e).lower():
-            return jsonify({'error': 'Service authentication error. Please check API configuration.'}), 500
+            # Check environment variable
+            api_key = os.getenv('OPENROUTER_API_KEY', '')
+            if not api_key:
+                return jsonify({'error': 'API key not found in environment'}), 500
+            elif not api_key.strip().startswith('sk-'):
+                return jsonify({'error': 'Invalid API key format'}), 500
+            else:
+                return jsonify({'error': 'API authentication failed. Please check API key.'}), 500
         return jsonify({'error': 'Failed to analyze artwork'}), 500
 
 @bp.errorhandler(HTTPException)

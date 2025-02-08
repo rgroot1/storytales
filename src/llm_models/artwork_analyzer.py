@@ -110,10 +110,18 @@ Keywords provided by parent: {keywords}"""
             if not api_key:
                 raise ValueError("OpenRouter API key not found in environment")
             
+            # Strip any whitespace from API key
+            api_key = api_key.strip()
+            
+            # Verify API key format
+            if not api_key.startswith('sk-'):
+                current_app.logger.error("API key format appears invalid")
+                raise ValueError("Invalid API key format")
+            
             # Validate file size
-            image_file.seek(0, 2)  # Go to end of file
+            image_file.seek(0, 2)
             file_size = image_file.tell()
-            image_file.seek(0)  # Go back to start
+            image_file.seek(0)
             
             if file_size > self.max_file_size:
                 raise ValueError(f"Image file too large. Maximum size is {self.max_file_size/1024/1024:.1f}MB")
@@ -136,11 +144,15 @@ Keywords provided by parent: {keywords}"""
 
             # Prepare headers
             headers = {
-                "Authorization": f"Bearer {api_key}",
+                "Authorization": f"Bearer {api_key.strip()}",
                 "HTTP-Referer": "https://storytales.kids",  # Your site URL
                 "X-Title": "StoryTales",  # Your site name
                 "Content-Type": "application/json"
             }
+
+            # Debug headers
+            current_app.logger.debug(f"Authorization header length: {len(headers['Authorization'])}")
+            current_app.logger.debug(f"Authorization header first 10 chars: {headers['Authorization'][:10]}...")
 
             # Prepare the prompt
             prompt = f"""You are a parent helping young children (ages 3-5) explore their artwork and create stories based on the artwork.
