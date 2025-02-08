@@ -4,6 +4,7 @@ from config.settings import Config
 from src.app.utils.limiter import limiter
 from flask_talisman import Talisman
 import os
+from dotenv import load_dotenv
 
 db = SQLAlchemy()
 
@@ -16,6 +17,14 @@ def create_app(config_class=Config):
     # Load configuration
     app.config.from_object(config_class)
     app.config.update(config_class.FEATURES)  # Add features to config
+
+    # Load environment variables
+    load_dotenv()
+    
+    # Verify API key is loaded
+    OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY')
+    if not OPENROUTER_API_KEY:
+        raise ValueError("OPENROUTER_API_KEY environment variable is not set")
 
     db.init_app(app)
     limiter.init_app(app)

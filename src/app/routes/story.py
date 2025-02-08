@@ -7,6 +7,7 @@ from config.settings import Config
 import re
 import json
 from src.llm_models.artwork_analyzer import ArtworkAnalyzer
+import os
 
 bp = Blueprint('story', __name__, url_prefix='/story')
 
@@ -97,20 +98,25 @@ def analyze_artwork():
         current_app.logger.debug(f"Form data: {request.form}")
         
         if 'artwork' not in request.files:
-            return jsonify({'error': 'Please upload an artwork image'}), 400
+            return jsonify({'error': 'No artwork file provided'}), 400
             
-        artwork = request.files['artwork']
-        if not artwork.filename:
-            return jsonify({'error': 'No artwork file selected'}), 400
+        artwork_file = request.files['artwork']
+        if not artwork_file.filename:
+            return jsonify({'error': 'No selected file'}), 400
+            
+        # Verify API key before making request
+        if not os.getenv('OPENROUTER_API_KEY'):
+            current_app.logger.error('OpenRouter API key not configured')
+            return jsonify({'error': 'Service configuration error'}), 500
             
         # Validate file type
-        if not artwork.filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
+        if not artwork_file.filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
             return jsonify({'error': 'Please upload a valid image file (PNG, JPG, JPEG, GIF)'}), 400
             
         keywords = request.form.get('keywords', '')
         
         analyzer = ArtworkAnalyzer()
-        analysis = analyzer.analyze_artwork(artwork, keywords)
+        analysis = analyzer.analyze_artwork(artwork_file, keywords)
         
         # Restructure response to match frontend expectations
         response = {
@@ -124,12 +130,10 @@ def analyze_artwork():
         return jsonify(response)
         
     except Exception as e:
-        current_app.logger.error(f"Artwork analysis failed: {str(e)}")
-        # If it's a rate limit error, return 429
-        if isinstance(e, ValueError) and ('quota exceeded' in str(e).lower() or 'rate limit' in str(e).lower()):
-            return jsonify({'error': str(e)}), 429
-        # For other errors, return 500
-        return jsonify({'error': str(e)}), 500
+        current_app.logger.error(f'Artwork analysis failed: {str(e)}')
+        if '401' in str(e) or 'credentials' in str(e).lower():
+            return jsonify({'error': 'Service authentication error. Please check API configuration.'}), 500
+        return jsonify({'error': 'Failed to analyze artwork'}), 500
 
 @bp.errorhandler(HTTPException)
 def handle_exception(e):

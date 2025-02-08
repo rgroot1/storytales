@@ -134,7 +134,7 @@ Keywords provided by parent: {keywords}"""
 
             # Prepare headers
             headers = {
-                "Authorization": f"Bearer {current_app.config['OPENROUTER_API_KEY']}",
+                "Authorization": f"Bearer {os.getenv('OPENROUTER_API_KEY')}",
                 "HTTP-Referer": "https://storytales.kids",  # Your site URL
                 "X-Title": "StoryTales",  # Your site name
                 "Content-Type": "application/json"
