@@ -103,12 +103,13 @@ class StoryGenerator:
         
         Args:
             data (dict): Contains:
-                - mainPrompt (str): Main story idea
+                - mainPrompt (str): Main story idea (can be direct input or formatted from artwork flow)
                 - ageGroup (str): 'baby', 'preK', or 'growing'
                 - moral (str, optional): Moral of the story
                 - creature (str, optional): Additional character
                 - magic (str, optional): Magical element
                 - vibe (str, optional): Story mood/setting
+                - isArtworkFlow (bool, optional): Whether this is from artwork flow
         """
         try:
             start_time = time.time()
@@ -117,9 +118,19 @@ class StoryGenerator:
             if not data.get('mainPrompt'):
                 raise ValueError("Main prompt is required")
             
-            # Format the prompt
-            prompt = self._format_prompt(data)
+            # Log the flow type
+            current_app.logger.debug(f"Story generation flow: {'Artwork' if data.get('isArtworkFlow') else 'Direct'}")
+            
+            # Format the prompt based on flow
+            if data.get('isArtworkFlow'):
+                # For artwork flow, mainPrompt is already formatted as "A story about X in Y who Z"
+                prompt = self._format_prompt(data, use_template=True)
+            else:
+                # For direct text input flow, use the original prompt formatting
+                prompt = self._format_prompt(data, use_template=False)
+            
             current_app.logger.info(f"Final prompt:\n{prompt}")
+            current_app.logger.debug(f"Using template: {data.get('isArtworkFlow', False)}")
             
             payload = {
                 "model": self.model,
@@ -147,6 +158,9 @@ class StoryGenerator:
                 stream=False
             )
             
+            current_app.logger.debug(f"API Response status: {response.status_code}")
+            current_app.logger.debug(f"API Response: {response.text[:500]}...")
+            
             # Check response immediately
             if not response.ok:
                 current_app.logger.error(f"API error {response.status_code}: {response.text}")
@@ -166,7 +180,11 @@ class StoryGenerator:
             if "choices" not in response_data or not response_data["choices"]:
                 raise Exception("No story generated")
             
-            return response_data["choices"][0]["message"]["content"]
+            story = response_data["choices"][0]["message"]["content"].strip()
+            
+            current_app.logger.debug(f"Generated story length: {len(story)}")
+            
+            return story
 
         except requests.Timeout:
             current_app.logger.error(f"Request timed out after {time.time() - start_time:.2f} seconds")
@@ -204,11 +222,13 @@ class StoryGenerator:
         current_app.logger.info(f"Selected template: {chosen_template['name']} (Score: {max_score})")
         return chosen_template
 
-    def _format_prompt(self, data):
+    def _format_prompt(self, data, use_template=False):
         """Format the prompt for the story generator."""
         # Get age group and template
         age_group = data.get('ageGroup', 'preK')
-        template = self._choose_story_template(data)
+        
+        # Only use template for artwork flow
+        template = self._choose_story_template(data) if use_template else None
         
         # Age-appropriate guidelines
         age_guides = {
@@ -222,8 +242,11 @@ class StoryGenerator:
             f"Write a children's story about {data['mainPrompt']}",
             age_guides.get(age_group, age_guides['preK']),  # Add age-appropriate guidance
             "Write as continuous text without chapters",
-            f"Follow this story idea: {template['description']}"
         ]
+        
+        # Add template if using artwork flow
+        if template:
+            prompt_parts.append(f"Follow this story idea: {template['description']}")
         
         # Add essential elements only if provided
         if data.get('moral'): 

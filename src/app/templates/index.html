@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}StoryTales - Create Stories from Kids' Artwork{% endblock %}
+
+{% block content %}
+<div class="story-creator">
+    <section class="hero-section">
+        <h1>StoryTales</h1>
+        <p class="hero-subtitle">Turn your child's artwork into magical stories!</p>
+    </section>
+
+    <form id="artwork-form" class="upload-section">
+        <div id="upload-box" class="upload-box">
+            <div class="upload-content">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Drop your artwork here or click to upload</p>
+                <small>Supports: JPG, PNG, GIF (max 5MB)</small>
+            </div>
+            <input type="file" id="artwork" name="artwork" accept="image/*" hidden>
+        </div>
+        <div id="artwork-preview-container" class="preview-container"></div>
+        
+        <input type="text" 
+               name="keywords" 
+               class="keywords-input" 
+               placeholder="Add some keywords about the artwork (optional)" 
+               hidden>
+        
+        <button type="submit" id="analyze-btn" class="analyze-btn" hidden>
+            Start the Magic! ✨
+        </button>
+    </form>
+
+    <div id="story-output" style="display: none;">
+        <div id="story-content"></div>
+        <div class="story-actions">
+            <button class="create-new-btn" id="create-new-story-btn">
+                <i class="fas fa-plus"></i> Create Another Story
+            </button>
+        </div>
+        <div class="story-nav">
+            <button class="back-btn" id="story-back-btn">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Story Creation Modal -->
+<div id="storyModal" class="modal">
+    <div class="modal-content">
+        <button class="modal-close" aria-label="Close">×</button>
+        <!-- Character Screen -->
+        <div id="screen-character" class="screen">
+            <h2>Who's Our Hero?</h2>
+            <input type="text" class="story-input" placeholder="Tell us about the main character...">
+            <button class="inspire-btn">Need inspiration? 🎨</button>
+            <div class="suggestions hidden"></div>
+            <div class="button-row">
+                <div></div>  <!-- Empty div for spacing -->
+                <button class="next-btn">Next</button>
+            </div>
+        </div>
+
+        <!-- Setting Screen -->
+        <div id="screen-setting" class="screen">
+            <h2>Where's Our Story?</h2>
+            <input type="text" class="story-input" placeholder="Describe the setting...">
+            <button class="inspire-btn">Need inspiration? 🎨</button>
+            <div class="suggestions hidden"></div>
+            <div class="button-row">
+                <button class="back-btn">Back</button>
+                <button class="next-btn">Next</button>
+            </div>
+        </div>
+
+        <!-- Theme Screen -->
+        <div id="screen-theme" class="screen">
+            <h2>What Happens?</h2>
+            <input type="text" class="story-input" placeholder="What does our hero do...">
+            <button class="inspire-btn">Need inspiration? 🎨</button>
+            <div class="suggestions hidden"></div>
+            <div class="button-row">
+                <button class="back-btn">Back</button>
+                <button class="next-btn">Next</button>
+            </div>
+        </div>
+
+        <!-- Review Screen -->
+        <div id="screen-review" class="screen">
+            <h2>Ready to Create?</h2>
+            <div class="review-content">
+                <p>Your story is about to come to life! Click create to begin the magic.</p>
+            </div>
+            <div class="button-row">
+                <button class="back-btn">Back</button>
+                <button class="create-btn">Create Our Story! 📖</button>
+            </div>
+        </div>
+
+        <div class="progress-bar"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/story.js') }}"></script>
+{% endblock %} 

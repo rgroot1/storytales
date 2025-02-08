@@ -12,9 +12,11 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <main>
-        {% block content %}{% endblock %}
-    </main>
+    <div class="container">
+        <div class="main-input-section">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
     {% block scripts %}{% endblock %}
 </body>
 </html> 

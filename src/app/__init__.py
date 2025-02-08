@@ -12,7 +12,10 @@ def create_app(config_class=Config):
         template_folder='templates',
         static_folder='static'
     )
+    
+    # Load configuration
     app.config.from_object(config_class)
+    app.config.update(config_class.FEATURES)  # Add features to config
 
     db.init_app(app)
     limiter.init_app(app)
@@ -64,9 +67,11 @@ def create_app(config_class=Config):
         }
     )
 
-    from src.app.routes import story, main
-    app.register_blueprint(main.bp)
-    app.register_blueprint(story.bp)
+    # Register blueprints
+    from src.app.routes.main import bp as main_bp
+    from src.app.routes.story import bp as story_bp
+    app.register_blueprint(main_bp)  # Register main blueprint first (for homepage)
+    app.register_blueprint(story_bp)
 
     if app.debug:
         app.logger.setLevel('DEBUG')

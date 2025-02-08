@@ -4,4 +4,5 @@ bp = Blueprint('main', __name__)
 
 @bp.route('/')
 def index():
-    return render_template('story/create.html') 
+    """Render the homepage."""
+    return render_template('index.html') 
