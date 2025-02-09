@@ -17,7 +17,7 @@ class ArtworkAnalyzer:
     Analyzes children's artwork using LearnLM API to generate story elements
     """
     def __init__(self):
-        self.api_url = "https://openrouter.ai/api/v1/chat/completions"  # Verify this is the correct endpoint
+        self.api_url = "https://openrouter.ai/api/v1/chat/completions"  # Keep original URL from docs
         self.model = "google/learnlm-1.5-pro-experimental:free"
         current_app.logger.debug(f"Initialized ArtworkAnalyzer with model: {self.model}")
         self.max_field_length = 300
@@ -145,7 +145,7 @@ Keywords provided by parent: {keywords}"""
 
             # Prepare headers
             headers = {
-                "Authorization": api_key.strip(),  # Remove 'Bearer ' prefix
+                "Authorization": f"Bearer {api_key.strip()}",
                 "HTTP-Referer": "https://storytales.kids",
                 "X-Title": "StoryTales",
                 "Content-Type": "application/json"
@@ -154,6 +154,10 @@ Keywords provided by parent: {keywords}"""
             # Debug headers
             current_app.logger.debug(f"Authorization header length: {len(headers['Authorization'])}")
             current_app.logger.debug(f"Authorization header first 10 chars: {headers['Authorization'][:10]}...")
+            # Log the full Authorization header value (but mask most of the key)
+            auth_header = headers['Authorization']
+            masked_auth = f"{auth_header[:15]}...{auth_header[-4:]}"
+            current_app.logger.debug(f"Full Authorization header (masked): {masked_auth}")
             current_app.logger.debug(f"Full headers: {headers}")
 
             # Prepare the prompt
