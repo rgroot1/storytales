@@ -145,9 +145,9 @@ Keywords provided by parent: {keywords}"""
 
             # Prepare headers
             headers = {
-                "Authorization": f"Bearer {api_key.strip()}",
-                "HTTP-Referer": "https://storytales.kids",  # Your site URL
-                "X-Title": "StoryTales",  # Your site name
+                "Authorization": api_key.strip(),  # Remove 'Bearer ' prefix
+                "HTTP-Referer": "https://storytales.kids",
+                "X-Title": "StoryTales",
                 "Content-Type": "application/json"
             }
 
