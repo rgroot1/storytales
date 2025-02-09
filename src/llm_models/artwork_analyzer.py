@@ -23,6 +23,9 @@ class ArtworkAnalyzer:
         self.max_field_length = 300
         self.max_file_size = 5 * 1024 * 1024  # 5MB limit
         self.allowed_extensions = {'.jpg', '.jpeg', '.png', '.gif'}  # No PDF for MVP as it's not an image format
+        self.required_headers = {
+            "X-OpenRouter-Required": "true"  # Ensures required headers are sent
+        }
 
         # Prompt template for artwork analysis
         self.prompt_template = """You are a parent helping young child (ages 3-5) explore their artwork and create stories.
@@ -148,7 +151,8 @@ Keywords provided by parent: {keywords}"""
                 "Authorization": f"Bearer {api_key.strip()}",
                 "HTTP-Referer": "https://storytales.kids",
                 "X-Title": "StoryTales",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                **self.required_headers
             }
 
             # Debug headers
@@ -316,6 +320,18 @@ Keywords provided by parent: {keywords}"""
             except (KeyError, IndexError) as e:
                 current_app.logger.error(f"Unexpected API response format: {str(e)}")
                 raise ValueError("We couldn't analyze your artwork. Please try again.")
+
+            # Add API key validation check
+            validation_url = "https://openrouter.ai/api/v1/auth/key"
+            validation_response = requests.get(
+                validation_url,
+                headers={"Authorization": f"Bearer {api_key.strip()}"}
+            )
+            if validation_response.status_code != 200:
+                current_app.logger.error(f"API key validation failed: {validation_response.text}")
+                raise ValueError("Invalid API key")
+            else:
+                current_app.logger.debug("API key validated successfully")
 
         except Exception as e:
             current_app.logger.error(f"Artwork analysis failed: {str(e)}")
