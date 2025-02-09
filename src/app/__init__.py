@@ -31,6 +31,17 @@ def create_app(config_class=Config):
         app.logger.error("OPENROUTER_API_KEY environment variable is not set")
         # Don't raise error, just log it
 
+    # Add proxy configuration if needed
+    app.config.update({
+        'SESSION_COOKIE_SECURE': True,
+        'SESSION_COOKIE_HTTPONLY': True,
+        'PERMANENT_SESSION_LIFETIME': 3600,
+        # If behind proxy:
+        'PREFERRED_URL_SCHEME': 'https',
+        # Add if using reverse proxy:
+        'APPLICATION_ROOT': '/'
+    })
+
     db.init_app(app)
     limiter.init_app(app)
     csp = {

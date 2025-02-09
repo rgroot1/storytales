@@ -45,4 +45,9 @@ transformers/
 
 # Logs
 logs/
-*.log 
+*.log
+
+# Add to .gitignore
+.env
+*.env*
+config/secrets.ini 

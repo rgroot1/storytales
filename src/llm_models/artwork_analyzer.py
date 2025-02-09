@@ -17,14 +17,15 @@ class ArtworkAnalyzer:
     Analyzes children's artwork using LearnLM API to generate story elements
     """
     def __init__(self):
-        self.api_url = "https://openrouter.ai/api/v1/chat/completions"  # Keep original URL from docs
-        self.model = "google/learnlm-1.5-pro-experimental:free"
+        self.api_url = "https://openrouter.ai/api/v1/chat/completions"
+        self.model = "google/learnlm-1.5-pro-experimental:free"  # Original model
         current_app.logger.debug(f"Initialized ArtworkAnalyzer with model: {self.model}")
         self.max_field_length = 300
         self.max_file_size = 5 * 1024 * 1024  # 5MB limit
         self.allowed_extensions = {'.jpg', '.jpeg', '.png', '.gif'}  # No PDF for MVP as it's not an image format
         self.required_headers = {
-            "X-OpenRouter-Required": "true"  # Ensures required headers are sent
+            "X-OpenRouter-Required": "true",
+            "X-OpenRouter-Model": "google/learnlm-1.5-pro-experimental:free"
         }
 
         # Prompt template for artwork analysis
@@ -92,6 +93,12 @@ Keywords provided by parent: {keywords}"""
         # Reset file pointer to start
         image_file.seek(0)
         image_data = image_file.read()
+        if len(image_data) == 0:
+            raise ValueError("Empty image file")
+        
+        current_app.logger.debug(f"Image data length: {len(image_data)} bytes")
+        current_app.logger.debug(f"First 20 bytes: {image_data[:20].hex()}")
+        
         # Reset file pointer again for subsequent reads
         image_file.seek(0)
         return base64.b64encode(image_data).decode('utf-8')
@@ -119,7 +126,7 @@ Keywords provided by parent: {keywords}"""
             
             # Verify API key format
             if not api_key.startswith('sk-'):
-                current_app.logger.error("API key format appears invalid")
+                current_app.logger.error(f"Invalid key format: {api_key[:6]}... (length: {len(api_key)})")
                 raise ValueError("Invalid API key format")
             
             # Validate file size
@@ -210,7 +217,10 @@ Keywords provided by parent: {keywords}"""
                 self.api_url,
                 headers=headers,
                 json=payload,
-                timeout=30
+                timeout=30,
+                verify=True,  # Ensure SSL verification
+                # Specify modern TLS versions
+                # requests.get(url, verify=True, cert=('/path/client.cert', '/path/client.key'))
             )
 
             if response.status_code != 200:
@@ -218,9 +228,23 @@ Keywords provided by parent: {keywords}"""
                 current_app.logger.error(f"Response status code: {response.status_code}")
                 current_app.logger.error(f"Response headers: {response.headers}")
                 error_data = response.json()
-                error_message = error_data.get('error', {}).get('message', str(error_data))
+                error_code = error_data.get('error', {}).get('code', 'unknown')
+                error_message = error_data.get('error', {}).get('message', 'No error message provided')
+                error_metadata = error_data.get('error', {}).get('metadata', {})
+                
+                current_app.logger.error(f"Error Code: {error_code}")
+                current_app.logger.error(f"Error Metadata: {json.dumps(error_metadata, indent=2)}")
                 current_app.logger.error(f"Full error data: {error_data}")
-                raise Exception(f"API Error: {error_message}")
+                
+                # Handle specific error codes
+                if error_code == 401:
+                    raise ValueError("Invalid API key - please check your OpenRouter credentials")
+                elif error_code == 402:
+                    raise ValueError("Insufficient API credits - please top up your account")
+                elif error_code == 429:
+                    raise ValueError("Too many requests - please try again later")
+                else:
+                    raise Exception(f"API Error {error_code}: {error_message}")
 
             # Parse response
             result = response.json()
@@ -327,11 +351,34 @@ Keywords provided by parent: {keywords}"""
                 validation_url,
                 headers={"Authorization": f"Bearer {api_key.strip()}"}
             )
+            current_app.logger.debug(f"Validation response: {validation_response.status_code}")
+            current_app.logger.debug(f"Validation headers: {validation_response.headers}")
+            current_app.logger.debug(f"Validation body: {validation_response.text}")
+            
             if validation_response.status_code != 200:
                 current_app.logger.error(f"API key validation failed: {validation_response.text}")
                 raise ValueError("Invalid API key")
             else:
                 current_app.logger.debug("API key validated successfully")
+
+            # Add network debugging
+            current_app.logger.debug(f"Testing connectivity to OpenRouter...")
+            try:
+                test_response = requests.get("https://openrouter.ai/api/v1", timeout=5)
+                current_app.logger.debug(f"Connectivity test status: {test_response.status_code}")
+            except Exception as e:
+                raise ConnectionError(f"Network connectivity issue: {str(e)}")
+
+            # Add key status check
+            validation_url = "https://openrouter.ai/api/v1/auth/key"
+            validation_response = requests.get(
+                validation_url,
+                headers={"Authorization": f"Bearer {api_key.strip()}"}
+            )
+            
+            if validation_response.status_code != 200:
+                current_app.logger.error(f"Key validation failed: {validation_response.json()}")
+                raise ValueError("API key revoked or invalid")
 
         except Exception as e:
             current_app.logger.error(f"Artwork analysis failed: {str(e)}")
