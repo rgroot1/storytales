@@ -17,8 +17,9 @@ class ArtworkAnalyzer:
     Analyzes children's artwork using LearnLM API to generate story elements
     """
     def __init__(self):
-        self.api_url = "https://openrouter.ai/api/v1/chat/completions"
+        self.api_url = "https://openrouter.ai/api/v1/chat/completions"  # Verify this is the correct endpoint
         self.model = "google/learnlm-1.5-pro-experimental:free"
+        current_app.logger.debug(f"Initialized ArtworkAnalyzer with model: {self.model}")
         self.max_field_length = 300
         self.max_file_size = 5 * 1024 * 1024  # 5MB limit
         self.allowed_extensions = {'.jpg', '.jpeg', '.png', '.gif'}  # No PDF for MVP as it's not an image format
@@ -153,6 +154,7 @@ Keywords provided by parent: {keywords}"""
             # Debug headers
             current_app.logger.debug(f"Authorization header length: {len(headers['Authorization'])}")
             current_app.logger.debug(f"Authorization header first 10 chars: {headers['Authorization'][:10]}...")
+            current_app.logger.debug(f"Full headers: {headers}")
 
             # Prepare the prompt
             prompt = f"""You are a parent helping young children (ages 3-5) explore their artwork and create stories based on the artwork.
@@ -180,13 +182,21 @@ Keywords provided by parent: {keywords}"""
                             }
                         ]
                     }
-                ]
+                ],
+                "max_tokens": 1000,  # Add token limit
+                "temperature": 0.7   # Add temperature
             }
+
+            # Debug payload (excluding the base64 image for brevity)
+            debug_payload = dict(payload)
+            debug_payload["messages"][0]["content"][1]["image_url"]["url"] = "[BASE64_IMAGE]"
+            current_app.logger.debug(f"Request payload structure: {json.dumps(debug_payload, indent=2)}")
 
             # Make API request
             current_app.logger.debug(f"Making API request to {self.api_url}")
             current_app.logger.debug(f"Headers: {headers}")
             current_app.logger.debug(f"Payload size: {len(str(payload))} bytes")
+            current_app.logger.debug(f"Model being used: {self.model}")
             
             response = requests.post(
                 self.api_url,
@@ -197,8 +207,11 @@ Keywords provided by parent: {keywords}"""
 
             if response.status_code != 200:
                 current_app.logger.error(f"LearnLM API error: {response.text}")
+                current_app.logger.error(f"Response status code: {response.status_code}")
+                current_app.logger.error(f"Response headers: {response.headers}")
                 error_data = response.json()
-                error_message = error_data.get('error', {}).get('message', 'Unknown error')
+                error_message = error_data.get('error', {}).get('message', str(error_data))
+                current_app.logger.error(f"Full error data: {error_data}")
                 raise Exception(f"API Error: {error_message}")
 
             # Parse response
