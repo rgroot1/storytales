@@ -213,9 +213,13 @@ body {
     padding: 2rem;
     border-radius: 1rem;
     margin-top: 2rem;
+    margin-bottom: 2rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     font-family: 'Lora', serif;
     line-height: 1.6;
+    max-height: 80vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .story-output h2 {
@@ -223,12 +227,19 @@ body {
     font-size: 24px;
     color: #2d3436;
     margin-bottom: 1rem;
+    position: sticky;
+    top: 0;
+    background: white;
+    padding: 1rem 0;
+    z-index: 1;
 }
 
 .story-output #story-content {
     font-size: 16px;
     color: #2d3436;
     white-space: pre-wrap;
+    overflow-wrap: break-word;
+    padding-bottom: 2rem;
 }
 
 /* Artwork Upload Section */
@@ -238,8 +249,10 @@ body {
 }
 
 .upload-container {
-    max-width: 600px;
-    margin: 0 auto;
+    width: 90%;
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 1.5rem;
 }
 
 .upload-section {
@@ -250,20 +263,14 @@ body {
 }
 
 .upload-box {
-    border: 2px dashed #a29bfe;
-    border-radius: 1rem;
+    border: 3px dashed #ccc;
     padding: 2rem;
     text-align: center;
-    position: relative;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    width: 100%;
-    max-width: 500px;
+    transition: border-color 0.3s;
 }
 
 .upload-box:hover {
-    border-color: #007bff;
-    background: #f8f9fa;
+    border-color: #4CAF50;
 }
 
 .upload-content {
@@ -326,9 +333,10 @@ body {
 }
 
 .preview-container {
+    position: relative;
+    display: inline-block;
     width: 100%;
-    max-width: 500px;
-    margin: 1rem 0;
+    height: 100%;
 }
 
 .analysis-content {
@@ -410,82 +418,56 @@ body {
     outline: none;
 }
 
-/* Modal Styles */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    padding: 0 1rem;
-}
-
-.modal-content {
-    position: relative;
-    background-color: #fff;
-    padding: 2rem 2rem 1rem 2rem;
-    padding-top: 80px;
-    border-radius: 1rem;
-    max-width: 600px;
-    width: 90%;
-    margin: 10vh auto;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    overflow: hidden;
-    transition: margin 0.3s ease;
-}
-
-/* Progress Bar */
-.progress-bar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    display: flex;
-    align-items: center;
-    padding: 0;
-    background: #e0e0e0;
-    border-radius: 1rem 1rem 0 0;
-}
-
-.progress-fill {
-    height: 100%;
-    background: #A29BFE;
-    border-radius: 1rem;
-    transition: width 0.3s ease;
-}
-
 /* Screen Styles */
 .screen {
-    display: none;
-    text-align: center;
-    padding: 0 2rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     position: relative;
-    padding-bottom: 6rem;
-    min-height: 300px;
+    padding: 20px 0;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 400px !important;
 }
 
-.screen.active {
+.screen.hidden {
+    display: none !important;
+}
+
+/* Make sure screens are visible by default */
+#screen-character,
+#screen-setting,
+#screen-theme,
+#screen-review {
     display: block;
 }
 
 .screen h2 {
     font-size: 1.8rem;
     color: #2d3436;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    width: 100%;
+    padding: 0 20px;
 }
 
-.subtext {
+.screen .subtext {
     color: #636e72;
     margin-bottom: 2rem;
+    text-align: center;
+    width: 100%;
 }
 
 /* Input Group */
 .input-group {
-    margin-bottom: 2.5rem;
+    position: relative !important;
+    width: 100% !important;
+    max-width: 500px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    margin: 20px auto !important;
+    padding-bottom: 80px !important;  /* Space for suggestions */
 }
 
 .story-input {
@@ -494,38 +476,36 @@ body {
     border: 2px solid #e0e0e0;
     border-radius: 0.5rem;
     font-size: 1rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 /* Inspire Button */
 .inspire-btn {
-    background: none;
-    border: 2px solid #A29BFE;
-    color: #A29BFE;
+    background: linear-gradient(135deg, #A29BFE 0%, #74B9FF 100%);
+    color: white;
+    border: none;
     padding: 0.8rem 1.5rem;
     border-radius: 0.5rem;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin: 0 auto;
-    margin-bottom: 1rem;
-    position: relative;
-    z-index: 1;
+    margin: 1rem auto !important;
+    display: block !important;
+    width: auto;
+    text-align: center !important;
+    position: relative !important;
+    z-index: 2 !important;
+    margin-bottom: 10px !important;  /* Small gap before suggestions */
 }
 
 /* Navigation Buttons */
 .button-row {
+    width: 90%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 1rem 0;
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 1rem 0;
-    margin-top: 2rem;
-    position: absolute;
-    bottom: 1rem;
-    left: 2rem;
-    right: 2rem;
-    z-index: 20;
+    position: relative;
+    margin-top: 1rem;
 }
 
 /* For screens with only Next button */
@@ -554,33 +534,39 @@ body {
     cursor: pointer;
 }
 
+/* Suggestion Box */
 .suggestions {
-    background: white;
-    border: 2px solid #e0e0e0;
-    border-radius: 0.5rem;
-    margin-top: -0.5rem;
-    display: none;
-    position: absolute;
-    width: calc(100% - 4rem);
-    left: 2rem;
-    top: auto;
-    z-index: 10;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    max-height: 150px;
-    overflow-y: auto;
+    position: absolute !important;
+    top: calc(100% - 60px) !important;  /* Move up closer to inspire button */
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 250px !important;
+    background: white !important;
+    border: 2px solid #e0e0e0 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    z-index: 1000 !important;
+    max-height: 150px !important;
+    overflow-y: auto !important;
+    display: none !important;
+    margin-top: 0 !important;
 }
 
-.suggestions:not(.hidden) {
-    display: block;
-    padding: 1rem;
-    border: 2px solid #A29BFE;
+/* Show suggestions */
+.suggestions.show {
+    display: block !important;
 }
 
-.no-suggestions {
-    color: #666;
-    padding: 1rem;
-    text-align: center;
-    font-style: italic;
+/* Suggestion items */
+.suggestion-item {
+    padding: 12px 16px !important;
+    cursor: pointer !important;
+    text-align: center !important;
+    border-bottom: 1px solid #e0e0e0 !important;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none !important;
 }
 
 .copy-feedback {
@@ -591,33 +577,28 @@ body {
 }
 
 .suggestion-item {
-    padding: 0.8rem;
-    cursor: pointer;
-    border-radius: 0.4rem;
-    position: relative;
-    transition: background-color 0.2s;
+    padding: 12px 16px !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s ease !important;
+    color: #2d3436 !important;
+    font-size: 16px !important;
+    background: white !important;
+    margin: 0 !important;
+    text-align: center !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    display: block !important;
+    border-radius: 4px !important;
+    white-space: nowrap !important;
 }
 
 .suggestion-item:hover {
-    background: #f0f0f0;
+    background-color: #f5f6fa !important;
+    color: #000 !important;
 }
 
-.modal-close {
-    position: absolute;
-    right: 1rem;
-    top: 1rem;
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: #636e72;
-    cursor: pointer;
-    padding: 0.5rem;
-    line-height: 1;
-    z-index: 1001;
-}
-
-.modal-close:hover {
-    color: #2d3436;
+.suggestion-item:not(:last-child) {
+    border-bottom: 1px solid #e0e0e0 !important;
 }
 
 /* Review Screen Buttons */
@@ -650,20 +631,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-/* Responsive Progress Bar */
-@media (max-width: 600px) {
-    .progress-bar {
-        height: 90px;
-    }
-    
-    .progress-step-label {
-        font-size: 0.8rem;
-        width: 80px;
-        text-align: center;
-        white-space: normal;
-    }
 }
 
 /* Generated Story Styles */
@@ -736,13 +703,35 @@ body {
 
 /* Error Handling */
 .error-message {
-    background: #fee2e2;
-    border: 1px solid #ef4444;
-    color: #991b1b;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fff3f3;
+    color: #e74c3c;
     padding: 1rem;
-    margin: 1rem 0;
     border-radius: 0.5rem;
+    border: 1px solid #e74c3c;
+    font-size: 0.9rem;
     text-align: center;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 100;
+    margin-top: 1rem;
+    font-weight: 500;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translate(-50%, 20px);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
 }
 
 /* Loading State */
@@ -767,17 +756,17 @@ body {
 
 .delete-image {
     position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
+    top: 8px;
+    right: 8px;
     background: rgba(255, 255, 255, 0.9);
     border: none;
     border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
     z-index: 2;
 }
 
@@ -786,35 +775,666 @@ body {
     transform: scale(1.1);
 }
 
-/* When suggestions are shown */
-.screen:has(.suggestions:not(.hidden)) {
-    padding-bottom: 12rem;
+/* Upload Box States */
+.upload-box.dragover {
+  border-color: #74b9ff;
+  background: rgba(116, 185, 255, 0.1);
 }
 
-/* Adjust modal position when suggestions are shown */
-.modal-content:has(.suggestions:not(.hidden)) {
-    margin-top: 5vh;
+.upload-box.error {
+  border-color: #ff7675;
+  animation: shake 0.5s;
 }
 
-/* Responsive adjustments */
-@media (max-width: 600px) {
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.modal-open {
+    overflow: hidden;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+    .upload-box {
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .upload-box h2 {
+        font-size: 1.2rem;
+    }
+    
+    .upload-box p {
+        font-size: 0.9rem;
+    }
+    
+    #artwork-upload {
+        width: 100%;
+        margin: 1rem 0;
+    }
+
     .modal-content {
-        width: 95%;
-        padding: 2rem 1.5rem 1rem 1.5rem;
-        padding-top: 80px;
+        margin: 0;
+        padding: 20px;
+        width: 100%;
+        height: auto !important;
+        min-height: initial !important;
+        border-radius: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        background-color: #fff;
+        z-index: 1001;
+    }
+
+    .screen {
+        padding: 15px;
+        height: auto !important;
+        justify-content: flex-start !important;
+    }
+
+    .input-group,
+    .suggestions {
+        width: 90%;
+    }
+
+    .story-output {
+        max-height: calc(100vh - 200px);
+        margin: 1rem;
+        padding: 1rem;
+    }
+
+    .story-output h2 {
+        font-size: 20px;
+        padding: 0.5rem 0;
+    }
+
+    .story-creator {
+        height: 100%;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .modal {
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+        background-color: #fff;
+        z-index: 1000;
+    }
+
+    body.modal-open .analyze-btn {
+        display: none !important;
+    }
+
+    /* Ensure proper visibility of homepage elements */
+    body:not(.modal-open) .analyze-btn,
+    body:not(.modal-open) .keywords-input:not([hidden]) {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    /* Hide homepage elements only when modal is open */
+    body.modal-open .analyze-btn,
+    body.modal-open .keywords-input {
+        display: none !important;
+    }
+
+    .input-group {
+        padding: 0 15px !important;
+        margin: 1rem auto 60px auto !important;  /* Adjusted space for mobile */
+        padding-bottom: 60px !important;
+    }
+
+    .suggestions {
+        width: 250px !important;
+        position: absolute !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        top: calc(100% - 50px) !important;  /* Slightly different position for mobile */
+    }
+
+    .navigation-buttons {
+        position: relative !important;
+        width: 100% !important;
+        background: white !important;
+        padding: 15px !important;
+        margin-top: auto !important;
+    }
+
+    .screen-content {
+        padding-bottom: 20px !important;
+    }
+
+    .navigation-buttons {
+        position: relative !important;
+        width: 100% !important;
+        padding: 15px !important;
+        margin-top: auto !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal {
+        max-height: 90vh;
+        padding-top: 2.5rem;  /* Space for close button */
+    }
+}
+
+/* Upload Box States */
+.upload-box.dragover {
+  border-color: #74b9ff;
+  background: rgba(116, 185, 255, 0.1);
+}
+
+.upload-box.error {
+  border-color: #ff7675;
+  animation: shake 0.5s;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.modal-open {
+    overflow: hidden;
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    overflow-y: auto;
+    padding: 0;  /* Remove padding for mobile */
+}
+
+.modal-content {
+    position: relative;
+    background-color: #fff;
+    margin: 0 auto;
+    padding: 40px 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    min-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    min-height: 600px !important;
+    z-index: 1 !important;
+}
+
+.modal-close {
+    position: absolute !important;
+    right: 20px !important;
+    top: 20px !important;
+    font-size: 24px !important;
+    color: #666 !important;
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    z-index: 1001 !important;  /* Ensure it's above other modal content */
+    padding: 10px !important;  /* Larger click target */
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+    transition: background-color 0.2s ease !important;
+}
+
+.modal-close:hover {
+    background-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.modal-close:focus {
+    outline: none !important;
+    background-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .modal-content {
+        margin: 0;
+        padding: 20px;
+        width: 100%;
+        height: auto !important;
+        min-height: initial !important;
+    }
+
+    .modal {
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+        background-color: #fff;
+        z-index: 1000;
     }
     
     .screen {
-        padding: 0 1.5rem;
+        padding: 15px;
+        height: auto !important;
+    }
+}
+
+/* Ensure modal is centered vertically on larger screens */
+@media (min-height: 700px) and (min-width: 769px) {
+    .modal-content {
+        margin: 10vh auto;
+        height: auto;
+        min-height: 500px;
+    }
+}
+
+/* Suggestion copy feedback */
+.copy-feedback {
+    display: inline-block;
+    margin-left: 8px;
+    color: #4CAF50;
+    font-weight: bold;
+    animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.suggestion-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border-radius: 4px;
+    position: relative;
+}
+
+.suggestion-item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Prevent modal content jumping */
+.modal-content {
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 0;
+    height: 100%;
+    align-items: center;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 2rem;
+    width: 100%;
+    padding: 0 1rem;
+}
+
+.story-input {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* Single Progress Bar Style */
+#storyProgress {
+    height: 4px;
+    margin: 0;
+    border-radius: 0;
+    background-color: #f0f0f0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    overflow: hidden;
+}
+
+#storyProgress .progress-bar {
+    transition: width 0.3s ease-in-out;
+    background: linear-gradient(135deg, #A29BFE 0%, #74B9FF 100%);
+    height: 100%;
+}
+
+@media (min-width: 769px) {
+    .modal-content {
+        margin: 10vh auto;
+        overflow: hidden;
+        width: 90%;
     }
     
-    .button-row {
-        left: 1.5rem;
-        right: 1.5rem;
+    .screen {
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 20px 0;
     }
-    
+}
+
+/* Modal Content Centering */
+.modal-content {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center !important;
+    justify-content: flex-start;
+    padding: 40px 20px !important;
+}
+
+/* Input and Suggestion Centering */
+.input-group, .suggestions, .story-input {
+    width: 100% !important;
+    max-width: 500px;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding: 0 20px !important;
+    position: relative !important;
+    left: 0 !important;
+    transform: none !important;
+    box-sizing: border-box !important;
+}
+
+/* Keyword Input Centering */
+.keywords-input-container, .keywords-input {
+    display: flex !important;
+    justify-content: center !important;
+    width: 100% !important;
+    max-width: 500px !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+}
+
+/* Modal specific input styling */
+.modal-content .story-input,
+.modal-content .keywords-input {
+    width: calc(100% - 40px) !important;
+    margin: 1rem auto !important;
+    display: block !important;
+    min-height: 42px !important;  /* Match button height */
+    height: auto !important;      /* Allow height to grow */
+    resize: vertical !important;
+    padding: 0.5rem !important;
+    line-height: 1.5 !important;
+    font-family: 'Lora', serif !important;
+    transition: border-color 0.2s !important;
+    overflow-y: auto !important;  /* Enable scrolling for overflow */
+    max-height: 200px !important; /* Set maximum height before scrolling */
+}
+
+/* Style for all story inputs in modal screens */
+.screen .story-input {
+    min-height: 42px !important;  /* Match button height */
+    height: auto !important;
+    resize: vertical !important;
+    padding: 0.5rem !important;
+    line-height: 1.5 !important;
+    font-size: 16px !important;
+    width: calc(100% - 40px) !important;
+    margin: 1rem auto !important;
+    border: 2px solid #e0e0e0 !important;
+    border-radius: 8px !important;
+    font-family: 'Lora', serif !important;
+    transition: border-color 0.2s !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+    overflow-y: auto !important;
+    max-height: 200px !important;
+}
+
+/* Suggestion Box Positioning */
+.suggestions {
+    width: 100% !important;
+    max-width: 500px !important;
+    display: none !important;
+    margin-top: 0.5rem !important;
+    background: white !important;
+    border: 2px solid #e0e0e0 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    position: absolute !important;
+    top: calc(100% + 10px) !important;
+    left: 50% !important;
+    z-index: 1000 !important;
+    max-height: 150px !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+/* Show suggestions when active */
+.suggestions.show {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+}
+
+/* Override .hidden class for suggestions */
+.suggestions.hidden {
+    display: none;
+}
+
+/* Suggestion items styling */
+.suggestion-item {
+    padding: 12px 16px !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s ease !important;
+    color: #2d3436 !important;
+    font-size: 16px !important;
+    background: white !important;
+    margin: 0 !important;
+    text-align: center !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    display: block !important;
+    border-radius: 4px !important;
+    white-space: nowrap !important;
+}
+
+.suggestion-item:hover {
+    background-color: #f5f6fa !important;
+    color: #000 !important;
+}
+
+.suggestion-item:not(:last-child) {
+    border-bottom: 1px solid #e0e0e0 !important;
+}
+
+/* Container for suggestions to ensure proper positioning */
+.input-group {
+    position: relative !important;
+}
+
+@media (max-width: 768px) {
     .suggestions {
-        width: calc(100% - 3rem);
-        left: 1.5rem;
+        width: 250px !important;
+        position: absolute !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
     }
+
+    .input-group {
+        padding: 0 15px !important;
+        margin: 1rem auto 60px auto !important;  /* Adjusted space for mobile */
+        padding-bottom: 60px !important;
+    }
+}
+
+/* Button height reference */
+.next-btn, .back-btn {
+    height: 42px !important;
+    line-height: 42px !important;
+    padding: 0 20px !important;
+}
+
+/* Ensure body and html allow scrolling */
+html, body {
+    height: 100%;
+    overflow-y: auto;
+    position: relative;
+}
+
+/* Ensure button visibility on desktop */
+@media (min-width: 769px) {
+    .analyze-btn {
+        display: block !important;
+    }
+}
+
+/* Content wrapper for top section */
+.screen-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    position: relative !important;
+    padding-bottom: 20px !important;
+}
+
+/* Navigation buttons container */
+.navigation-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding: 20px;
+    margin-top: auto !important;
+    position: relative !important;
+    z-index: 1 !important;  /* Keep below suggestions */
+    background: white !important;
+    margin-top: 10px !important;  /* Reduced space from suggestions */
+}
+
+/* Input Group Container */
+.input-group {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 500px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    margin: 20px auto !important;
+    padding-bottom: 80px !important;  /* Space for suggestions */
+}
+
+/* New clean suggestion styles */
+.suggestions {
+    position: absolute !important;
+    top: calc(100% - 60px) !important;  /* Move up closer to inspire button */
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 250px !important;
+    background: white !important;
+    border: 2px solid #e0e0e0 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    z-index: 1000 !important;
+    max-height: 150px !important;
+    overflow-y: auto !important;
+    display: none !important;
+    margin-top: 0 !important;
+}
+
+/* Show suggestions */
+.suggestions.show {
+    display: block !important;
+}
+
+/* Suggestion items */
+.suggestion-item {
+    padding: 12px 16px !important;
+    cursor: pointer !important;
+    text-align: center !important;
+    border-bottom: 1px solid #e0e0e0 !important;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none !important;
+}
+
+@media (max-width: 768px) {
+    .suggestions {
+        width: 250px !important;
+        position: absolute !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        top: calc(100% - 50px) !important;  /* Slightly different position for mobile */
+    }
+
+    .input-group {
+        padding: 0 15px !important;
+        margin: 1rem auto 60px auto !important;  /* Adjusted space for mobile */
+        padding-bottom: 60px !important;
+    }
+}
+
+/* Button height reference */
+.next-btn, .back-btn {
+    height: 42px !important;
+    line-height: 42px !important;
+    padding: 0 20px !important;
+}
+
+/* Ensure body and html allow scrolling */
+html, body {
+    height: 100%;
+    overflow-y: auto;
+    position: relative;
+}
+
+/* Ensure button visibility on desktop */
+@media (min-width: 769px) {
+    .analyze-btn {
+        display: block !important;
+    }
+}
+
+/* Content wrapper for top section */
+.screen-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    position: relative !important;
+    padding-bottom: 20px !important;
+}
+
+/* Navigation buttons container */
+.navigation-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding: 20px;
+    margin-top: auto !important;
+    position: relative !important;
+    z-index: 1 !important;  /* Keep below suggestions */
+    background: white !important;
+    margin-top: 10px !important;  /* Reduced space from suggestions */
 } 

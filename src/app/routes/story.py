@@ -8,6 +8,7 @@ import re
 import json
 from src.llm_models.artwork_analyzer import ArtworkAnalyzer
 import os
+import tempfile
 
 bp = Blueprint('story', __name__, url_prefix='/story')
 

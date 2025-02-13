@@ -11,25 +11,21 @@
             <p class="hero-subtitle">Upload your child's artwork to start the story!</p>
             <div class="upload-container">
                 <form id="artwork-form" class="artwork-form" enctype="multipart/form-data">
-                    <div class="upload-box" id="upload-box">
-                        <input type="file" id="artwork" name="artwork" accept=".jpg,.jpeg,.png,.gif" class="file-input" hidden>
+                    <div id="upload-box" class="upload-box">
                         <div class="upload-content">
-                            <i class="fas fa-upload"></i>
-                            <p>Drop artwork here or click to upload (max 3 images, 5MB each)</p>
-                            <small class="file-info">Accepts JPG, PNG, GIF</small>
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Drop your artwork here or click to upload</p>
+                            <small>Supports: JPG, PNG, GIF (max 5MB)</small>
                         </div>
-                        <div id="artwork-preview-container"></div>
-                        <button type="button" id="delete-artwork" class="delete-artwork" hidden>
-                            <i class="fas fa-times"></i>
-                        </button>
                     </div>
+                    <input type="file" id="artwork" name="artwork" accept=".jpg,.jpeg,.png,.gif" hidden>
                     <div class="keywords-input" hidden>
                         <label for="keywords">Tell us about the artwork (optional):</label>
                         <input type="text" id="keywords" name="keywords" 
                             placeholder="e.g., dragon, castle, flying">
                     </div>
                     <button type="submit" id="analyze-btn" class="analyze-button" hidden>
-                        Create Story from Artwork
+                        Start the Magic! ✨
                     </button>
                 </form>
             </div>
@@ -106,6 +102,7 @@
 <!-- Story Creation Modal -->
 <div id="storyModal" class="modal">
     <div class="modal-content">
+        <button class="modal-close">&times;</button>
         <!-- Progress Bar -->
         <div class="progress-bar">
             <div class="progress-fill"></div>
@@ -115,24 +112,26 @@
         <div class="screen-container">
             <!-- Screen 1: Character -->
             <div class="screen" id="screen-character">
-                <h2>Who's Our Story Star? 🎭</h2>
-                <p class="subtext">Let's bring your artwork's character to life!</p>
-                
-                <div class="input-group">
-                    <input type="text" 
-                           class="story-input" 
-                           placeholder="Tell us about your magical friend...">
+                <div class="screen-content">
+                    <h2>Who's Our Story Star? 🎭</h2>
+                    <p class="subtext">Let's bring your artwork's character to life!</p>
                     
-                    <button class="inspire-btn">
-                        <span>✨ Inspire Me</span>
-                        <div class="tooltip">
-                            <span class="tooltip-trigger">?</span>
-                            <span class="tooltip-text">Click for character ideas based on your artwork!</span>
+                    <div class="input-group">
+                        <input type="text" 
+                               class="story-input" 
+                               placeholder="Tell us about your magical friend...">
+                        
+                        <button class="inspire-btn">
+                            <span>✨ Inspire Me</span>
+                            <div class="tooltip">
+                                <span class="tooltip-trigger">?</span>
+                                <span class="tooltip-text">Click for character ideas based on your artwork!</span>
+                            </div>
+                        </button>
+                        
+                        <div class="suggestions hidden">
+                            <!-- Suggestions will be populated by JS -->
                         </div>
-                    </button>
-                    
-                    <div class="suggestions hidden">
-                        <!-- Suggestions will be populated by JS -->
                     </div>
                 </div>
                 
