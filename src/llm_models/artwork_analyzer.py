@@ -9,6 +9,7 @@ import base64
 from io import BytesIO
 import os
 import time
+import re
 
 # Cache that expires after 1 hour
 artwork_cache = TTLCache(maxsize=100, ttl=3600)
@@ -35,7 +36,7 @@ Analyze the uploaded kid's artwork and used keywords "{keywords}" to generate en
 
 Please provide your response in the following format:
 
-{
+{{
 "comments": [
 "2-3 specific, encouraging observations about the artwork",
 "Focus on colors, shapes, or interesting details"
@@ -44,21 +45,19 @@ Please provide your response in the following format:
 "2-3 open-ended questions that spark imagination",
 "Questions should start with 'What', 'How', or 'Tell me about'"
 ],
-"story_elements": {
+"story_elements": {{
 "characters": ["Main character ideas based on the artwork"],
-"setting/vibe": "Suggested story setting/vibe inspired by the artwork, like adventurous, silly, heartwarming",
-"moral": "Child-friendly moral like friendship, bravery, discovery",
-"opening_line": "A simple, engaging story starter"
-}
-}
+"setting": ["Two different settings inspired by the artwork, like 'magical forest', 'cozy treehouse'"],
+"moral": "Two different Child-friendly morals, like friendship, bravery, discovery"
+}}
+}}
 
 Guidelines:
-1. Keep language simple and positive
+1. Keep language simple and child-friendly
 2. Focus on imagination and creativity
-3. Avoid any scary or negative elements
-4. Use concrete, specific observations
-5. Make questions conversation starters
-Keywords provided by parent: {keywords}"""
+3. Reflect the Keywords: {keywords} in the story_elements
+4. Do not include periods in the story_elements
+"""
 
     def _compress_image(self, image_file, max_size=(800, 800), quality=85):
         """Compress uploaded image for API processing"""
@@ -105,85 +104,123 @@ Keywords provided by parent: {keywords}"""
         return base64.b64encode(image_data).decode('utf-8')
 
     def analyze_artwork(self, image_file, keywords=""):
-        """
-        Analyze artwork and return structured insights
-        
-        Args:
-            image_file: File object containing the artwork image
-            keywords: String of keywords describing the artwork
-        
-        Returns:
-            dict: Analysis results including comments, questions, and story elements
-        """
-        return self._try_analyze(image_file, keywords, self.model)
+        """Analyze artwork and return structured insights"""
+        try:
+            analysis = self._try_analyze(image_file, keywords, self.model)
+            
+            # Debug log the raw analysis
+            current_app.logger.debug("Raw analysis from _try_analyze:")
+            current_app.logger.debug(json.dumps(analysis, indent=2))
+            
+            if not analysis:
+                current_app.logger.error("Analysis is None or empty")
+                raise ValueError("No analysis returned from _try_analyze")
+            
+            if not isinstance(analysis, dict):
+                current_app.logger.error(f"Analysis is not a dict, got {type(analysis)}")
+                raise ValueError(f"Invalid analysis type: {type(analysis)}")
+            
+            # Check story_elements existence
+            if "story_elements" not in analysis:
+                current_app.logger.error("story_elements missing from analysis")
+                current_app.logger.error(f"Available keys: {list(analysis.keys())}")
+                raise ValueError("Missing story_elements in analysis")
+            
+            # Format the response to match what the frontend expects
+            formatted_response = {
+                "success": True,
+                "analysis": {
+                    "comments": analysis.get("comments", []),
+                    "questions": analysis.get("questions", []),
+                    "story_elements": {
+                        "characters": analysis.get("story_elements", {}).get("characters", []),
+                        "setting": analysis.get("story_elements", {}).get("setting", ["A magical place", "A cozy home"]),
+                        "moral": analysis.get("story_elements", {}).get("moral", "")
+                    }
+                }
+            }
+            
+            # Verify the formatted response
+            current_app.logger.debug("Formatted response structure:")
+            current_app.logger.debug(json.dumps(formatted_response, indent=2))
+            
+            if "story_elements" not in formatted_response["analysis"]:
+                current_app.logger.error("story_elements missing from formatted response")
+                raise ValueError("Failed to include story_elements in formatted response")
+            
+            return formatted_response
+            
+        except Exception as e:
+            current_app.logger.error(f"Error in analyze_artwork: {str(e)}")
+            current_app.logger.error("Full stack trace:", exc_info=True)
+            # Return error response
+            return {
+                "success": False,
+                "error": "Failed to analyze artwork",
+                "details": str(e)
+            }
 
     def _clean_json_text(self, text):
         """Clean and extract JSON from text that may contain markdown or other formatting"""
-        # First clean the text
-        text = text.strip()
-        
-        # Remove markdown code blocks if present
-        if text.startswith('```json'):
-            text = text.replace('```json', '', 1)
-        if text.endswith('```'):
-            text = text[:-3]
-        
-        # Find the first { and last }
-        start = text.find('{')
-        end = text.rfind('}')
-        
-        if start >= 0 and end > start:
-            text = text[start:end + 1]
-        
-        # Remove any leading/trailing whitespace or newlines
-        text = text.strip()
-        
-        # Log the cleaning steps
-        current_app.logger.debug("Text cleaning steps:")
-        current_app.logger.debug(f"1. Original length: {len(text)}")
-        current_app.logger.debug(f"2. Found JSON markers: start={start}, end={end}")
-        current_app.logger.debug(f"3. Cleaned text: {text}")
-        
-        return text
+        try:
+            # Remove any markdown code blocks if present
+            if text.startswith('```json'):
+                text = text.replace('```json', '', 1)
+            if text.endswith('```'):
+                text = text[:-3]
+            
+            # Find the JSON object
+            start = text.find('{')
+            end = text.rfind('}') + 1
+            if start >= 0 and end > start:
+                text = text[start:end]
+
+            # Let json.loads handle the parsing
+            parsed = json.loads(text)
+            return json.dumps(parsed)  # Return clean, formatted JSON
+            
+        except json.JSONDecodeError as e:
+            current_app.logger.error(f"JSON Parse Error: {str(e)}")
+            current_app.logger.error(f"Problematic text: {text}")
+            raise
 
     def _try_analyze(self, image_file, keywords, model):
-        # Read image data once at the start
-        image_file.seek(0)
-        image_data = image_file.read()
-        
-        # Validate and prepare image
-        file_size = len(image_data)
-        if file_size > self.max_file_size:
-            raise ValueError(f"Image file too large. Maximum size is {self.max_file_size/1024/1024:.1f}MB")
-        
-        # Validate file extension
-        filename = image_file.filename.lower()
-        ext = os.path.splitext(filename)[1]
-        if ext not in self.allowed_extensions:
-            raise ValueError(f"Invalid file type. Allowed types are: {', '.join(self.allowed_extensions)}")
-        
-        # Compress image
-        compressed_image = self._compress_image(BytesIO(image_data))
-        
-        # Check cache
-        cache_key = self._get_cache_key(compressed_image, keywords)
-        cached_result = artwork_cache.get(cache_key)
-        if cached_result:
-            return cached_result
-        
-        # Default values for fallback
-        default_analysis = {
-            "comments": ["What a creative artwork!"],
-            "questions": ["Tell me about your drawing?"],
-            "story_elements": {
-                "characters": ["A friendly character"],
-                "setting/vibe": "A magical place",
-                "moral": "A story about friendship",
-                "opening_line": "Once upon a time..."
-            }
-        }
-
         try:
+            # Read image data once at the start
+            image_file.seek(0)
+            image_data = image_file.read()
+            
+            # Validate and prepare image
+            file_size = len(image_data)
+            if file_size > self.max_file_size:
+                raise ValueError(f"Image file too large. Maximum size is {self.max_file_size/1024/1024:.1f}MB")
+            
+            # Validate file extension
+            filename = image_file.filename.lower()
+            ext = os.path.splitext(filename)[1]
+            if ext not in self.allowed_extensions:
+                raise ValueError(f"Invalid file type. Allowed types are: {', '.join(self.allowed_extensions)}")
+            
+            # Compress image
+            compressed_image = self._compress_image(BytesIO(image_data))
+            
+            # Check cache
+            cache_key = self._get_cache_key(compressed_image, keywords)
+            cached_result = artwork_cache.get(cache_key)
+            if cached_result:
+                return cached_result
+            
+            # Default values for fallback
+            default_analysis = {
+                "comments": ["What a creative artwork!"],
+                "questions": ["Tell me about your drawing?"],
+                "story_elements": {
+                    "characters": ["A friendly character"],
+                    "setting": ["A magical place", "A cozy home"],
+                    "moral": "A story about friendship"
+                }
+            }
+
             # Prepare API request
             api_key = os.getenv('OPENROUTER_API_KEY')
             current_app.logger.debug("Preparing API request...")
@@ -221,7 +258,6 @@ Keywords provided by parent: {keywords}"""
 
             try:
                 current_app.logger.debug("Making API request to OpenRouter...")
-                # Make single API call
                 response = requests.post(
                     self.api_url,
                     headers=headers,
@@ -229,84 +265,56 @@ Keywords provided by parent: {keywords}"""
                     timeout=30,
                     verify=True
                 )
-                current_app.logger.debug(f"API request completed with status: {response.status_code}")
-
-                result = response.json()
-                current_app.logger.debug(f"OpenRouter Response Status: {response.status_code}")
-                current_app.logger.debug(f"OpenRouter Response Body: {json.dumps(result, indent=2)}")
-
-                # Check for any errors in the response
-                if 'error' in result:
-                    error_data = result.get('error', {})
-                    error_code = error_data.get('code')
-                    error_msg = error_data.get('message', 'Unknown error')
-                    
-                    # Log error details
-                    current_app.logger.debug(f"Error Code: {error_code}")
-                    current_app.logger.debug(f"Error Message: {error_msg}")
-                    
-                    # Handle all errors with clear messages
-                    if error_code == 429 or 'quota exceeded' in error_msg.lower():
-                        raise ValueError("Google AI is currently at capacity. Please try again in a few minutes.")
-                    elif error_code == 401:
-                        raise ValueError("Invalid API key - please check your OpenRouter credentials")
-                    elif error_code == 402:
-                        raise ValueError("Insufficient API credits - please top up your account")
-                    elif 'Provider returned error' in error_msg:
-                        raise ValueError("The AI service is temporarily unavailable. Please try again in a moment.")
-                    else:
-                        raise ValueError(f"API Error: {error_msg}")
-
-                # Process successful result
-                try:
-                    analysis_text = result['choices'][0]['message']['content']
-                    current_app.logger.debug("Raw API response:")
-                    current_app.logger.debug(json.dumps(result, indent=2))
-                    current_app.logger.debug("Extracted content:")
-                    current_app.logger.debug(analysis_text)
-
-                except (KeyError, IndexError) as e:
-                    current_app.logger.error(f"Failed to extract content from response: {str(e)}")
-                    current_app.logger.error(f"Full response structure: {json.dumps(result, indent=2)}")
-                    return default_analysis
-
-                current_app.logger.debug("Raw analysis text:")
-                current_app.logger.debug("----------------------------------------")
-                current_app.logger.debug(analysis_text)
-                current_app.logger.debug("----------------------------------------")
                 
-                try:
-                    # Clean and parse the JSON
-                    cleaned_text = self._clean_json_text(analysis_text)
-                    current_app.logger.debug("Cleaned JSON text:")
-                    current_app.logger.debug(cleaned_text)
-                    
-                    parsed_response = json.loads(cleaned_text)
-                    
-                    analysis = {
-                        "comments": parsed_response.get("comments", ["What a creative artwork!"]),
-                        "questions": parsed_response.get("questions", ["Tell me about your drawing?"]),
-                        "story_elements": {
-                            "characters": parsed_response.get("story_elements", {}).get("characters", ["A friendly character"]),
-                            "setting/vibe": parsed_response.get("story_elements", {}).get("setting/vibe", "A magical place"),
-                            "moral": parsed_response.get("story_elements", {}).get("moral", "A story about friendship"),
-                            "opening_line": parsed_response.get("story_elements", {}).get("opening_line", "Once upon a time...")
-                        }
+                current_app.logger.debug(f"API Response Status: {response.status_code}")
+                
+                result = response.json()
+                analysis_text = result['choices'][0]['message']['content']
+                
+                # Clean and parse the JSON
+                cleaned_text = self._clean_json_text(analysis_text)
+                current_app.logger.debug("Cleaned JSON text:")
+                current_app.logger.debug(cleaned_text)
+                
+                parsed_response = json.loads(cleaned_text)
+                current_app.logger.debug("Parsed JSON response:")
+                current_app.logger.debug(json.dumps(parsed_response, indent=2))
+                
+                # Validate required fields
+                if "story_elements" not in parsed_response:
+                    current_app.logger.error("Missing story_elements in parsed response")
+                    current_app.logger.error(f"Available keys: {list(parsed_response.keys())}")
+                    raise ValueError("Missing story_elements in API response")
+                
+                # Format the response
+                analysis = {
+                    "comments": parsed_response.get("comments", ["What a creative artwork!"]),
+                    "questions": parsed_response.get("questions", ["Tell me about your drawing?"]),
+                    "story_elements": {
+                        "characters": parsed_response["story_elements"].get("characters", ["A friendly character"]),
+                        "setting": parsed_response["story_elements"].get("setting", ["A magical place", "A cozy home"]),
+                        "moral": parsed_response["story_elements"].get("moral", "A story about friendship")
                     }
-                    
-                    # Cache and return result
-                    artwork_cache[cache_key] = analysis
-                    return analysis
-                    
-                except (json.JSONDecodeError, KeyError) as e:
-                    current_app.logger.error(f"Error parsing response: {str(e)}")
-                    current_app.logger.info("Using default analysis")
-                    return default_analysis
+                }
+                
+                # Verify analysis structure before returning
+                current_app.logger.debug("Final analysis structure:")
+                current_app.logger.debug(json.dumps(analysis, indent=2))
+                
+                if "story_elements" not in analysis:
+                    current_app.logger.error("story_elements missing from final analysis")
+                    raise ValueError("Failed to include story_elements in analysis")
+                
+                # Cache and return result
+                artwork_cache[cache_key] = analysis
+                return analysis
 
-            except requests.exceptions.RequestException as e:
-                current_app.logger.error(f"Request error: {str(e)}")
-                raise ValueError("Network error. Please try again.")
-
+            except Exception as e:
+                current_app.logger.error(f"API error: {str(e)}")
+                current_app.logger.error("Full stack trace:", exc_info=True)
+                raise
+            
         except Exception as e:
-            current_app.logger.info(f"Falling back to default analysis due to: {type(e).__name__} - {str(e)}")
-            return default_analysis 
+            current_app.logger.error(f"Unexpected error in _try_analyze: {str(e)}")
+            current_app.logger.error("Full stack trace:", exc_info=True)
+            return self.default_analysis 

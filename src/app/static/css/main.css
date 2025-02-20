@@ -35,21 +35,199 @@ body {
 
 /* Main Layout */
 .story-creator {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 0 0.5rem;
+    width: 100% !important;
+    max-width: 800px !important;
+    margin: 0 auto !important;
+    padding: 0 clamp(0.5rem, 3vw, 1rem) !important;  /* Fluid padding */
+    box-sizing: border-box !important;
 }
 
 .main-input-section {
-    padding: 2rem;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background: white;
-    border-radius: 1rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    gap: 1rem;
-    align-items: flex-start;
+    display: block !important;
+    width: 100% !important;
+    padding: 2rem !important;
+    min-height: 200px !important;
+    background: white !important;
+    border-radius: 1rem !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+    margin: 0 auto !important;
+    visibility: visible !important;
+}
+
+.main-input-section .keywords-input {
+    display: block !important;
+    width: 85% !important;
+    max-width: 450px !important;
+    margin: 20px auto !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.main-input-section .main-prompt {
+    display: block !important;
+    width: 100% !important;
+    min-height: 80px !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    /* Container constraints */
+    .story-creator {
+        padding: 0 4vw !important;
+        overflow-x: hidden !important;
+    }
+
+    /* Hero section */
+    .hero-section {
+        padding: 2rem 1rem !important;
+        margin-bottom: 1rem !important;
+        border-radius: 0 0 1rem 1rem !important;
+    }
+    
+    .hero-section h1 {
+        font-size: clamp(24px, 6vw, 32px) !important;
+        margin: 0 0 0.5rem !important;
+    }
+    
+    .hero-subtitle {
+        font-size: clamp(16px, 4vw, 18px) !important;
+    }
+
+    /* Upload and input sections */
+    .upload-section,
+    .preview-container,
+    .input-group,
+    .keywords-input {
+        width: 95% !important;
+        padding: 0 !important;
+    }
+
+    /* Modal content */
+    .modal-content {
+        width: 100% !important;
+        min-height: 100vh !important;
+        padding: 20px 10px !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        overflow: visible !important;
+    }
+
+    /* Suggestion box positioning */
+    .suggestions {
+        position: absolute !important;
+        top: calc(100% + 10px) !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        width: 95% !important;
+        max-height: 160px !important;
+        z-index: 1001 !important;
+    }
+
+    /* Button spacing */
+    .button-row {
+        width: 95% !important;
+        margin-top: 180px !important;
+    }
+
+    /* Story content */
+    .generated-story {
+        padding: 15px !important;
+        height: calc(100vh - 180px) !important;
+    }
+
+    /* Ensure no horizontal overflow */
+    * {
+        max-width: 100vw !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Input and button sizing */
+    .analyze-btn,
+    .next-btn,
+    .back-btn {
+        width: auto !important;
+        max-width: 350px !important;
+        padding: 0.75rem 1.5rem !important;
+    }
+
+    /* Screen adjustments */
+    .screen {
+        padding: 1rem 0 !important;
+        min-height: calc(100vh - 100px) !important;
+    }
+
+    /* Button adjustments */
+    .button-row,
+    .navigation-buttons {
+        width: 95% !important;
+        padding: 0.5rem 0 !important;
+        margin-top: clamp(120px, 20vh, 180px) !important;
+    }
+
+    /* Story content */
+    .story-content {
+        padding: 15px !important;
+        font-size: clamp(14px, 3.5vw, 16px) !important;
+    }
+
+    /* Story output adjustments */
+    .story-output h2 {
+        font-size: clamp(20px, 5vw, 24px) !important;
+        padding: 0.5rem 0 !important;
+    }
+
+    /* Additional fields adjustments */
+    .additional-fields {
+        padding: clamp(0.5rem, 3vw, 1rem) !important;
+    }
+
+    .additional-fields textarea {
+        font-size: clamp(14px, 3.5vw, 16px) !important;
+    }
+
+    /* Navigation adjustments */
+    .nav-wrapper {
+        padding: clamp(0.5rem, 3vw, 1rem) !important;
+    }
+
+    .brand-logo {
+        font-size: clamp(1.2rem, 4vw, 1.5rem) !important;
+    }
+
+    /* Button adjustments */
+    .inspire-btn,
+    .next-btn,
+    .back-btn,
+    .secondary-button {
+        padding: clamp(0.5rem, 2vw, 0.8rem) clamp(1rem, 3vw, 1.5rem) !important;
+        font-size: clamp(14px, 3.5vw, 16px) !important;
+    }
+}
+
+/* Specific iPhone adjustments */
+@media screen and (max-width: 428px) {
+    .story-creator {
+        padding: 0 3vw !important;
+    }
+
+    .upload-box, 
+    .preview-container,
+    .suggestions,
+    .input-group {
+        width: 95% !important;
+    }
+}
+
+/* Ensure homepage elements are always visible */
+body:not(.modal-open) .main-input-section,
+body:not(.modal-open) .main-input-section .keywords-input,
+body:not(.modal-open) .main-input-section .main-prompt,
+body:not(.modal-open) .keywords-input {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 /* Form Elements */
@@ -74,13 +252,9 @@ body {
 }
 
 .age-select {
-    font-family: 'Lora', serif;
-    font-size: 16px;
-    padding: 0.5rem 1rem;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    background: white;
-    flex: 0 0 auto;
+    font-size: clamp(14px, 3.5vw, 16px) !important;
+    padding: clamp(0.3rem, 2vw, 0.5rem) clamp(0.5rem, 3vw, 1rem) !important;
+    border-radius: clamp(4px, 1vw, 8px) !important;
 }
 
 /* Buttons */
@@ -160,15 +334,6 @@ body {
 
 /* Responsive Design */
 @media (max-width: 600px) {
-    .hero-section h1 {
-        font-size: 32px;
-        padding: 0 0.5rem;
-    }
-    .hero-subtitle {
-        font-size: 18px;
-        padding: 0 0.5rem;
-    }
-    
     .controls-row {
         flex-direction: column;
         align-items: stretch;
@@ -266,6 +431,9 @@ body {
 }
 
 .upload-section {
+    width: 100% !important;
+    padding: 0 1rem !important;
+    box-sizing: border-box !important;
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
@@ -273,8 +441,12 @@ body {
 }
 
 .upload-box {
+    width: 90% !important;
+    max-width: 450px !important;
+    margin: 1rem auto !important;
+    padding: clamp(1rem, 4vw, 2rem) !important;  /* Fluid padding */
+    box-sizing: border-box !important;
     border: 3px dashed #ccc;
-    padding: 2rem;
     text-align: center;
     transition: border-color 0.3s;
 }
@@ -301,8 +473,10 @@ body {
 }
 
 .artwork-preview {
-    width: 100%;
-    height: auto;
+    width: 100% !important;
+    height: auto !important;
+    max-width: 100% !important;
+    object-fit: contain !important;
     border-radius: 0.5rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     pointer-events: none;
@@ -310,8 +484,8 @@ body {
 }
 
 .keywords-input {
-    width: 100%;
-    max-width: 500px;
+    width: 90% !important;
+    max-width: 450px !important;
     padding: 1rem;
     border: 2px solid #e0e0e0;
     border-radius: 0.5rem;
@@ -330,12 +504,15 @@ body {
     background: linear-gradient(135deg, #A29BFE 0%, #74B9FF 100%);
     color: white;
     border: none;
-    padding: 1rem 2rem;
+    padding: 0.75rem 1.5rem !important;
     border-radius: 0.5rem;
     font-weight: 600;
     cursor: pointer;
     transition: transform 0.2s;
     font-size: 1rem;
+    width: auto !important;
+    max-width: 350px !important;
+    margin: 1rem auto !important;
 }
 
 .analyze-btn:hover {
@@ -344,9 +521,10 @@ body {
 
 .preview-container {
     position: relative;
-    display: inline-block;
-    width: 100%;
-    height: 100%;
+    width: 100% !important;
+    max-width: 500px !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
 }
 
 .analysis-content {
@@ -372,12 +550,12 @@ body {
 .tooltip-trigger {
     position: relative;
     display: inline-block;
-    width: 16px;
-    height: 16px;
+    width: clamp(14px, 4vw, 16px) !important;
+    height: clamp(14px, 4vw, 16px) !important;
     background: #ddd;
     border-radius: 50%;
     text-align: center;
-    line-height: 16px;
+    line-height: clamp(14px, 4vw, 16px) !important;
     font-size: 12px;
     cursor: help;
 }
@@ -386,7 +564,7 @@ body {
     visibility: hidden;
     position: absolute;
     z-index: 1;
-    width: 200px;
+    width: clamp(180px, 50vw, 200px) !important;
     background-color: #333;
     color: #fff;
     text-align: center;
@@ -395,7 +573,7 @@ body {
     bottom: 125%;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 0.8rem;
+    font-size: clamp(12px, 3vw, 0.8rem) !important;
 }
 
 .tooltip-trigger:hover .tooltip-text {
@@ -414,13 +592,18 @@ body {
 }
 
 .story-input {
-    width: 100%;
-    padding: 0.5rem;
-    border: 2px solid #e0e0e0;
-    border-radius: 0.5rem;
-    font-family: 'Lora', serif;
-    font-size: 1rem;
-    transition: border-color 0.2s;
+    width: 90% !important;
+    max-width: 450px !important;
+    padding: clamp(0.5rem, 2vw, 1rem) !important;
+    border: 2px solid #e0e0e0 !important;
+    border-radius: 0.5rem !important;
+    font-family: 'Lora', serif !important;
+    font-size: clamp(14px, 3vw, 16px) !important;
+    line-height: 1.5 !important;
+    margin: 1rem auto !important;
+    min-height: clamp(42px, 5vh, 80px) !important;
+    resize: vertical !important;
+    box-sizing: border-box !important;
 }
 
 .story-input:focus {
@@ -430,14 +613,14 @@ body {
 
 /* Screen Styles */
 .screen {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    padding: 20px 0;
-    width: 100%;
-    box-sizing: border-box;
-    min-height: 400px !important;
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    position: relative !important;
+    padding: clamp(1rem, 4vh, 2rem) 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    min-height: clamp(300px, 60vh, 400px) !important;
 }
 
 .screen.hidden {
@@ -471,13 +654,14 @@ body {
 /* Input Group */
 .input-group {
     position: relative !important;
-    width: 100% !important;
-    max-width: 500px !important;
+    width: 85% !important;
+    max-width: 450px !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     margin: 20px auto !important;
-    padding-bottom: 80px !important;  /* Space for suggestions */
+    padding: 0 !important;
+    box-sizing: border-box !important;
 }
 
 .story-input {
@@ -507,15 +691,16 @@ body {
 }
 
 /* Navigation Buttons */
-.button-row {
-    width: 90%;
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 1rem 0;
-    display: flex;
-    justify-content: space-between;
-    position: relative;
-    margin-top: 1rem;
+.button-row,
+.navigation-buttons {
+    width: 90% !important;
+    max-width: 500px !important;
+    margin: 0 auto !important;
+    padding: 1rem 0 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    position: relative !important;  /* Positioning context for suggestions */
+    margin-top: 220px !important;  /* Space for suggestions */
 }
 
 /* For screens with only Next button */
@@ -544,48 +729,66 @@ body {
     cursor: pointer;
 }
 
-/* Suggestion Box */
+/* Suggestions box with close button */
 .suggestions {
     position: absolute !important;
-    top: calc(100% - 60px) !important;  /* Move up closer to inspire button */
+    top: -220px !important;  /* Position above buttons */
     left: 50% !important;
     transform: translateX(-50%) !important;
-    width: 250px !important;
+    width: 85% !important;
+    max-width: 450px !important;
     background: white !important;
     border: 2px solid #e0e0e0 !important;
     border-radius: 8px !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-    z-index: 101 !important;
-    max-height: 150px !important;
+    z-index: 1001 !important;
+    max-height: 300px !important;  /* Increased from 200px */
     overflow-y: auto !important;
+    padding: 8px !important;
     display: none !important;
-    margin-top: 0 !important;
+    box-sizing: border-box !important;
 }
 
-/* Show suggestions */
+/* Show suggestions when active */
 .suggestions.show {
     display: block !important;
 }
 
-/* Suggestion items */
-.suggestion-item {
-    padding: 12px 16px !important;
+/* Close button for suggestions */
+.suggestions-close {
+    position: absolute !important;
+    right: 8px !important;
+    top: 8px !important;
+    width: 24px !important;
+    height: 24px !important;
+    border-radius: 50% !important;
+    background: white !important;
+    border: none !important;
     cursor: pointer !important;
-    text-align: center !important;
-    border-bottom: 1px solid #e0e0e0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 18px !important;
+    color: #666 !important;
+    z-index: 1002 !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+    transition: color 0.2s ease !important;
 }
 
-.suggestion-item:last-child {
-    border-bottom: none !important;
+.suggestions-close:hover {
+    color: #333 !important;
 }
 
-.copy-feedback {
-    position: absolute;
-    right: 1rem;
-    color: #A29BFE;
-    font-weight: bold;
+/* Suggestions content container */
+.suggestions-content {
+    padding-top: 24px !important;  /* Space for close button */
+    min-height: 100px !important;
+    max-height: 250px !important;
+    overflow-y: auto !important;
 }
 
+/* Individual suggestion items */
 .suggestion-item {
     padding: 12px 16px !important;
     cursor: pointer !important;
@@ -594,12 +797,57 @@ body {
     font-size: 16px !important;
     background: white !important;
     margin: 0 !important;
-    text-align: center !important;
+    text-align: left !important;
     width: 100% !important;
     box-sizing: border-box !important;
     display: block !important;
     border-radius: 4px !important;
-    white-space: nowrap !important;
+    white-space: normal !important;
+    line-height: 1.4 !important;
+}
+
+.suggestion-item:hover {
+    background-color: #f5f6fa !important;
+}
+
+.suggestion-item:not(:last-child) {
+    border-bottom: 1px solid #e0e0e0 !important;
+}
+
+/* Mobile adjustments for suggestions */
+@media (max-width: 768px) {
+    .suggestions {
+        top: calc(100% + 10px) !important;
+        width: 95% !important;
+        max-height: 250px !important;
+    }
+
+    .suggestions-content {
+        max-height: 200px !important;
+    }
+
+    .suggestions-close {
+        width: 28px !important;  /* Larger touch target */
+        height: 28px !important;
+    }
+}
+
+/* Desktop-specific adjustments */
+@media (min-width: 769px) {
+    .suggestions {
+        top: -80px !important;  /* Position above the buttons but below inspire button */
+    }
+
+    .button-row {
+        margin-top: 100px !important;  /* Space for suggestions */
+    }
+}
+
+.copy-feedback {
+    position: absolute;
+    right: 1rem;
+    color: #A29BFE;
+    font-weight: bold;
 }
 
 .suggestion-item:hover {
@@ -788,155 +1036,6 @@ body {
     overflow: hidden;
 }
 
-/* Mobile-specific styles */
-@media (max-width: 768px) {
-    .upload-box {
-        padding: 1rem;
-        margin: 1rem 0;
-    }
-    
-    .upload-box h2 {
-        font-size: 1.2rem;
-    }
-    
-    .upload-box p {
-        font-size: 0.9rem;
-    }
-    
-    #artwork-upload {
-        width: 100%;
-        margin: 1rem 0;
-    }
-
-    .modal-content {
-        margin: 0;
-        padding: 20px;
-        width: 100%;
-        height: auto !important;
-        min-height: initial !important;
-        border-radius: 0;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        background-color: #fff;
-        z-index: 1001;
-    }
-
-    .screen {
-        padding: 15px;
-        height: auto !important;
-        justify-content: flex-start !important;
-    }
-
-    .input-group,
-    .suggestions {
-        width: 90%;
-    }
-
-    .generated-story {
-        padding: 15px;
-    }
-
-    .story-output h2 {
-        font-size: 20px;
-        padding: 0.5rem 0;
-    }
-
-    .story-creator {
-        height: 100%;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .modal {
-        padding: 0;
-        height: 100%;
-        overflow: hidden;
-        background-color: #fff;
-        z-index: 1000;
-    }
-
-    body.modal-open .analyze-btn {
-        display: none !important;
-    }
-
-    /* Ensure proper visibility of homepage elements */
-    body:not(.modal-open) .analyze-btn,
-    body:not(.modal-open) .keywords-input:not([hidden]) {
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-    }
-
-    /* Hide homepage elements only when modal is open */
-    body.modal-open .analyze-btn,
-    body.modal-open .keywords-input {
-        display: none !important;
-    }
-
-    .input-group {
-        padding: 0 15px !important;
-        margin: 1rem auto 60px auto !important;  /* Adjusted space for mobile */
-        padding-bottom: 60px !important;
-    }
-
-    .suggestions {
-        width: 250px !important;
-        position: absolute !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-    }
-
-    .navigation-buttons {
-        position: relative !important;
-        width: 100% !important;
-        background: white !important;
-        padding: 15px !important;
-        margin-top: auto !important;
-    }
-
-    .screen-content {
-        padding-bottom: 20px !important;
-    }
-
-    .navigation-buttons {
-        position: relative !important;
-        width: 100% !important;
-        padding: 15px !important;
-        margin-top: auto !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .modal {
-        max-height: 90vh;
-        padding-top: 2.5rem;  /* Space for close button */
-    }
-}
-
-/* Upload Box States */
-.upload-box.dragover {
-  border-color: #74b9ff;
-  background: rgba(116, 185, 255, 0.1);
-}
-
-.upload-box.error {
-  border-color: #ff7675;
-  animation: shake 0.5s;
-}
-
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
-}
-
-.modal-open {
-    overflow: hidden;
-}
-
 /* Modal base styles */
 .modal {
     position: fixed;
@@ -1090,16 +1189,13 @@ body {
 }
 
 @media (min-width: 769px) {
+    /* Ensure the modal container does not clip suggestions */
     .modal-content {
-        margin: 10vh auto;
-        overflow: hidden;
-        width: 90%;
+        overflow: visible !important;
     }
-    
-    .screen {
-        overflow-y: auto;
-        overflow-x: hidden;
-        padding: 20px 0;
+    /* Move suggestions slightly lower (closer to the buttons) on desktop */
+    .suggestions {
+        top: -180px !important;
     }
 }
 
@@ -1110,251 +1206,74 @@ body {
     align-items: center !important;
     justify-content: flex-start;
     padding: 40px 20px !important;
-}
-
-/* Input and Suggestion Centering */
-.input-group, .suggestions, .story-input {
-    width: 100% !important;
-    max-width: 500px;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    padding: 0 20px !important;
-    position: relative !important;
-    left: 0 !important;
-    transform: none !important;
-    box-sizing: border-box !important;
-}
-
-/* Keyword Input Centering */
-.keywords-input-container, .keywords-input {
-    display: flex !important;
-    justify-content: center !important;
-    width: 100% !important;
-    max-width: 500px !important;
-    margin: 0 auto !important;
-    box-sizing: border-box !important;
-}
-
-/* Modal specific input styling */
-.modal-content .story-input,
-.modal-content .keywords-input {
-    width: calc(100% - 40px) !important;
-    margin: 1rem auto !important;
-    display: block !important;
-    min-height: 42px !important;  /* Match button height */
-    height: auto !important;      /* Allow height to grow */
-    resize: vertical !important;
-    padding: 0.5rem !important;
-    line-height: 1.5 !important;
-    font-family: 'Lora', serif !important;
-    transition: border-color 0.2s !important;
-    overflow-y: auto !important;  /* Enable scrolling for overflow */
-    max-height: 200px !important; /* Set maximum height before scrolling */
-}
-
-/* Style for all story inputs in modal screens */
-.screen .story-input {
-    min-height: 42px !important;  /* Match button height */
-    height: auto !important;
-    resize: vertical !important;
-    padding: 0.5rem !important;
-    line-height: 1.5 !important;
-    font-size: 16px !important;
-    width: calc(100% - 40px) !important;
-    margin: 1rem auto !important;
-    border: 2px solid #e0e0e0 !important;
-    border-radius: 8px !important;
-    font-family: 'Lora', serif !important;
-    transition: border-color 0.2s !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
-    overflow-y: auto !important;
-    max-height: 200px !important;
-}
-
-/* Suggestion Box Positioning */
-.suggestions {
-    width: 100% !important;
-    max-width: 500px !important;
-    display: none !important;
-    margin-top: 0.5rem !important;
-    background: white !important;
-    border: 2px solid #e0e0e0 !important;
-    border-radius: 8px !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-    position: absolute !important;
-    top: calc(100% + 10px) !important;
-    left: 50% !important;
-    z-index: 101 !important;
-    max-height: 150px !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-}
-
-/* Show suggestions when active */
-.suggestions.show {
-    display: block !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
-}
-
-/* Override .hidden class for suggestions */
-.suggestions.hidden {
-    display: none;
-}
-
-/* Suggestion items styling */
-.suggestion-item {
-    padding: 12px 16px !important;
-    cursor: pointer !important;
-    transition: background-color 0.2s ease !important;
-    color: #2d3436 !important;
-    font-size: 16px !important;
-    background: white !important;
-    margin: 0 !important;
-    text-align: center !important;
     width: 100% !important;
     box-sizing: border-box !important;
-    display: block !important;
-    border-radius: 4px !important;
-    white-space: nowrap !important;
-}
-
-.suggestion-item:hover {
-    background-color: #f5f6fa !important;
-    color: #000 !important;
-}
-
-.suggestion-item:not(:last-child) {
-    border-bottom: 1px solid #e0e0e0 !important;
-}
-
-/* Container for suggestions to ensure proper positioning */
-.input-group {
-    position: relative !important;
-}
-
-@media (max-width: 768px) {
-    .suggestions {
-        width: 250px !important;
-        position: absolute !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-    }
-
-    .input-group {
-        padding: 0 15px !important;
-        margin: 1rem auto 60px auto !important;  /* Adjusted space for mobile */
-        padding-bottom: 60px !important;
-    }
-}
-
-/* Button height reference */
-.next-btn, .back-btn {
-    height: 42px !important;
-    line-height: 42px !important;
-    padding: 0 20px !important;
-}
-
-/* Ensure body and html allow scrolling */
-html, body {
-    height: 100%;
-    overflow-y: visible;
-    position: relative;
-}
-
-/* Ensure button visibility on desktop */
-@media (min-width: 769px) {
-    .analyze-btn {
-        display: block !important;
-    }
-}
-
-/* Content wrapper for top section */
-.screen-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    position: relative !important;
-    padding-bottom: 20px !important;
-}
-
-/* Navigation buttons container */
-.navigation-buttons {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    padding: 20px;
-    margin-top: auto !important;
-    position: relative !important;
-    z-index: 1 !important;  /* Keep below suggestions */
-    background: white !important;
-    margin-top: 10px !important;  /* Reduced space from suggestions */
+    position: relative !important;  /* Added to ensure proper stacking context */
 }
 
 /* Input Group Container */
 .input-group {
     position: relative !important;
-    width: 100% !important;
-    max-width: 500px !important;
+    width: 85% !important;
+    max-width: 450px !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     margin: 20px auto !important;
-    padding-bottom: 80px !important;  /* Space for suggestions */
+    padding: 0 !important;
+    box-sizing: border-box !important;
 }
 
-/* New clean suggestion styles */
-.suggestions {
-    position: absolute !important;
-    top: calc(100% - 60px) !important;  /* Move up closer to inspire button */
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    width: 250px !important;
-    background: white !important;
+/* Story Input in Modal */
+.modal-content .story-input {
+    width: 100% !important;          /* Match input group width */
+    margin: 1rem auto !important;
+    min-height: 42px !important;
+    height: auto !important;
+    resize: vertical !important;
+    padding: 0.5rem 1rem !important; /* Added horizontal padding */
+    line-height: 1.5 !important;
+    font-family: 'Lora', serif !important;
     border: 2px solid #e0e0e0 !important;
     border-radius: 8px !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-    z-index: 101 !important;
-    max-height: 150px !important;
-    overflow-y: auto !important;
-    display: none !important;
-    margin-top: 0 !important;
+    box-sizing: border-box !important;
 }
 
-/* Show suggestions */
+/* Show suggestions when active */
 .suggestions.show {
     display: block !important;
 }
 
-/* Suggestion items */
-.suggestion-item {
-    padding: 12px 16px !important;
-    cursor: pointer !important;
-    text-align: center !important;
-    border-bottom: 1px solid #e0e0e0 !important;
-}
-
-.suggestion-item:last-child {
-    border-bottom: none !important;
-}
-
+/* Mobile Adjustments */
 @media (max-width: 768px) {
-    .suggestions {
-        width: 250px !important;
-        position: absolute !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        top: calc(100% - 50px) !important;  /* Slightly different position for mobile */
+    .modal-content {
+        min-height: 100vh !important;
+        padding: 20px 10px !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        overflow: visible !important;
     }
 
     .input-group {
-        padding: 0 15px !important;
-        margin: 1rem auto 60px auto !important;  /* Adjusted space for mobile */
-        padding-bottom: 60px !important;
+        width: 95% !important;
+        margin: 10px auto !important;
+        overflow: visible !important;
+        padding-bottom: 200px !important;  /* Add space for suggestions */
+        position: relative !important;
+    }
+
+    .suggestions {
+        width: 95% !important;     /* Wider on mobile */
+        max-height: 160px !important;
+    }
+
+    .navigation-buttons {
+        margin-top: 200px !important;  /* Slightly less space on mobile */
+    }
+
+    .main-input-section .keywords-input {
+        width: 85% !important;
+        max-width: 350px !important;  /* Match upload box width on mobile */
     }
 }
 
@@ -1397,11 +1316,9 @@ html, body {
     justify-content: center;
     gap: 1rem;
     padding: 20px;
-    margin-top: auto !important;
-    position: relative !important;
-    z-index: 1 !important;  /* Keep below suggestions */
+    position: relative !important;  /* Make it positioning context */
+    z-index: 1 !important;
     background: white !important;
-    margin-top: 10px !important;  /* Reduced space from suggestions */
 }
 
 /* Screen Container */
@@ -1453,4 +1370,96 @@ body.modal-open .modal {
     #story-content {
         padding: 15px 0;
     }
+}
+
+/* Homepage specific styles */
+.main-input-section {
+    display: block !important;
+    width: 100% !important;
+    padding: 2rem !important;
+    min-height: 200px !important;
+    background: white !important;
+    border-radius: 1rem !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+    margin: 0 auto !important;
+    visibility: visible !important;
+}
+
+.main-input-section .keywords-input {
+    display: block !important;
+    width: 85% !important;
+    max-width: 450px !important;
+    margin: 20px auto !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.main-input-section .main-prompt {
+    display: block !important;
+    width: 100% !important;
+    min-height: 80px !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Mobile adjustments for homepage */
+@media (max-width: 768px) {
+    .main-input-section .keywords-input {
+        width: 85% !important;
+        max-width: 350px !important;  /* Narrower on mobile */
+    }
+
+    .main-input-section .main-prompt {
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+}
+
+/* Remove any .hidden class that might affect visibility */
+.main-input-section.hidden,
+.main-input-section .keywords-input.hidden,
+.main-input-section .main-prompt.hidden {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Progress bar container */
+.progress-bar {
+    position: absolute !important;
+    top: 0 !important;  /* Move to top */
+    left: 0 !important;
+    width: 100% !important;
+    height: 6px !important;  /* Slightly thicker */
+    background: #f0f0f0 !important;  /* Softer background */
+    overflow: hidden !important;
+    border-radius: 1rem 1rem 0 0 !important;  /* Match modal's top corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;  /* Subtle shadow */
+}
+
+/* Progress bar fill */
+.progress-bar::after {
+    content: '' !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    height: 100% !important;
+    background: linear-gradient(135deg, #A29BFE 0%, #74B9FF 100%) !important;
+    transition: width 0.3s ease-in-out !important;
+    border-radius: 1rem 0 0 0 !important;  /* Round only the left corner of fill */
+}
+
+/* Progress states */
+.progress-bar[data-progress="0"]::after { width: 0% !important; }
+.progress-bar[data-progress="1"]::after { width: 33% !important; }
+.progress-bar[data-progress="2"]::after { width: 66% !important; }
+.progress-bar[data-progress="3"]::after { width: 100% !important; }
+.progress-bar[data-progress="4"]::after { width: 100% !important; }
+
+/* Ensure progress bar aligns with modal */
+.modal-content {
+    position: relative !important;
+    padding-top: 6px !important;  /* Space for progress bar */
+    border-radius: 1rem !important;  /* Ensure consistent border radius */
+    overflow: hidden !important;  /* Hide progress bar overflow */
 } 

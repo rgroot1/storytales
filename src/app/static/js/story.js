@@ -361,7 +361,13 @@ document.addEventListener('DOMContentLoaded', function() {
 // Global functions for story modal
 function showAnalysisResults(analysisData) {
     console.log('Received analysis data:', analysisData);
-    console.log('Analysis received successfully');
+    
+    // Verify story elements structure
+    if (analysisData.analysis && analysisData.analysis.story_elements) {
+        console.log('Story elements received:', analysisData.analysis.story_elements);
+    } else {
+        console.error('Missing story elements in analysis data');
+    }
     
     // Store analysis data globally for reuse
     window.currentAnalysisData = analysisData;
@@ -436,63 +442,65 @@ function handleInspireClick(event) {
 
 function populateSuggestions(screenId, analysisData) {
     console.log('Populating suggestions for screen:', screenId);
+    console.log('Analysis data:', analysisData);
+    
     const screen = document.getElementById(screenId);
-    const suggestions = screen.querySelector('.suggestions');
-    if (!suggestions || !analysisData) {
-        console.log('Missing suggestions container or analysis data');
+    const suggestionsBox = screen.querySelector('.suggestions');
+    const suggestionsContent = screen.querySelector('.suggestions-content');
+    
+    if (!suggestionsContent) {
+        console.error('No suggestions-content container found');
         return;
     }
-
-    let items = [];
+    
+    // Clear existing suggestions
+    suggestionsContent.innerHTML = '';
+    
+    // Get the appropriate suggestions based on screen
     const elements = analysisData.analysis.story_elements;
-    console.log('Story elements:', elements);
-
+    let items = [];
+    
     switch(screenId) {
         case 'screen-character':
             items = elements.characters || [];
             break;
         case 'screen-setting':
-            items = elements['setting/vibe'] ? elements['setting/vibe'].split('|') : [];
+            items = elements.setting || [];
             break;
         case 'screen-theme':
-            items = elements.moral ? elements.moral.split('|') : [];
+            items = Array.isArray(elements.moral) ? elements.moral : [elements.moral];
             break;
     }
-
-    console.log('Suggestion items:', items);
-
-    // Filter and clean items
-    items = items
-        .map(item => item.trim())
-        .filter(item => item.length > 0);
-
-    if (items.length > 0) {
-        suggestions.innerHTML = items
-            .map(item => `
-                <div class="suggestion-item">
-                    ${item}
-                </div>
-            `).join('');
-        
-        // Add click handlers to suggestion items
-        suggestions.querySelectorAll('.suggestion-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const input = screen.querySelector('.story-input');
-                if (input) {
-                    input.value = this.textContent.trim();
-                    suggestions.classList.remove('show');
-                    suggestions.style.display = 'none';
-                }
-            });
+    
+    console.log('Items to display:', items);
+    
+    // Add new suggestions
+    if (items && items.length > 0) {
+        items.forEach(item => {
+            if (typeof item === 'string' && item.trim()) {
+                const div = document.createElement('div');
+                div.className = 'suggestion-item';
+                div.textContent = item.trim();
+                
+                // Add click handler to populate input
+                div.addEventListener('click', function() {
+                    const input = screen.querySelector('.story-input');
+                    if (input) {
+                        input.value = this.textContent;
+                        suggestionsBox.classList.remove('show');
+                    }
+                });
+                
+                suggestionsContent.appendChild(div);
+            }
         });
+        
+        // Show suggestions
+        suggestionsBox.classList.add('show');
     } else {
-        suggestions.innerHTML = '<div class="no-suggestions">No suggestions available</div>';
+        console.log('No items to display');
+        suggestionsBox.classList.remove('show');
     }
-
-    // Force show the suggestions
-    suggestions.classList.remove('hidden');
-    suggestions.classList.add('show');
-    suggestions.style.display = 'block';
 }
 
 function setupNavigationHandlers() {
@@ -874,25 +882,20 @@ function getCurrentScreenIndex() {
     return Array.from(document.querySelectorAll('.screen')).indexOf(currentScreen);
 }
 
-function updateStoryProgress(screenId) {
-    console.log('Updating progress for screen:', screenId);
-    const progressFill = document.querySelector('.progress-fill');
-    if (!progressFill) return;
+function updateStoryProgress(currentScreen) {
+    const progressBar = document.querySelector('.progress-bar');
+    if (!progressBar) return;
 
-    switch(screenId) {
-        case 'screen-character':
-            progressFill.style.width = '33%';
-            break;
-        case 'screen-setting':
-            progressFill.style.width = '66%';
-            break;
-        case 'screen-theme':
-            progressFill.style.width = '100%';
-            break;
-        case 'screen-review':
-            progressFill.style.width = '100%';
-            break;
-    }
+    // Map screens to progress states
+    const progressMap = {
+        'screen-character': 1,
+        'screen-setting': 2,
+        'screen-theme': 3,
+        'screen-review': 4
+    };
+
+    const progress = progressMap[currentScreen] || 0;
+    progressBar.setAttribute('data-progress', progress);
 }
 
 // Handle create story button
@@ -926,10 +929,18 @@ function setupCreateButton() {
             newCreateBtn.disabled = true;
             newCreateBtn.textContent = 'Creating...';
             
+            // Verify we have the analysis data
+            if (!window.currentAnalysisData?.analysis?.story_elements) {
+                console.error('Missing analysis data for story generation');
+                throw new Error('Story elements not found. Please try again.');
+            }
+
             // Collect all inputs
             const character = document.querySelector('#screen-character .story-input').value.trim();
             const setting = document.querySelector('#screen-setting .story-input').value.trim();
             const theme = document.querySelector('#screen-theme .story-input').value.trim();
+            
+            console.log('Story inputs:', { character, setting, theme });
             
             if (!character || !setting || !theme) {
                 throw new Error('Please fill in all story elements before creating the story');
@@ -964,7 +975,7 @@ function setupCreateButton() {
             showGeneratedStory(data);
             
         } catch (error) {
-            console.error('Error generating story:', error);
+            console.error('Error in story creation:', error);
             alert(error.message);
         } finally {
             isGenerating = false;
@@ -1376,4 +1387,16 @@ document.addEventListener('DOMContentLoaded', () => {
             closeModal();
         });
     }
+});
+
+// Add click handler for suggestion close buttons
+document.querySelectorAll('.suggestions-close').forEach(button => {
+    button.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const suggestionsBox = this.closest('.suggestions');
+        if (suggestionsBox) {
+            suggestionsBox.classList.remove('show');
+        }
+    });
 });

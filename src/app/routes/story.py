@@ -123,10 +123,18 @@ def analyze_artwork():
         keywords = request.form.get('keywords', '')
         
         analyzer = ArtworkAnalyzer()
-        analysis = analyzer.analyze_artwork(artwork_file, keywords)
+        analysis_result = analyzer.analyze_artwork(artwork_file, keywords)
         
-        # Restructure response to match frontend expectations
+        # Check if analysis was successful
+        if not analysis_result.get('success'):
+            current_app.logger.error(f"Analysis failed: {analysis_result.get('details', 'Unknown error')}")
+            return jsonify({'error': 'Failed to analyze artwork'}), 500
+            
+        # The analysis data is now nested under 'analysis' key
+        analysis = analysis_result['analysis']
+        
         response = {
+            'success': True,
             'analysis': {
                 'story_elements': analysis['story_elements'],
                 'comments': analysis['comments'],
