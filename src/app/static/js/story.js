@@ -1,113 +1,69 @@
+const FEATURES = {
+    ARTWORK_UPLOAD: true,
+    ARTWORK_ANALYSIS: true
+};
+
 console.log('Script starting...');
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded, checking elements:');
-    console.log('analyze-btn:', document.getElementById('analyze-btn'));
-    console.log('artwork-form:', document.getElementById('artwork-form'));
-    console.log('artwork input:', document.getElementById('artwork'));
+    console.log('DOM loaded, initializing handlers');
     
-    // More Options button
-    const moreOptionsBtn = document.getElementById('tell-more-btn');
-    if (moreOptionsBtn) {
-        console.log('More Options clicked');
-        moreOptionsBtn.addEventListener('click', function() {
-            const additionalFields = document.getElementById('additional-fields');
-            const button = document.getElementById('tell-more-btn');
-            const icon = button.querySelector('i');
-            
-            if (additionalFields.style.display === 'none') {
-                additionalFields.style.display = 'block';
-                icon.classList.remove('fa-chevron-down');
-                icon.classList.add('fa-chevron-up');
-            } else {
-                additionalFields.style.display = 'none';
-                icon.classList.remove('fa-chevron-up');
-                icon.classList.add('fa-chevron-down');
-            }
-        });
-    }
+    const isArtworkPage = document.querySelector('.artwork-upload-section');
+    const isCreatePage = document.querySelector('.story-form');
 
-    // Generate Story button
-    const generateBtn = document.getElementById('generate-btn');
-    if (generateBtn) {
-        console.log('Generate clicked');
-        generateBtn.addEventListener('click', async function() {
-            console.log('Generate clicked');
-            const mainPrompt = document.getElementById('mainPrompt').value.trim();
-            const ageGroup = document.getElementById('ageGroup').value;
-            
-            if (!mainPrompt) {
-                alert('Please tell us about your hero\'s adventure!');
-                return;
-            }
-            
-            generateBtn.disabled = true;
-            let loadingDots = 0;
-            const loadingInterval = setInterval(() => {
-                loadingDots = (loadingDots + 1) % 4;
-                generateBtn.textContent = 'Creating your story' + '.'.repeat(loadingDots);
-            }, 500);
-            
-            try {
-                const response = await fetch('/story/generate', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        mainPrompt,
-                        ageGroup,
-                        moral: document.getElementById('moral')?.value.trim() || '',
-                        creature: document.getElementById('creature')?.value.trim() || '',
-                        magic: document.getElementById('magic')?.value.trim() || '',
-                        vibe: document.getElementById('vibe')?.value.trim() || '',
-                        isArtworkFlow: true
-                    })
-                });
+    console.log('Page type:', { isArtworkPage: !!isArtworkPage, isCreatePage: !!isCreatePage });
+
+    if (isArtworkPage && FEATURES.ARTWORK_UPLOAD) {
+        const uploadBox = document.getElementById('upload-box');
+        const artworkInput = document.getElementById('artwork');
+        const artworkForm = document.getElementById('artwork-form');
+
+        if (uploadBox && artworkInput && artworkForm) {
+            // Add the actual handlers here
+            uploadBox.addEventListener('click', function(e) {
+                if (!e.target.closest('.delete-image')) {
+                    artworkInput.click();
+                }
+            });
+
+            artworkInput.addEventListener('change', function(e) {
+                if (e.target.files && e.target.files[0]) {
+                    handleFile(e.target.files[0]);
+                }
+            });
+
+            // Form submission handler
+            artworkForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const analyzeBtn = document.getElementById('analyze-btn');
+                if (analyzeBtn) {
+                    analyzeBtn.disabled = true;
+                    analyzeBtn.textContent = 'Analyzing...';
+                }
                 
-                const data = await response.json();
-                
-                if (!response.ok) {
-                    if (response.status === 404) {
-                        throw new Error('Story generation service not found. Please try again later.');
+                try {
+                    const formData = new FormData(e.target);
+                    const response = await fetch('/story/artwork/analyze', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+                    if (!response.ok) throw new Error(data.error);
+
+                    showAnalysisResults(data);
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert(error.message);
+                } finally {
+                    if (analyzeBtn) {
+                        analyzeBtn.disabled = false;
+                        analyzeBtn.textContent = 'Start the Magic! ✨';
                     }
-                    const contentType = response.headers.get('content-type');
-                    if (contentType && contentType.includes('text/html')) {
-                        throw new Error('Received unexpected response. Please try again.');
-                    }
                 }
-                
-                // Log if story was from cache
-                if (data.cached) {
-                    console.log('Retrieved story from cache');
-                }
-                
-                // Hide additional fields if they're open
-                const additionalFields = document.getElementById('additional-fields');
-                if (additionalFields.style.display === 'block') {
-                    const moreOptionsBtn = document.getElementById('tell-more-btn');
-                    const icon = moreOptionsBtn.querySelector('i');
-                    additionalFields.style.display = 'none';
-                    icon.classList.remove('fa-chevron-up');
-                    icon.classList.add('fa-chevron-down');
-                }
-                
-                // Show the story
-                const storyOutput = document.getElementById('story-output');
-                const storyContent = document.getElementById('story-content');
-                storyContent.textContent = data.story;
-                storyOutput.style.display = 'block';
-                
-                // Scroll to the story
-                storyOutput.scrollIntoView({ behavior: 'smooth' });
-                
-            } catch (error) {
-                alert(error.message);
-            } finally {
-                clearInterval(loadingInterval);
-                generateBtn.disabled = false;
-                generateBtn.textContent = 'Generate Story';
-            }
-        });
+            });
+        }
+    } else if (isCreatePage) {
+        setupCreateFormHandlers();
     }
 
     // Global event delegation for all dynamic buttons
@@ -128,12 +84,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Feature flags check
-    const FEATURES = {
-        ARTWORK_UPLOAD: true,
-        ARTWORK_ANALYSIS: true
-    };
-
     // Artwork upload handling
     if (FEATURES.ARTWORK_UPLOAD) {
         const uploadBox = document.getElementById('upload-box');
@@ -141,85 +91,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const artworkForm = document.getElementById('artwork-form');
         let uploadedFile = null;
 
-        // Function to ensure analyze button visibility on homepage
+        // Function to ensure analyze button visibility
         function showAnalyzeButton() {
             const analyzeBtn = document.getElementById('analyze-btn');
-            const modal = document.getElementById('storyModal');
             if (analyzeBtn) {
-                // Only show if modal is not visible
-                if (!modal || modal.style.display !== 'block') {
-                    analyzeBtn.hidden = false;
-                    analyzeBtn.style.display = 'block';
-                    analyzeBtn.textContent = 'Start the Magic! ✨';
-                }
+                analyzeBtn.hidden = false;
+                analyzeBtn.style.display = 'block';
+                analyzeBtn.textContent = 'Start the Magic! ✨';
             }
         }
 
-        // Handle delete image click
-        document.addEventListener('click', function(e) {
-            const deleteBtn = e.target.closest('.delete-image');
-            if (deleteBtn) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                // Reset upload box
-                uploadBox.innerHTML = `
-                    <div class="upload-content">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        <p>Drop your artwork here or click to upload</p>
-                        <small>Supports: JPG, PNG, GIF (max 5MB)</small>
-                    </div>
-                `;
-                
-                // Reset file input and related elements
-                artworkInput.value = '';
-                uploadedFile = null;
-                
-                // Only hide keywords input
-                const keywordsInput = document.querySelector('.keywords-input');
-                if (keywordsInput) {
-                    keywordsInput.value = '';
-                    keywordsInput.hidden = true;
-                }
-                
-                // Ensure analyze button is visible on homepage
-                showAnalyzeButton();
-            }
-        });
-        
-        // Setup file input click handler
-        uploadBox.addEventListener('click', function(e) {
-            // Don't trigger file input if clicking delete button
-            if (e.target.closest('.delete-image')) return;
-            artworkInput.click();
-        });
-        
-        // Setup file input change handler
-        artworkInput.addEventListener('change', function(e) {
-            if (e.target.files && e.target.files[0]) {
-                handleFile(e.target.files[0]);
-            }
-        });
-        
-        // Handle drag and drop
-        uploadBox.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadBox.classList.add('dragover');
-        });
-        
-        uploadBox.addEventListener('dragleave', () => {
-            uploadBox.classList.remove('dragover');
-        });
-        
-        uploadBox.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadBox.classList.remove('dragover');
-            
-            if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-                handleFile(e.dataTransfer.files[0]);
-            }
-        });
-        
+        // Handle file upload
         function handleFile(file) {
             console.log('Handling file:', file);
             const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
@@ -233,12 +115,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('File too large. Maximum size is 5MB');
                 return;
             }
-            
+
             const reader = new FileReader();
             reader.onload = (e) => {
                 console.log('File loaded successfully');
                 uploadedFile = file;
-                
                 uploadBox.innerHTML = `
                     <div class="preview-container">
                         <img src="${e.target.result}" class="artwork-preview" alt="Uploaded artwork" />
@@ -248,125 +129,166 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 `;
                 
+                // Show keywords input and analyze button
                 document.querySelector('.keywords-input').hidden = false;
-                // Ensure analyze button is visible on homepage
                 showAnalyzeButton();
             };
-            
+
             reader.onerror = (error) => {
                 console.error('File read error:', error);
                 alert('Error reading file. Please try again.');
-                showAnalyzeButton();
             };
-            
+
             reader.readAsDataURL(file);
         }
-        
+
+        // Setup file input click handler
+        uploadBox.addEventListener('click', function(e) {
+            if (!e.target.closest('.delete-image')) {
+                artworkInput.click();
+            }
+        });
+
+        // Setup file input change handler
+        artworkInput.addEventListener('change', function(e) {
+            if (e.target.files && e.target.files[0]) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
         // Handle form submission
         artworkForm.addEventListener('submit', async function(e) {
             e.preventDefault();
+            
             if (!uploadedFile) {
-                alert('Please upload an image first to create a story from your artwork');
+                alert('Please upload an image first');
                 return;
             }
-            
+
             const analyzeBtn = document.getElementById('analyze-btn');
-            if (analyzeBtn) {
-                analyzeBtn.disabled = true;
-                analyzeBtn.textContent = 'Analyzing...';
-            }
-            
+            analyzeBtn.disabled = true;
+            analyzeBtn.textContent = 'Analyzing...';
+
             const formData = new FormData();
             formData.append('artwork', uploadedFile);
-            formData.append('keywords', document.querySelector('.keywords-input').value || '');
-            
+            formData.append('keywords', document.querySelector('.keywords-input input').value || '');
+
             try {
                 const response = await fetch('/story/artwork/analyze', {
                     method: 'POST',
                     body: formData
                 });
-                
+
                 const data = await response.json();
                 if (!response.ok) {
-                    // Handle rate limit error with a more user-friendly message
-                    if (data.error && data.error.includes('rate limit')) {
-                        throw new Error(
-                            'We\'re experiencing high traffic right now. ' +
-                            'Please wait a minute before trying again.'
-                        );
-                    }
                     throw new Error(data.error || 'Failed to analyze artwork');
                 }
-                
+
+                // Show the modal with analysis results
                 showAnalysisResults(data);
             } catch (error) {
                 console.error('Error:', error);
-                // Show error in a more user-friendly way
-                const errorMessage = document.createElement('div');
-                errorMessage.className = 'error-message';
-                errorMessage.textContent = error.message;
-                
-                // Make sure we're adding to the right place
-                const uploadBox = document.getElementById('upload-box');
-                const existingError = uploadBox.querySelector('.error-message');
-                if (existingError) {
-                    existingError.remove();
-                }
-                
-                // Position the error message after the preview if it exists
-                const previewContainer = uploadBox.querySelector('.preview-container');
-                if (previewContainer) {
-                    previewContainer.insertAdjacentElement('afterend', errorMessage);
-                } else {
-                    uploadBox.appendChild(errorMessage);
-                }
-                
-                // Remove error message after 5 seconds
-                setTimeout(() => {
-                    errorMessage.remove();
-                }, 5000);
+                alert(error.message);
             } finally {
-                if (analyzeBtn) {
-                    analyzeBtn.disabled = false;
-                    analyzeBtn.textContent = 'Start the Magic! ✨';
-                }
+                analyzeBtn.disabled = false;
+                analyzeBtn.textContent = 'Start the Magic! ✨';
             }
         });
 
-        // Initial button setup
+        // Initial setup
         showAnalyzeButton();
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            const modal = document.getElementById('storyModal');
-            if (!modal || modal.style.display !== 'block') {
-                showAnalyzeButton();
-            }
-        });
     }
 
     // Initialize analysis trigger flag at page load
     window.analysisTriggered = false;
 
-    // Add this at the end of the file to ensure modal starts closed
-    const storyModal = document.getElementById('story-modal');
-    if (storyModal) {
-        storyModal.style.display = 'none';
-    }
-
-    storyModal = document.getElementById('story-modal'); // Initialize here
-    closeModal();
+    // Global handlers that should work on both pages
+    setupGlobalHandlers();
 });
 
-// Global functions for story modal
-function showAnalysisResults(analysisData) {
-    console.log('Received analysis data:', analysisData);
+// ==========================================
+// CREATE FROM SCRATCH PATH HANDLERS
+// ==========================================
+function setupCreateFormHandlers() {
+    console.log('Setting up create form handlers');
     
-    // Verify story elements structure
-    if (analysisData.analysis && analysisData.analysis.story_elements) {
-        console.log('Story elements received:', analysisData.analysis.story_elements);
-    } else {
-        console.error('Missing story elements in analysis data');
+    // More Options button
+    const moreOptionsBtn = document.getElementById('tell-more-btn');
+    if (moreOptionsBtn) {
+        moreOptionsBtn.addEventListener('click', function() {
+            const additionalFields = document.getElementById('additional-fields');
+            const icon = this.querySelector('i');
+            if (additionalFields.style.display === 'none') {
+                additionalFields.style.display = 'block';
+                icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+            } else {
+                additionalFields.style.display = 'none';
+                icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+            }
+        });
+    }
+
+    // Generate Story button - fix payload key names
+    const generateBtn = document.getElementById('generate-btn');
+    if (generateBtn) {
+        generateBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Get and validate input values
+            const mainPrompt = document.querySelector('.main-prompt')?.value?.trim();
+            if (!mainPrompt) {
+                alert('Please provide a story prompt');
+                return;
+            }
+
+            generateBtn.disabled = true;
+            generateBtn.textContent = 'Generating...';
+
+            const keywords = document.querySelector('.keywords-input')?.value?.trim() || '';
+            const age = document.querySelector('.age-select')?.value || '';
+
+            // Make API call with correct key names
+            fetch('/story/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    mainPrompt: mainPrompt,  // Changed from prompt to mainPrompt
+                    keywords: keywords,
+                    ageGroup: age,  // Changed from age to ageGroup
+                    isArtworkFlow: false  // Add this flag for server-side context
+                })
+            })
+            .then(async response => {
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to generate story');
+                }
+                return data;
+            })
+            .then(data => {
+                showGeneratedStory(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(error.message || 'Failed to generate story. Please try again.');
+            })
+            .finally(() => {
+                generateBtn.disabled = false;
+                generateBtn.textContent = 'Generate Story';
+            });
+        });
+    }
+}
+
+// ==========================================
+// ARTWORK PATH HANDLERS
+// ==========================================
+function showAnalysisResults(analysisData) {
+    if (!analysisData) {
+        console.error('No analysis data provided');
+        return;
     }
     
     // Store analysis data globally for reuse
@@ -374,140 +296,27 @@ function showAnalysisResults(analysisData) {
     
     // Reset modal state before showing new content
     resetModalState();
+    
+    // Only show modal if we're on the artwork page
+    const isArtworkPage = document.querySelector('.artwork-upload-section');
+    if (isArtworkPage) {
+        const modal = document.getElementById('storyModal');
+        if (modal) {
+            modal.classList.add('show');
+            document.body.classList.add('modal-open');
+        }
+    }
 
-    // Hide homepage elements when modal is open
-    const keywordsInput = document.querySelector('.keywords-input:not(.modal-content .keywords-input)');
-    const analyzeBtn = document.getElementById('analyze-btn');
-    if (keywordsInput) keywordsInput.style.display = 'none';
-    if (analyzeBtn) analyzeBtn.style.display = 'none';
-
-    // Show modal
-    const modal = document.getElementById('storyModal');
-    modal.style.display = 'block';
-    document.body.classList.add('modal-open');
-
-    // Setup all interactions after showing modal
-    setupModalInteractions();
+    // Setup screens and handlers
     setupNavigationHandlers();
     setupSuggestionHandlers();
     setupCreateButton();
-
+    
     // Update progress bar
     updateStoryProgress('screen-character');
-
-    // Ensure first screen is visible
-    const firstScreen = document.getElementById('screen-character');
-    if (firstScreen) {
-        firstScreen.style.display = 'block';
-        firstScreen.classList.remove('hidden');
-    }
-}
-
-function setupModalInteractions() {
-    // Remove any existing event listeners
-    const inspireButtons = document.querySelectorAll('.inspire-btn');
-    inspireButtons.forEach(btn => {
-        btn.removeEventListener('click', handleInspireClick);
-    });
-
-    // Add fresh event listeners
-    inspireButtons.forEach(btn => {
-        btn.addEventListener('click', handleInspireClick);
-    });
-}
-
-// Separate the click handler function
-function handleInspireClick(event) {
-    const screen = event.target.closest('.screen');
-    const suggestions = screen.querySelector('.suggestions');
-    
-    if (!suggestions) {
-        console.error('No suggestions container found');
-        return;
-    }
-
-    console.log('Inspire button clicked, screen:', screen.id);
-    
-    // Toggle suggestion visibility
-    if (suggestions.classList.contains('show')) {
-        suggestions.classList.remove('show');
-        suggestions.style.display = 'none';
-    } else {
-        suggestions.classList.add('show');
-        suggestions.style.display = 'block';
-        console.log('Populating suggestions with data:', window.currentAnalysisData);
-        populateSuggestions(screen.id, window.currentAnalysisData);
-    }
-}
-
-function populateSuggestions(screenId, analysisData) {
-    console.log('Populating suggestions for screen:', screenId);
-    console.log('Analysis data:', analysisData);
-    
-    const screen = document.getElementById(screenId);
-    const suggestionsBox = screen.querySelector('.suggestions');
-    const suggestionsContent = screen.querySelector('.suggestions-content');
-    
-    if (!suggestionsContent) {
-        console.error('No suggestions-content container found');
-        return;
-    }
-    
-    // Clear existing suggestions
-    suggestionsContent.innerHTML = '';
-    
-    // Get the appropriate suggestions based on screen
-    const elements = analysisData.analysis.story_elements;
-    let items = [];
-    
-    switch(screenId) {
-        case 'screen-character':
-            items = elements.characters || [];
-            break;
-        case 'screen-setting':
-            items = elements.setting || [];
-            break;
-        case 'screen-theme':
-            items = Array.isArray(elements.moral) ? elements.moral : [elements.moral];
-            break;
-    }
-    
-    console.log('Items to display:', items);
-    
-    // Add new suggestions
-    if (items && items.length > 0) {
-        items.forEach(item => {
-            if (typeof item === 'string' && item.trim()) {
-                const div = document.createElement('div');
-                div.className = 'suggestion-item';
-                div.textContent = item.trim();
-                
-                // Add click handler to populate input
-                div.addEventListener('click', function() {
-                    const input = screen.querySelector('.story-input');
-                    if (input) {
-                        input.value = this.textContent;
-                        suggestionsBox.classList.remove('show');
-                    }
-                });
-                
-                suggestionsContent.appendChild(div);
-            }
-        });
-        
-        // Show suggestions
-        suggestionsBox.classList.add('show');
-    } else {
-        console.log('No items to display');
-        suggestionsBox.classList.remove('show');
-    }
 }
 
 function setupNavigationHandlers() {
-    // Track current screen index
-    let currentScreenIndex = 0;
-    const screens = ['screen-character', 'screen-setting', 'screen-theme', 'screen-review'];
-
     // Handle next button clicks
     document.querySelectorAll('.next-btn').forEach(btn => {
         btn.addEventListener('click', function() {
@@ -518,20 +327,18 @@ function setupNavigationHandlers() {
                 currentScreen.classList.add('hidden');
                 nextScreen.style.display = 'block';
                 nextScreen.classList.remove('hidden');
-                currentScreenIndex = Math.min(currentScreenIndex + 1, screens.length - 1);
-                updateStoryProgress(screens[currentScreenIndex]);
-
-                // Ensure suggestions are hidden when changing screens
+                updateStoryProgress(nextScreen.id);
+                
+                // Hide any open suggestions
                 const suggestions = currentScreen.querySelector('.suggestions');
                 if (suggestions) {
-                    suggestions.classList.remove('show');
-                    suggestions.classList.add('hidden');
                     suggestions.style.display = 'none';
+                    suggestions.classList.add('hidden');
                 }
             }
         });
     });
-    
+
     // Handle back button clicks
     document.querySelectorAll('.back-btn').forEach(btn => {
         btn.addEventListener('click', function() {
@@ -542,197 +349,102 @@ function setupNavigationHandlers() {
                 currentScreen.classList.add('hidden');
                 previousScreen.style.display = 'block';
                 previousScreen.classList.remove('hidden');
-                currentScreenIndex = Math.max(currentScreenIndex - 1, 0);
-                updateStoryProgress(screens[currentScreenIndex]);
-
-                // Ensure suggestions are hidden when changing screens
+                updateStoryProgress(previousScreen.id);
+                
+                // Hide any open suggestions
                 const suggestions = currentScreen.querySelector('.suggestions');
                 if (suggestions) {
-                    suggestions.classList.remove('show');
-                    suggestions.classList.add('hidden');
                     suggestions.style.display = 'none';
+                    suggestions.classList.add('hidden');
                 }
             }
         });
-    });
-
-    // Initialize first screen
-    document.querySelectorAll('.screen').forEach((screen, index) => {
-        if (index === 0) {
-            screen.style.display = 'block';
-            screen.classList.remove('hidden');
-        } else {
-            screen.style.display = 'none';
-            screen.classList.add('hidden');
-        }
     });
 }
 
 function setupSuggestionHandlers() {
-    // Handle inspire button clicks
-    document.querySelectorAll('.inspire-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const screen = this.closest('.screen');
-            const suggestions = screen.querySelector('.suggestions');
-            
-            if (suggestions) {
-                suggestions.classList.toggle('hidden');
-                
-                // Get suggestions based on screen type
-                if (window.storyData?.analysis?.story_elements) {
-                    const elements = window.storyData.analysis.story_elements;
-                    let items = [];
-                    
-                    if (screen.id === 'screen-character') {
-                        items = elements.characters || [];
-                    } else if (screen.id === 'screen-setting') {
-                        items = [elements['setting/vibe']].filter(Boolean);
-                    } else if (screen.id === 'screen-theme') {
-                        items = [elements.moral].filter(Boolean);
-                    }
-                    
-                    suggestions.innerHTML = items
-                        .map(item => `<div class="suggestion-item">${item.trim()}</div>`)
-                        .join('');
-                }
-            }
-        });
-    });
-    
-    // Add event listeners for suggestions
-    document.querySelectorAll('.suggestion-item').forEach(item => {
-        item.addEventListener('click', function(e) {
-            const screen = this.closest('.screen');
-            const input = screen.querySelector('.story-input');
-            const suggestions = screen.querySelector('.suggestions');
-            
-            console.log('Suggestion clicked:', this.textContent.trim());
-            input.value = this.textContent.trim();
-            
-            // Show copy feedback in suggestion item only
-            const feedback = document.createElement('span');
-            feedback.className = 'copy-feedback';
-            feedback.textContent = '✓';
-            // Remove any existing feedback first
-            this.querySelectorAll('.copy-feedback').forEach(el => el.remove());
-            this.appendChild(feedback);
-            
-            // Remove feedback and close suggestions after delay
-            setTimeout(() => {
-                feedback.remove();
-                suggestions.classList.add('hidden');
-            }, 500);
-        });
-    });
-}
-
-function setupCloseHandler() {
-    // Handle close button click
-    const closeBtn = document.querySelector('.modal-close');
-    if (closeBtn) {
-        // Remove existing listeners
-        const newCloseBtn = closeBtn.cloneNode(true);
-        closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
-        
-        newCloseBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const modal = document.getElementById('storyModal');
-            if (modal) {
-                modal.style.display = 'none';
-                document.body.classList.remove('modal-open');
-                resetStoryForm();
-            }
-        });
-    }
-}
-
-function initializeModal() {
-    console.log('Initializing modal controls');
-    
-    // Setup close button
-    const closeBtn = document.querySelector('.modal-close');
-    if (closeBtn) {
-        closeBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('Close button clicked');
-            const modal = document.getElementById('storyModal');
-            modal.style.display = 'none';
-            document.body.classList.remove('modal-open');
-        });
-    }
-    
-    // Setup outside click close
-    const modal = document.getElementById('storyModal');
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            modal.style.display = 'none';
-            document.body.classList.remove('modal-open');
-        }
-    });
-}
-
-function setupInspireButtons() {
-    console.log('Setting up inspire buttons');
-    
-    // Remove any existing listeners first
-    document.querySelectorAll('.inspire-btn').forEach(btn => {
-        const newBtn = btn.cloneNode(true);
-        btn.parentNode.replaceChild(newBtn, btn);
-    });
-    
-    // Setup inspire button clicks
     document.querySelectorAll('.inspire-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
+            
+            console.log('Inspire button clicked');
+            
             const screen = this.closest('.screen');
             const suggestions = screen.querySelector('.suggestions');
             
-            if (suggestions) {
-                suggestions.classList.toggle('show');
-                
-                // Get suggestions based on screen type
-                if (window.storyData?.analysis?.story_elements) {
-                    const elements = window.storyData.analysis.story_elements;
-                    let items = [];
-                    
-                    if (screen.id === 'screen-character') {
-                        items = elements.characters || [];
-                    } else if (screen.id === 'screen-setting') {
-                        items = [elements['setting/vibe']].filter(Boolean);
-                    } else if (screen.id === 'screen-theme') {
-                        items = [elements.moral].filter(Boolean);
-                    }
-                    
-                    suggestions.innerHTML = items
-                        .map(item => `<div class="suggestion-item">${item.trim()}</div>`)
-                        .join('');
-                    
-                    // Add click handlers to new suggestion items
-                    suggestions.querySelectorAll('.suggestion-item').forEach(item => {
-                        item.addEventListener('click', function(e) {
-                            e.stopPropagation();
-                            const input = screen.querySelector('.story-input');
-                            input.value = this.textContent.trim();
-                            
-                            const feedback = document.createElement('span');
-                            feedback.className = 'copy-feedback';
-                            feedback.textContent = '✓';
-                            this.appendChild(feedback);
-                            
-                            setTimeout(() => {
-                                feedback.remove();
-                                suggestions.classList.add('hidden');
-                            }, 500);
-                        });
-                    });
-                }
+            if (!suggestions) {
+                console.error('No suggestions container found');
+                return;
             }
+
+            console.log('Current suggestions display:', suggestions.style.display);
+
+            // Populate and show suggestions
+            populateSuggestions(screen.id, window.currentAnalysisData);
+            suggestions.style.display = 'block';
+            console.log('Set suggestions display to block');
+
+            // Add click handlers
+            const items = suggestions.querySelectorAll('.suggestion-item');
+            console.log('Found suggestion items:', items.length);
+
+            // Use event delegation for all clicks within suggestions
+            suggestions.addEventListener('click', function(event) {
+                // Handle close button click
+                if (event.target.matches('.suggestions-close')) {
+                    console.log('Close button clicked');
+                    event.preventDefault();
+                    event.stopPropagation();
+                    suggestions.style.display = 'none';
+                }
+
+                // Handle suggestion item click
+                if (event.target.matches('.suggestion-item')) {
+                    const input = screen.querySelector('.story-input');
+                    if (input) {
+                        input.value = event.target.textContent;
+                        suggestions.style.display = 'none';
+                        console.log('Selected suggestion:', event.target.textContent);
+                    }
+                }
+            });
         });
     });
+}
+
+function populateSuggestions(screenId, data) {
+    console.log('Populating suggestions for:', screenId);
+    
+    const screen = document.getElementById(screenId);
+    const suggestions = screen.querySelector('.suggestions');
+    if (!suggestions || !data?.analysis?.story_elements) {
+        console.error('Missing data:', { suggestions: !!suggestions, data: !!data });
+        return;
+    }
+
+    const elements = data.analysis.story_elements;
+    let items = [];
+    
+    switch(screenId) {
+        case 'screen-character':
+            items = elements.characters || [];
+            break;
+        case 'screen-setting':
+            items = elements.setting ? elements.setting : [];
+            break;
+        case 'screen-theme':
+            items = elements.moral ? elements.moral : [];
+            break;
+    }
+
+    console.log('Generated items:', items);
+
+    // Simpler structure without suggestions-content
+    suggestions.innerHTML = `
+        <button class="suggestions-close" aria-label="Close">×</button>
+        ${items.map(item => `<div class="suggestion-item">${item}</div>`).join('')}
+    `;
 }
 
 function setupNavigation(analysisData) {
@@ -837,7 +549,7 @@ function addModalControls() {
     modal.querySelector('.modal-content').prepend(closeBtn);
 
     closeBtn.addEventListener('click', () => {
-        modal.style.display = 'none';
+        modal.classList.remove('show');
         // Reset screens but keep the uploaded image
         resetScreens();
     });
@@ -1046,7 +758,7 @@ function showGeneratedStory(data) {
         
         // Hide modal
         if (storyModal) {
-            storyModal.style.display = 'none';
+            storyModal.classList.remove('show');
         }
         
         // Extract story text from the response data structure
@@ -1108,7 +820,7 @@ function showGeneratedStory(data) {
                 <div class="error-message">
                     ${errorMessage || 'Error displaying story content'}
                 </div>
-            `
+            `;
         }
     }
 }
@@ -1121,8 +833,9 @@ function showStoryModal(data) {
         return;
     }
     
-    // Show the modal
-    storyModal.style.display = 'block';
+    // Show the modal using class
+    storyModal.classList.add('show');
+    document.body.classList.add('modal-open');
     
     // Reset to first screen
     goToScreen(0);
@@ -1135,7 +848,7 @@ function showStoryModal(data) {
     // Setup all modal controls
     setupNavigation(data);
     setupCreateButton();
-    setupInspireButtons();
+    setupInspireButton(data);
     
     // Store data for later use
     window.storyData = data;
@@ -1192,88 +905,6 @@ function setupInspireButton(analysisData) {
             suggestions.style.maxHeight = '200px';
         }
     });
-}
-
-// Global modal handlers
-function showModal(step) {
-    const modal = document.getElementById('storyModal');
-    const modalContent = document.getElementById('modalContent');
-    const progressBar = document.getElementById('modalProgress');
-    
-    // Calculate progress percentage based on step
-    const totalSteps = 3; // Upload, Analysis, Story
-    const progress = (step / totalSteps) * 100;
-    progressBar.style.width = `${progress}%`;
-    progressBar.setAttribute('aria-valuenow', progress);
-
-    // Show modal if not already visible
-    if (!modal.classList.contains('show')) {
-        modal.classList.add('show');
-        modal.style.display = 'block';
-    }
-
-    // Update content based on step
-    switch(step) {
-        case 1:
-            modalContent.innerHTML = `
-                <h5>Upload Your Artwork</h5>
-                <p>Choose a picture of your artwork to start the story creation!</p>
-                <form id="artworkForm">
-                    <input type="file" class="form-control" id="artworkInput" name="artwork" accept="image/*" required>
-                    <input type="text" class="form-control mt-2" id="keywordsInput" name="keywords" placeholder="Keywords (optional)">
-                    <button type="submit" class="btn btn-primary mt-3">Analyze Artwork</button>
-                </form>`;
-            break;
-        case 2:
-            modalContent.innerHTML = `
-                <h5>Analyzing Your Artwork</h5>
-                <p>Our AI is looking at your artwork and thinking of story ideas...</p>
-                <div class="text-center">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                </div>`;
-            break;
-        case 3:
-            modalContent.innerHTML = `
-                <h5>Creating Your Story</h5>
-                <p>Almost done! Writing a special story just for you...</p>
-                <div class="text-center">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                </div>`;
-            break;
-    }
-}
-
-function closeModal() {
-    const modal = document.getElementById('storyModal');
-    if (!modal) return;
-    
-    modal.style.display = 'none';
-    document.body.classList.remove('modal-open');
-    
-    // Wait for modal animation to complete before restoring state
-    setTimeout(() => {
-        restoreHomepageState();
-        // Keep the uploaded image in the upload box
-        const uploadBox = document.getElementById('upload-box');
-        if (uploadBox && uploadBox.querySelector('.preview-container')) {
-            // Keep the preview container visible
-            uploadBox.querySelector('.preview-container').style.display = 'block';
-        }
-        
-        // Show the analyze button again
-        const analyzeBtn = document.getElementById('analyze-btn');
-        if (analyzeBtn) {
-            analyzeBtn.style.display = 'block';
-            analyzeBtn.hidden = false;
-        }
-        
-        // Reset modal state but keep analysis data
-        resetModalState();
-    }, 100);
 }
 
 function resetModalState() {
@@ -1343,60 +974,3 @@ function restoreHomepageState() {
         document.body.style.display = '';
     }
 }
-
-// Close when clicking outside
-window.storyModal?.addEventListener('click', (e) => {
-    if (e.target === window.storyModal) closeModal();
-});
-
-// Initialize on load
-document.addEventListener('DOMContentLoaded', () => {
-    storyModal = document.getElementById('story-modal');
-    closeModal();
-    restoreHomepageState();
-});
-
-// Add touch event for mobile close
-document.querySelector('.modal-close')?.addEventListener('touchend', (e) => {
-    e.preventDefault();
-    closeModal();
-});
-
-// Add flow state tracking at the top of the file
-let currentFlow = null;
-
-// Update CSS to ensure proper visibility
-const style = document.createElement('style');
-style.textContent = `
-    @media (max-width: 768px) {
-        body:not(.modal-open) .analyze-btn {
-            display: block !important;
-            visibility: visible !important;
-        }
-    }
-`;
-document.head.appendChild(style);
-
-// Add event listener for the modal close button
-document.addEventListener('DOMContentLoaded', () => {
-    const closeBtn = document.querySelector('.modal-close');
-    if (closeBtn) {
-        closeBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            closeModal();
-        });
-    }
-});
-
-// Add click handler for suggestion close buttons
-document.querySelectorAll('.suggestions-close').forEach(button => {
-    button.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        const suggestionsBox = this.closest('.suggestions');
-        if (suggestionsBox) {
-            suggestionsBox.classList.remove('show');
-        }
-    });
-});

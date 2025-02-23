@@ -10,11 +10,10 @@ body {
 /* Hero Section */
 .hero-section {
     text-align: center;
-    padding: 2.5rem 1rem;
-    background: linear-gradient(135deg, #A29BFE 0%, #74B9FF 100%);
-    border-radius: 0 0 2rem 2rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border-radius: 15px;
+    will-change: opacity, transform;
 }
 
 .hero-section h1 {
@@ -35,11 +34,9 @@ body {
 
 /* Main Layout */
 .story-creator {
-    width: 100% !important;
-    max-width: 800px !important;
-    margin: 0 auto !important;
-    padding: 0 clamp(0.5rem, 3vw, 1rem) !important;  /* Fluid padding */
-    box-sizing: border-box !important;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
 }
 
 .main-input-section {
@@ -279,23 +276,18 @@ body:not(.modal-open) .keywords-input {
     color: white;
 }
 
-.generate-button {
+.primary-button {
     background: linear-gradient(135deg, #A29BFE 0%, #74B9FF 100%);
-    font-family: 'Poppins', sans-serif;
     color: white;
+    padding: 1rem 2rem;
     border: none;
-    width: 100%;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    font-size: 17px;
-    font-weight: 600;
-    margin-top: 1rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
     cursor: pointer;
-    transition: transform 0.2s;
-}
-
-.generate-button:hover {
-    transform: translateY(-2px);
+    width: 100%;
+    max-width: 300px;
+    margin: 1rem auto;
+    display: block;
 }
 
 /* Additional Fields */
@@ -681,13 +673,12 @@ body:not(.modal-open) .keywords-input {
     padding: 0.8rem 1.5rem;
     border-radius: 0.5rem;
     cursor: pointer;
-    margin: 1rem auto !important;
-    display: block !important;
-    width: auto;
-    text-align: center !important;
-    position: relative !important;
-    z-index: 2 !important;
-    margin-bottom: 10px !important;  /* Small gap before suggestions */
+    min-width: 120px;
+    height: 42px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
 }
 
 /* Navigation Buttons */
@@ -699,8 +690,8 @@ body:not(.modal-open) .keywords-input {
     padding: 1rem 0 !important;
     display: flex !important;
     justify-content: space-between !important;
-    position: relative !important;  /* Positioning context for suggestions */
-    margin-top: 220px !important;  /* Space for suggestions */
+    align-items: center !important;
+    position: relative !important;
 }
 
 /* For screens with only Next button */
@@ -709,17 +700,11 @@ body:not(.modal-open) .keywords-input {
 }
 
 .next-btn {
-    background: linear-gradient(135deg, #A29BFE 0%, #74B9FF 100%);
-    color: white;
-    border: none;
-    padding: 0.8rem 1.5rem;
-    border-radius: 0.5rem;
-    cursor: pointer;
     min-width: 120px;
     height: 42px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
 .skip-btn {
@@ -729,89 +714,64 @@ body:not(.modal-open) .keywords-input {
     cursor: pointer;
 }
 
-/* Suggestions box with close button */
+/* Suggestions box */
 .suggestions {
-    position: absolute !important;
-    top: -220px !important;  /* Position above buttons */
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    width: 85% !important;
-    max-width: 450px !important;
-    background: white !important;
-    border: 2px solid #e0e0e0 !important;
-    border-radius: 8px !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-    z-index: 1001 !important;
-    max-height: 300px !important;  /* Increased from 200px */
-    overflow-y: auto !important;
-    padding: 8px !important;
-    display: none !important;
-    box-sizing: border-box !important;
-}
-
-/* Show suggestions when active */
-.suggestions.show {
-    display: block !important;
+    display: none;  /* Remove !important */
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95%;
+    max-width: 450px;
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1001;
 }
 
 /* Close button for suggestions */
 .suggestions-close {
-    position: absolute !important;
-    right: 8px !important;
-    top: 8px !important;
-    width: 24px !important;
-    height: 24px !important;
-    border-radius: 50% !important;
-    background: white !important;
-    border: none !important;
-    cursor: pointer !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 18px !important;
-    color: #666 !important;
-    z-index: 1002 !important;
-    padding: 0 !important;
-    line-height: 1 !important;
-    transition: color 0.2s ease !important;
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #666;
+    z-index: 1002;
+    padding: 0;
+    line-height: 1;
 }
 
 .suggestions-close:hover {
-    color: #333 !important;
+    color: #333;
+    background: #f5f5f5;
 }
 
 /* Suggestions content container */
 .suggestions-content {
-    padding-top: 24px !important;  /* Space for close button */
-    min-height: 100px !important;
-    max-height: 250px !important;
-    overflow-y: auto !important;
+    padding: 8px;
+    padding-top: 32px; /* Space for close button */
+    max-height: 160px;
+    overflow-y: auto;
 }
 
-/* Individual suggestion items */
 .suggestion-item {
-    padding: 12px 16px !important;
-    cursor: pointer !important;
-    transition: background-color 0.2s ease !important;
-    color: #2d3436 !important;
-    font-size: 16px !important;
-    background: white !important;
-    margin: 0 !important;
-    text-align: left !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-    display: block !important;
-    border-radius: 4px !important;
-    white-space: normal !important;
-    line-height: 1.4 !important;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 4px;
 }
 
 .suggestion-item:hover {
-    background-color: #f5f6fa !important;
-}
-
-.suggestion-item:not(:last-child) {
-    border-bottom: 1px solid #e0e0e0 !important;
+    background: #f5f5f5;
 }
 
 /* Mobile adjustments for suggestions */
@@ -886,9 +846,9 @@ body:not(.modal-open) .keywords-input {
     cursor: pointer;
     min-width: 120px;
     height: 42px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
 /* Generated Story Styles */
@@ -1036,15 +996,21 @@ body:not(.modal-open) .keywords-input {
     overflow: hidden;
 }
 
-/* Modal base styles */
+/* Modal default state */
 .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 100;
+    display: none !important;  /* Hidden by default */
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    z-index: 1000 !important;
+}
+
+/* Only show modal when explicitly shown */
+.modal.show {
+    display: flex !important;
 }
 
 .modal-content {
@@ -1462,4 +1428,148 @@ body.modal-open .modal {
     padding-top: 6px !important;  /* Space for progress bar */
     border-radius: 1rem !important;  /* Ensure consistent border radius */
     overflow: hidden !important;  /* Hide progress bar overflow */
+}
+
+/* Landing Page Styles - Version: 1.0.0 */
+.story-landing {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero-section {
+    text-align: center;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border-radius: 15px;
+}
+
+.hero-section h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.creation-options {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 1rem;
+}
+
+.creation-option {
+    flex: 1;
+    min-width: 280px;
+    max-width: 400px;
+    height: 300px;
+    border-radius: 15px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    will-change: transform; /* Performance optimization for animations */
+}
+
+.creation-option:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.artwork-option {
+    background: linear-gradient(135deg, #6dd5ed, #2193b0);
+}
+
+.scratch-option {
+    background: linear-gradient(135deg, #f6d365, #fda085);
+}
+
+.option-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 100%;
+    padding: 2rem;
+}
+
+.option-content i {
+    font-size: 3rem;
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.option-content h2 {
+    color: white;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.option-content p {
+    color: white;
+    font-size: 1.1rem;
+}
+
+/* Enhanced Mobile Responsiveness */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 1rem;
+    }
+    
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+
+    .creation-options {
+        padding: 0.5rem;
+    }
+
+    .creation-option {
+        min-width: 100%;
+        height: 200px;
+        margin-bottom: 1rem;
+    }
+
+    .option-content h2 {
+        font-size: 1.5rem;
+    }
+
+    .option-content p {
+        font-size: 1rem;
+        padding: 0 1rem;
+    }
+}
+
+/* Small screen optimization */
+@media (max-width: 480px) {
+    .hero-section h1 {
+        font-size: 1.8rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .creation-option {
+        height: 180px;
+    }
 } 

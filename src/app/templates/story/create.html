@@ -4,12 +4,10 @@
 
 {% block content %}
 <div class="story-creator">
-    <div class="hero-section">
-        <h1>Bring Your Child's Imagination to Life with AI-Generated Stories!</h1>
-        {% if config.get('ARTWORK_UPLOAD', False) %}
-        <div class="artwork-upload-section">
-            <p class="hero-subtitle">Upload your child's artwork to start the story!</p>
-            <div class="upload-container">
+    <div class="hero-section {% if flow_type == 'artwork' %}artwork-hero{% else %}scratch-hero{% endif %}">
+        {% if flow_type == 'artwork' %}
+            <h1>Turn Your Artwork into Stories</h1>
+            <div class="artwork-upload-section">
                 <form id="artwork-form" class="artwork-form" enctype="multipart/form-data">
                     <div id="upload-box" class="upload-box">
                         <div class="upload-content">
@@ -24,74 +22,72 @@
                         <input type="text" id="keywords" name="keywords" 
                             placeholder="e.g., dragon, castle, flying">
                     </div>
-                    <button type="submit" id="analyze-btn" class="analyze-button" hidden>
+                    <button type="submit" id="analyze-btn" class="primary-button">
                         Start the Magic! ✨
                     </button>
                 </form>
             </div>
-        </div>
         {% else %}
-        <p class="hero-subtitle">What's the adventure of your hero?</p>
-        {% endif %}
-    </div>
+            <h1>Create Your Story</h1>
+            <div class="story-form">
+                <!-- Main Story Input -->
+                <div class="main-prompt-section">
+                    <textarea 
+                        id="mainPrompt" 
+                        class="main-prompt" 
+                        required 
+                        placeholder="One sunny morning, Mittens the cat woke up from a long nap..."
+                    ></textarea>
+                </div>
 
-    <div class="input-field" {% if config.get('ARTWORK_UPLOAD', False) %}style="display: none;"{% endif %}>
-        <div class="main-input-section">
-            <div id="analysis-results"></div>
+                <!-- Age Selection -->
+                <div class="controls-section">
+                    <select id="ageGroup" class="age-select">
+                        <option value="baby">Baby & Toddler (ages 0-3)</option>
+                        <option value="preK" selected>Pre-K (ages 3-5)</option>
+                        <option value="growing">Growing Reader (ages 5-7)</option>
+                    </select>
+                    
+                    <button id="tell-more-btn" class="secondary-button">
+                        More Details (optional) <i class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
 
-            <div class="main-prompt-section">
-                <textarea 
-                    id="mainPrompt" 
-                    class="materialize-textarea main-prompt" 
-                    required 
-                    placeholder="Your story will appear here after artwork analysis..."
-                ></textarea>
-            </div>
-            
-            <div class="controls-row">
-                <select id="ageGroup" class="age-select">
-                    <option value="baby">Baby & Toddler (ages 0-3)</option>
-                    <option value="preK" selected>Pre-K (ages 3-5)</option>
-                    <option value="growing">Growing Reader (ages 5-7)</option>
-                </select>
-                
-                <button id="tell-more-btn" class="secondary-button">
-                    More Details (optional) <i class="fas fa-chevron-down"></i>
+                <!-- Additional Details -->
+                <div id="additional-fields" class="additional-fields">
+                    <div class="input-group">
+                        <label for="moral">What's the moral of the story?</label>
+                        <textarea id="moral" class="detail-input"
+                            placeholder="e.g. Kindness | Bravery | Sharing | Other"
+                        ></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="creature">Add a friend or sidekick</label>
+                        <textarea id="creature" class="detail-input"
+                            placeholder="e.g. a firefly"
+                        ></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="magic">Sprinkle in magic or a fun detail</label>
+                        <textarea id="magic" class="detail-input"
+                            placeholder="e.g. the firefly can guide lost creatures through the forest"
+                        ></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="vibe">Pick a vibe/setting:</label>
+                        <textarea id="vibe" class="detail-input"
+                            placeholder="Silly 🎪 | Heartwarming ❤️ | Adventurous 🌟 | Peaceful 🍃"
+                        ></textarea>
+                    </div>
+                </div>
+
+                <button id="generate-btn" class="primary-button">
+                    Generate Story
                 </button>
             </div>
-        </div>
-        
-        <div id="additional-fields" class="additional-fields" style="display: none;">
-            <div class="input-field">
-                <label for="moral">What's the moral of the story?</label>
-                <textarea id="moral" class="materialize-textarea"
-                    placeholder="AI suggested moral will appear here..."
-                ></textarea>
-            </div>
-            <div class="input-field">
-                <label for="creature">Add a friend or sidekick</label>
-                <textarea id="creature" class="materialize-textarea"
-                    placeholder="e.g. a firefly"
-                ></textarea>
-            </div>
-            <div class="input-field">
-                <label for="magic">Sprinkle in magic or a fun detail</label>
-                <textarea id="magic" class="materialize-textarea"
-                    placeholder="e.g. the firefly can guide lost creatures through the forest with its magical light"
-                ></textarea>
-            </div>
-            <div class="input-field">
-                <label for="vibe">Pick a vibe/setting:</label>
-                <textarea id="vibe" class="materialize-textarea"
-                    placeholder="Silly 🎪 | Heartwarming ❤️ | Adventurous 🌟 | Peaceful 🍃 | Bedtime 💤"
-                ></textarea>
-            </div>
-        </div>
-        
-        <button id="generate-btn" class="generate-button">
-            Generate Story
-        </button>
-        
+        {% endif %}
+
+        <!-- Story Output -->
         <div id="story-output" class="story-output" style="display: none;">
             <h2>Your Story</h2>
             <div id="story-content"></div>
@@ -102,114 +98,54 @@
 <!-- Story Creation Modal -->
 <div id="storyModal" class="modal">
     <div class="modal-content">
-        <button class="modal-close">&times;</button>
-        <!-- Progress Bar -->
-        <div class="progress-bar">
-            <div class="progress-fill"></div>
-        </div>
+        <button class="modal-close" aria-label="Close">×</button>
         
-        <!-- Screen Container -->
-        <div class="screen-container">
-            <!-- Screen 1: Character -->
-            <div class="screen" id="screen-character">
-                <div class="screen-content">
-                    <h2>Who's Our Story Star? 🎭</h2>
-                    <p class="subtext">Let's bring your artwork's character to life!</p>
-                    
-                    <div class="input-group">
-                        <input type="text" 
-                               class="story-input" 
-                               placeholder="Tell us about your magical friend...">
-                        
-                        <button class="inspire-btn">
-                            <span>✨ Inspire Me</span>
-                            <div class="tooltip">
-                                <span class="tooltip-trigger">?</span>
-                                <span class="tooltip-text">Click for character ideas based on your artwork!</span>
-                            </div>
-                        </button>
-                        
-                        <div class="suggestions hidden">
-                            <!-- Suggestions will be populated by JS -->
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="navigation-buttons">
-                    <button class="skip-btn">I'll decide later</button>
-                    <button class="next-btn">Next</button>
-                </div>
-            </div>
-
-            <!-- Screen 2: Setting -->
-            <div class="screen hidden" id="screen-setting">
-                <h2>Where Does Our Story Take Place? 🏰</h2>
-                <p class="subtext">Every great tale needs a special setting!</p>
-                
-                <div class="input-group">
-                    <input type="text" 
-                           class="story-input" 
-                           placeholder="Set the scene...">
-                    
-                    <button class="inspire-btn">
-                        <span>✨ Inspire Me</span>
-                        <div class="tooltip">
-                            <span class="tooltip-trigger">?</span>
-                            <span class="tooltip-text">Need ideas? Click for magical places!</span>
-                        </div>
-                    </button>
-                    
-                    <div class="suggestions hidden"></div>
-                </div>
-                
-                <div class="navigation-buttons">
-                    <button class="skip-btn">I'll decide later</button>
-                    <button class="next-btn">Next</button>
-                </div>
-            </div>
-
-            <!-- Screen 3: Theme -->
-            <div class="screen hidden" id="screen-theme">
-                <h2>What's Our Story About? 💫</h2>
-                <p class="subtext">Time to choose our adventure!</p>
-                
-                <div class="input-group">
-                    <input type="text" 
-                           class="story-input" 
-                           placeholder="What happens in our tale?">
-                    
-                    <button class="inspire-btn">
-                        <span>Inspire Me</span>
-                        <div class="tooltip">
-                            <span class="tooltip-trigger">?</span>
-                            <span class="tooltip-text">Click for adventure ideas!</span>
-                        </div>
-                    </button>
-                    
-                    <div class="suggestions hidden"></div>
-                </div>
-                
-                <div class="navigation-buttons">
-                    <button class="skip-btn">I'll decide later</button>
-                    <button class="next-btn">Next</button>
-                </div>
-            </div>
-
-            <!-- Screen 4: Review -->
-            <div class="screen hidden" id="screen-review">
-                <h2>Your Story is Ready to Begin! ✨</h2>
-                <p class="subtext">Here's what we've created together...</p>
-                
-                <div class="review-content">
-                    <!-- Will be populated by JS -->
-                </div>
-                
-                <div class="navigation-buttons">
-                    <button class="back-btn">← Go back to edit</button>
-                    <button class="create-btn">Create Our Story! 📖</button>
-                </div>
+        <!-- Character Screen -->
+        <div id="screen-character" class="screen">
+            <h2>Who's Our Hero?</h2>
+            <input type="text" class="story-input" placeholder="Tell us about the main character...">
+            <div class="button-row">
+                <button class="inspire-btn">Need inspiration? 🎨</button>
+                <div class="suggestions"></div>
+                <button class="next-btn">Next</button>
             </div>
         </div>
+
+        <!-- Setting Screen -->
+        <div id="screen-setting" class="screen">
+            <h2>Where's Our Story?</h2>
+            <input type="text" class="story-input" placeholder="Describe the setting...">
+            <div class="button-row">
+                <button class="inspire-btn">Need inspiration? 🎨</button>
+                <div class="suggestions"></div>
+                <button class="back-btn">Back</button>
+                <button class="next-btn">Next</button>
+            </div>
+        </div>
+
+        <!-- Theme Screen -->
+        <div id="screen-theme" class="screen">
+            <h2>What Happens?</h2>
+            <input type="text" class="story-input" placeholder="What does our hero do...">
+            <div class="button-row">
+                <button class="inspire-btn">Need inspiration? 🎨</button>
+                <div class="suggestions"></div>
+                <button class="back-btn">Back</button>
+                <button class="next-btn">Next</button>
+            </div>
+        </div>
+
+        <!-- Review Screen -->
+        <div id="screen-review" class="screen">
+            <h2>Ready to Create?</h2>
+            <div class="review-content"></div>
+            <div class="button-row">
+                <button class="back-btn">Back</button>
+                <button class="create-btn">Create Our Story! 📖</button>
+            </div>
+        </div>
+
+        <div class="progress-bar"></div>
     </div>
 </div>
 {% endblock %}

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, request, jsonify, current_app, render_template
 from werkzeug.exceptions import HTTPException
 from src.llm_models.story_generator import StoryGenerator
 from src.app.utils.cache import get_cached_story, cache_story
@@ -176,4 +176,10 @@ def handle_unexpected_error(e):
     return jsonify({
         'error': 'An unexpected error occurred',
         'details': str(e)
-    }), 500 
+    }), 500
+
+@bp.route('/create')
+def create_story():
+    """Unified create route that handles both flows"""
+    flow_type = request.args.get('type', 'scratch')  # Default to scratch if not specified
+    return render_template('story/create.html', flow_type=flow_type) 
