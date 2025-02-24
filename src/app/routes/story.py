@@ -179,7 +179,7 @@ def handle_unexpected_error(e):
     }), 500
 
 @bp.route('/create')
-def create_story():
-    """Unified create route that handles both flows"""
-    flow_type = request.args.get('type', 'scratch')  # Default to scratch if not specified
+def create():
+    """Create story page."""
+    flow_type = request.args.get('type', 'scratch')
     return render_template('story/create.html', flow_type=flow_type) 

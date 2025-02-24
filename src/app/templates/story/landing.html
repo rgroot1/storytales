@@ -10,19 +10,19 @@
     </div>
 
     <div class="creation-options">
-        <a href="{{ url_for('story.create', flow_type='artwork') }}" class="creation-option artwork-option">
-            <div class="option-content">
-                <i class="fas fa-paint-brush"></i>
-                <h2>Upload Artwork</h2>
-                <p>Turn your child's drawings into magical stories</p>
-            </div>
-        </a>
-
-        <a href="{{ url_for('story.create', flow_type='scratch') }}" class="creation-option scratch-option">
+        <a href="{{ url_for('story.create', type='scratch') }}" class="creation-option scratch-option">
             <div class="option-content">
                 <i class="fas fa-pencil-alt"></i>
                 <h2>Create from Scratch</h2>
-                <p>Start with your imagination</p>
+                <p>Start with your own creative ideas</p>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('story.create', type='artwork') }}" class="creation-option artwork-option">
+            <div class="option-content">
+                <i class="fas fa-image"></i>
+                <h2>Create from Artwork</h2>
+                <p>Turn your artwork into a story</p>
             </div>
         </a>
     </div>

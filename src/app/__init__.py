@@ -96,7 +96,7 @@ def create_app(config_class=Config):
     from src.app.routes.main import bp as main_bp
     from src.app.routes.story import bp as story_bp
     app.register_blueprint(main_bp)  # Register main blueprint first (for homepage)
-    app.register_blueprint(story_bp)
+    app.register_blueprint(story_bp, url_prefix='/story')
 
     if app.debug:
         app.logger.setLevel('DEBUG')

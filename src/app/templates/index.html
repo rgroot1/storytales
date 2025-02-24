@@ -5,24 +5,26 @@
 {% block content %}
 <div class="story-landing">
     <div class="hero-section">
-        <h1>Create Your Story</h1>
-        <p class="hero-subtitle">Choose how you want to start your story</p>
+        <h1>Bring Your Child's Stories to Life!</h1>
+        <p class="hero-subtitle">Choose how you'd like to start your storytelling journey</p>
     </div>
 
     <div class="creation-options">
-        <a href="{{ url_for('story.create_story', type='artwork') }}" class="creation-option artwork-option">
-            <div class="option-content">
-                <i class="fas fa-paint-brush"></i>
-                <h2>From Your Artwork</h2>
-                <p>Turn your drawings into magical stories</p>
-            </div>
-        </a>
-
-        <a href="{{ url_for('story.create_story', type='scratch') }}" class="creation-option scratch-option">
+        <!-- Scratch option first -->
+        <a href="{{ url_for('story.create', type='scratch') }}" class="creation-option scratch-option">
             <div class="option-content">
                 <i class="fas fa-pencil-alt"></i>
-                <h2>From Scratch</h2>
-                <p>Start with your imagination</p>
+                <h2>Create from Scratch</h2>
+                <p>Start with your own creative ideas</p>
+            </div>
+        </a>
+        
+        <!-- Artwork option second -->
+        <a href="{{ url_for('story.create', type='artwork') }}" class="creation-option artwork-option">
+            <div class="option-content">
+                <i class="fas fa-image"></i>
+                <h2>Create from Artwork</h2>
+                <p>Turn your artwork into a story</p>
             </div>
         </a>
     </div>

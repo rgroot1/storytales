@@ -12,6 +12,15 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+    <!-- Add nav bar for brand -->
+    <nav class="nav-bar">
+        <div class="brand">
+            <a href="{{ url_for('main.index') if request.endpoint != 'main.index' else '#' }}">
+                <h1>StoryTales</h1>
+            </a>
+        </div>
+    </nav>
+    
     <div class="container">
         <div class="main-input-section">
             {% block content %}{% endblock %}
