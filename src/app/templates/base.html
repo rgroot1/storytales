@@ -9,14 +9,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Add nav bar for brand -->
+    <!-- Update nav bar to have logo on left with brand name -->
     <nav class="nav-bar">
         <div class="brand">
-            <a href="{{ url_for('main.index') if request.endpoint != 'main.index' else '#' }}">
-                <h1>StoryTales</h1>
+            <a href="/" class="brand-link">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="StoryTales" class="brand-logo">
+                <span class="brand-name">Story<em>tales</em></span>
             </a>
         </div>
     </nav>

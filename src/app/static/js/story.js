@@ -16,39 +16,189 @@ document.addEventListener('DOMContentLoaded', function() {
         const uploadBox = document.getElementById('upload-box');
         const artworkInput = document.getElementById('artwork');
         const artworkForm = document.getElementById('artwork-form');
+        let uploadedFile = null;
+        let isHandlingFile = false;  // Add flag to prevent double handling
 
-        if (uploadBox && artworkInput && artworkForm) {
-            // Add the actual handlers here
+        // Function to ensure analyze button visibility
+        function showAnalyzeButton() {
+            const analyzeBtn = document.getElementById('analyze-btn');
+            if (analyzeBtn) {
+                analyzeBtn.hidden = false;
+                analyzeBtn.style.display = 'block';
+                analyzeBtn.textContent = 'Start the Magic! ✨';
+            }
+        }
+
+        // Handle file upload
+        function handleFile(file) {
+            if (isHandlingFile) {
+                console.log('Already handling a file, skipping');
+                return;
+            }
+
+            console.log('Handling file:', file);
+            isHandlingFile = true;
+
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            
+            if (!allowedTypes.includes(file.type)) {
+                alert('Please upload a JPG, PNG, or GIF file');
+                isHandlingFile = false;
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File too large. Maximum size is 5MB');
+                isHandlingFile = false;
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                console.log('File loaded successfully');
+                uploadedFile = file;
+                
+                // Update upload box content
+                if (uploadBox) {
+                    uploadBox.innerHTML = `
+                        <div class="preview-container">
+                            <img src="${e.target.result}" class="artwork-preview" alt="Uploaded artwork" />
+                            <button type="button" class="delete-image">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    `;
+                }
+                
+                // Show keywords input and analyze button
+                const keywordsInput = document.querySelector('.keywords-input');
+                if (keywordsInput) {
+                    keywordsInput.hidden = false;
+                }
+                showAnalyzeButton();
+                isHandlingFile = false;
+            };
+
+            reader.onerror = (error) => {
+                console.error('File read error:', error);
+                alert('Error reading file. Please try again.');
+                isHandlingFile = false;
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        if (uploadBox && artworkInput) {
+            // Setup file input click handler
             uploadBox.addEventListener('click', function(e) {
+                console.log('Upload box clicked');
                 if (!e.target.closest('.delete-image')) {
+                    e.preventDefault();
+                    e.stopPropagation();
                     artworkInput.click();
                 }
             });
 
+            // Setup file input change handler
             artworkInput.addEventListener('change', function(e) {
+                console.log('File input changed');
                 if (e.target.files && e.target.files[0]) {
                     handleFile(e.target.files[0]);
                 }
             });
 
-            // Form submission handler
+            // Setup delete button handler
+            uploadBox.addEventListener('click', function(e) {
+                const deleteBtn = e.target.closest('.delete-image');
+                if (deleteBtn) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Reset file input value so same file can be uploaded again
+                    artworkInput.value = '';
+                    uploadedFile = null;
+                    
+                    // Reset upload box UI
+                    uploadBox.innerHTML = `
+                        <div class="upload-content">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Drop your artwork here or click to upload</p>
+                            <small>Supports: JPG, PNG, GIF (max 5MB)</small>
+                        </div>
+                    `;
+                    
+                    // Reset keywords input
+                    const keywordsInput = document.querySelector('.keywords-input');
+                    if (keywordsInput) {
+                        keywordsInput.hidden = true;
+                        keywordsInput.querySelector('input').value = '';
+                    }
+                    
+                    // Reset handling flag
+                    isHandlingFile = false;
+                }
+            });
+
+            // Add drag and drop handlers
+            uploadBox.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('File being dragged over upload box');
+                this.classList.add('dragover');
+            });
+
+            uploadBox.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('File drag left upload box');
+                this.classList.remove('dragover');
+            });
+
+            uploadBox.addEventListener('drop', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('File dropped');
+                
+                this.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files && files[0]) {
+                    handleFile(files[0]);
+                }
+            });
+        }
+
+        // Handle form submission
+        if (artworkForm) {
             artworkForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
+                console.log('Form submitted');
+                
+                if (!uploadedFile) {
+                    alert('Please upload an image first');
+                    return;
+                }
+
                 const analyzeBtn = document.getElementById('analyze-btn');
                 if (analyzeBtn) {
                     analyzeBtn.disabled = true;
                     analyzeBtn.textContent = 'Analyzing...';
                 }
-                
+
                 try {
-                    const formData = new FormData(e.target);
+                    const formData = new FormData();
+                    formData.append('artwork', uploadedFile);
+                    formData.append('keywords', document.querySelector('.keywords-input input')?.value || '');
+
                     const response = await fetch('/story/artwork/analyze', {
                         method: 'POST',
                         body: formData
                     });
 
                     const data = await response.json();
-                    if (!response.ok) throw new Error(data.error);
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Failed to analyze artwork');
+                    }
 
                     showAnalysisResults(data);
                 } catch (error) {
@@ -63,6 +213,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     } else if (isCreatePage) {
+        console.log('On create page, setting up handlers');
         setupCreateFormHandlers();
     }
 
@@ -84,126 +235,31 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Artwork upload handling
-    if (FEATURES.ARTWORK_UPLOAD) {
-        const uploadBox = document.getElementById('upload-box');
-        const artworkInput = document.getElementById('artwork');
-        const artworkForm = document.getElementById('artwork-form');
-        let uploadedFile = null;
-
-        // Function to ensure analyze button visibility
-        function showAnalyzeButton() {
-            const analyzeBtn = document.getElementById('analyze-btn');
-            if (analyzeBtn) {
-                analyzeBtn.hidden = false;
-                analyzeBtn.style.display = 'block';
-                analyzeBtn.textContent = 'Start the Magic! ✨';
-            }
-        }
-
-        // Handle file upload
-        function handleFile(file) {
-            console.log('Handling file:', file);
-            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-            
-            if (!allowedTypes.includes(file.type)) {
-                alert('Please upload a JPG, PNG, or GIF file');
-                return;
-            }
-            
-            if (file.size > 5 * 1024 * 1024) {
-                alert('File too large. Maximum size is 5MB');
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                console.log('File loaded successfully');
-                uploadedFile = file;
-                uploadBox.innerHTML = `
-                    <div class="preview-container">
-                        <img src="${e.target.result}" class="artwork-preview" alt="Uploaded artwork" />
-                        <button type="button" class="delete-image">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                `;
-                
-                // Show keywords input and analyze button
-                document.querySelector('.keywords-input').hidden = false;
-                showAnalyzeButton();
-            };
-
-            reader.onerror = (error) => {
-                console.error('File read error:', error);
-                alert('Error reading file. Please try again.');
-            };
-
-            reader.readAsDataURL(file);
-        }
-
-        // Setup file input click handler
-        uploadBox.addEventListener('click', function(e) {
-            if (!e.target.closest('.delete-image')) {
-                artworkInput.click();
-            }
-        });
-
-        // Setup file input change handler
-        artworkInput.addEventListener('change', function(e) {
-            if (e.target.files && e.target.files[0]) {
-                handleFile(e.target.files[0]);
-            }
-        });
-
-        // Handle form submission
-        artworkForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            if (!uploadedFile) {
-                alert('Please upload an image first');
-                return;
-            }
-
-            const analyzeBtn = document.getElementById('analyze-btn');
-            analyzeBtn.disabled = true;
-            analyzeBtn.textContent = 'Analyzing...';
-
-            const formData = new FormData();
-            formData.append('artwork', uploadedFile);
-            formData.append('keywords', document.querySelector('.keywords-input input').value || '');
-
-            try {
-                const response = await fetch('/story/artwork/analyze', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const data = await response.json();
-                if (!response.ok) {
-                    throw new Error(data.error || 'Failed to analyze artwork');
-                }
-
-                // Show the modal with analysis results
-                showAnalysisResults(data);
-            } catch (error) {
-                console.error('Error:', error);
-                alert(error.message);
-            } finally {
-                analyzeBtn.disabled = false;
-                analyzeBtn.textContent = 'Start the Magic! ✨';
-            }
-        });
-
-        // Initial setup
-        showAnalyzeButton();
-    }
-
     // Initialize analysis trigger flag at page load
     window.analysisTriggered = false;
 
     // Global handlers that should work on both pages
     setupGlobalHandlers();
+
+    setupModalHandlers();
+
+    // Search for event handler setup for the "More Details" button
+    const tellMoreBtn = document.getElementById('tell-more-btn');
+    const additionalFields = document.getElementById('additional-fields');
+
+    if (tellMoreBtn) {
+        tellMoreBtn.addEventListener('click', function() {
+            additionalFields.classList.toggle('show');
+            const icon = this.querySelector('i');
+            if (additionalFields.classList.contains('show')) {
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            } else {
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            }
+        });
+    }
 });
 
 // ==========================================
@@ -214,17 +270,31 @@ function setupCreateFormHandlers() {
     
     // More Options button
     const moreOptionsBtn = document.getElementById('tell-more-btn');
+    console.log('Found more options button:', !!moreOptionsBtn);
+    
     if (moreOptionsBtn) {
-        moreOptionsBtn.addEventListener('click', function() {
+        // Remove any existing listeners first
+        const newMoreOptionsBtn = moreOptionsBtn.cloneNode(true);
+        moreOptionsBtn.parentNode.replaceChild(newMoreOptionsBtn, moreOptionsBtn);
+        
+        newMoreOptionsBtn.addEventListener('click', function(e) {
+            console.log('More options button clicked');
             const additionalFields = document.getElementById('additional-fields');
+            console.log('Additional fields element:', !!additionalFields);
+            console.log('Current display state:', additionalFields.style.display);
+            
+            additionalFields.classList.toggle('show');
             const icon = this.querySelector('i');
-            if (additionalFields.style.display === 'none') {
-                additionalFields.style.display = 'block';
+            
+            if (additionalFields.classList.contains('show')) {
                 icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+                additionalFields.style.display = 'block';  // Force display block
             } else {
-                additionalFields.style.display = 'none';
                 icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+                additionalFields.style.display = 'none';   // Force display none
             }
+            
+            console.log('New display state:', additionalFields.style.display);
         });
     }
 
@@ -291,29 +361,78 @@ function showAnalysisResults(analysisData) {
         return;
     }
     
-    // Store analysis data globally for reuse
-    window.currentAnalysisData = analysisData;
+    console.log('Analysis data:', analysisData);
     
-    // Reset modal state before showing new content
+    window.currentAnalysisData = analysisData;
     resetModalState();
     
-    // Only show modal if we're on the artwork page
     const isArtworkPage = document.querySelector('.artwork-upload-section');
     if (isArtworkPage) {
         const modal = document.getElementById('storyModal');
         if (modal) {
+            const modalContent = modal.querySelector('.modal-content');
+            
+            // Remove any existing kudos screens first
+            modalContent.querySelectorAll('.screen-kudos').forEach(screen => screen.remove());
+            
+            // Extract comments from the response
+            const comments = analysisData.comments || analysisData.analysis?.comments || [];
+            
+            // Create kudos screen
+            const kudosScreen = createKudosScreen(comments);
+            
+            // Insert kudos screen before the first existing screen
+            const firstScreen = modalContent.querySelector('.screen');
+            if (firstScreen) {
+                modalContent.insertBefore(kudosScreen, firstScreen);
+            } else {
+                modalContent.appendChild(kudosScreen);
+            }
+            
             modal.classList.add('show');
             document.body.classList.add('modal-open');
+
+            // Show kudos screen first, hide others
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.style.display = 'none';
+                screen.classList.remove('active');
+            });
+            kudosScreen.style.display = 'block';
+            kudosScreen.classList.add('active');
+            
+            // Setup modal close handlers
+            setupModalCloseHandlers(modal);
         }
     }
 
-    // Setup screens and handlers
     setupNavigationHandlers();
     setupSuggestionHandlers();
     setupCreateButton();
     
-    // Update progress bar
-    updateStoryProgress('screen-character');
+    // Start with kudos screen in progress bar
+    updateStoryProgress('screen-kudos');
+}
+
+// Helper function to setup modal close handlers
+function setupModalCloseHandlers(modal) {
+    const closeBtn = modal.querySelector('.modal-close');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            modal.classList.remove('show');
+            document.body.classList.remove('modal-open');
+            resetModalState();
+        });
+    }
+
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.classList.remove('show');
+            document.body.classList.remove('modal-open');
+            resetModalState();
+        }
+    });
 }
 
 function setupNavigationHandlers() {
@@ -505,38 +624,45 @@ function selectSuggestion(text, type) {
 }
 
 function goToScreen(screenNumber) {
-    // Update progress bar
-    const progressFill = document.querySelector('.progress-fill');
-    if (progressFill) {
-        progressFill.style.width = `${(screenNumber + 1) * 25}%`;
+    const screens = [
+        'screen-kudos',
+        'screen-character',
+        'screen-setting',
+        'screen-theme',
+        'screen-review'
+    ];
+    
+    // Only show progress bar for non-kudos screens
+    const progressBar = document.querySelector('.progress-bar');
+    if (progressBar) {
+        if (screenNumber === 0) {
+            progressBar.style.display = 'none';
+        } else {
+            progressBar.style.display = 'block';
+            progressBar.style.width = `${(screenNumber) * 25}%`; // 25% per screen (4 screens, excluding kudos)
+        }
     }
     
-    // Get all screens and current active screen
-    const screens = document.querySelectorAll('.screen');
-    const currentScreen = document.querySelector('.screen.active');
+    // Hide all screens
+    document.querySelectorAll('.screen').forEach(screen => {
+        screen.style.display = 'none';
+        screen.classList.remove('active');
+    });
     
-    console.log('Moving to screen:', screenNumber, 'Current screen:', currentScreen);
-    
-    // Hide current screen
-    if (currentScreen) {
-        currentScreen.classList.remove('active');
-        // Remove old event listeners
-        const oldInspireBtn = currentScreen.querySelector('.inspire-btn');
-        const oldNextBtn = currentScreen.querySelector('.next-btn');
-        const oldSkipBtn = currentScreen.querySelector('.skip-btn');
-        oldInspireBtn?.replaceWith(oldInspireBtn.cloneNode(true));
-        oldNextBtn?.replaceWith(oldNextBtn.cloneNode(true));
-        oldSkipBtn?.replaceWith(oldSkipBtn.cloneNode(true));
-    }
-    
-    // Show next screen
-    const nextScreen = Array.from(screens)[screenNumber];
-    console.log('Next screen:', nextScreen);
-    if (nextScreen) {
-        nextScreen.classList.add('active');
-        // Setup buttons for new screen
-        setupInspireButton(window.storyData);
-        setupNavigation(window.storyData);
+    // Show target screen
+    const targetScreen = document.getElementById(screens[screenNumber]);
+    if (targetScreen) {
+        console.log('Showing screen:', screens[screenNumber]);
+        targetScreen.style.display = 'block';
+        targetScreen.classList.add('active');
+        updateStoryProgress(screens[screenNumber]);
+        
+        // Setup inspire button for the new screen if needed
+        if (screenNumber > 0 && screenNumber < 4) { // Skip kudos and review screens
+            setupInspireButton(window.currentAnalysisData);
+        }
+    } else {
+        console.error('Target screen not found:', screens[screenNumber]);
     }
 }
 
@@ -598,7 +724,7 @@ function updateStoryProgress(currentScreen) {
     const progressBar = document.querySelector('.progress-bar');
     if (!progressBar) return;
 
-    // Map screens to progress states
+    // Map screens to progress states (excluding kudos screen)
     const progressMap = {
         'screen-character': 1,
         'screen-setting': 2,
@@ -606,8 +732,14 @@ function updateStoryProgress(currentScreen) {
         'screen-review': 4
     };
 
-    const progress = progressMap[currentScreen] || 0;
-    progressBar.setAttribute('data-progress', progress);
+    // Hide progress bar on kudos screen, show on others
+    if (currentScreen === 'screen-kudos') {
+        progressBar.style.display = 'none';
+    } else {
+        progressBar.style.display = 'block';
+        const progress = progressMap[currentScreen] || 0;
+        progressBar.setAttribute('data-progress', progress);
+    }
 }
 
 // Handle create story button
@@ -875,8 +1007,11 @@ function setupInspireButton(analysisData) {
     inspireBtn.parentNode.replaceChild(newInspireBtn, inspireBtn);
     
     newInspireBtn.addEventListener('click', () => {
+        // Toggle show class instead of hidden
         suggestions.classList.toggle('show');
-        if (!suggestions.classList.contains('hidden')) {
+        suggestions.classList.toggle('hidden');
+        
+        if (suggestions.classList.contains('show')) {
             let suggestionItems = [];
             const storyElements = analysisData.analysis.story_elements;
             
@@ -884,11 +1019,11 @@ function setupInspireButton(analysisData) {
             if (currentScreen.id === 'screen-character') {
                 suggestionItems = storyElements.characters || [];
             } else if (currentScreen.id === 'screen-setting') {
-                const settingLine = storyElements['setting/vibe'];
-                suggestionItems = settingLine ? settingLine.split('|') : [];
+                suggestionItems = storyElements.setting || [];
             } else if (currentScreen.id === 'screen-theme') {
-                const themeLine = storyElements.moral;
-                suggestionItems = themeLine ? themeLine.split('|') : [];
+                suggestionItems = Array.isArray(storyElements.moral) ? 
+                    storyElements.moral : 
+                    storyElements.moral.split('|');
             }
             
             suggestionItems = suggestionItems.map(item => item.trim()).filter(Boolean);
@@ -896,27 +1031,21 @@ function setupInspireButton(analysisData) {
             
             suggestions.innerHTML = suggestionItems.length ? 
                 suggestionItems.map(item => `
-                    <div class="suggestion-item" onclick="selectSuggestion(this.textContent)">
+                    <div class="suggestion-item" onclick="selectSuggestion('${item}')">
                         ${item}
                     </div>
                 `).join('') :
                 '<div class="no-suggestions">No suggestions available</div>';
-            
-            suggestions.style.maxHeight = '200px';
         }
     });
 }
 
 function resetModalState() {
     // Reset screens visibility
-    document.querySelectorAll('.screen').forEach((screen, index) => {
-        if (index === 0) {
-            screen.classList.remove('hidden');
-            screen.style.display = 'block';
-        } else {
-            screen.classList.add('hidden');
-            screen.style.display = 'none';
-        }
+    document.querySelectorAll('.screen').forEach((screen) => {
+        // All screens start hidden
+        screen.classList.add('hidden');
+        screen.style.display = 'none';
     });
 
     // Reset suggestions
@@ -930,10 +1059,10 @@ function resetModalState() {
         input.value = '';
     });
 
-    // Reset progress bar
+    // Reset progress bar to 20% (first of 5 screens)
     const progressFill = document.querySelector('.progress-fill');
     if (progressFill) {
-        progressFill.style.width = '33%';
+        progressFill.style.width = '20%';
     }
 }
 
@@ -973,4 +1102,63 @@ function restoreHomepageState() {
         document.body.offsetHeight; // Force reflow
         document.body.style.display = '';
     }
+}
+
+// Add this function to create the kudos screen
+function createKudosScreen(comments) {
+    const kudosScreen = document.createElement('div');
+    kudosScreen.className = 'screen screen-kudos';
+    kudosScreen.id = 'screen-kudos';
+    
+    const heading = document.createElement('h2');
+    heading.textContent = 'Awesome Artwork!';
+    kudosScreen.appendChild(heading);
+    
+    const kudosContent = document.createElement('div');
+    kudosContent.className = 'kudos-content';
+    
+    // Handle comments array and select random comment
+    let selectedComment;
+    if (Array.isArray(comments) && comments.length > 0) {
+        selectedComment = comments[Math.floor(Math.random() * comments.length)];
+    } else if (typeof comments === 'string' && comments.length > 0) {
+        const commentArray = comments.split('.').filter(comment => comment.trim());
+        selectedComment = commentArray[Math.floor(Math.random() * commentArray.length)];
+    }
+    
+    const kudosMessage = document.createElement('p');
+    kudosMessage.className = 'kudos-message';
+    
+    if (selectedComment) {
+        selectedComment = selectedComment.trim();
+        if (!selectedComment.endsWith('.')) {
+            selectedComment += '.';
+        }
+        kudosMessage.textContent = selectedComment;
+    } else {
+        kudosMessage.textContent = "Your drawing is amazing! Let's create a story about it!";
+    }
+    kudosContent.appendChild(kudosMessage);
+    
+    const kudosIcon = document.createElement('div');
+    kudosIcon.className = 'kudos-icon';
+    kudosIcon.innerHTML = '⭐';
+    kudosContent.appendChild(kudosIcon);
+    
+    kudosScreen.appendChild(kudosContent);
+    
+    // Add button row for consistent layout
+    const buttonRow = document.createElement('div');
+    buttonRow.className = 'button-row';
+    
+    // Add next button using consistent class
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'next-btn'; // Remove extra classes to be consistent
+    nextBtn.textContent = 'Next';
+    nextBtn.onclick = () => goToScreen(1);
+    
+    buttonRow.appendChild(nextBtn);
+    kudosScreen.appendChild(buttonRow);
+    
+    return kudosScreen;
 }

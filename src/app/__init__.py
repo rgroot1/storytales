@@ -98,6 +98,11 @@ def create_app(config_class=Config):
     app.register_blueprint(main_bp)  # Register main blueprint first (for homepage)
     app.register_blueprint(story_bp, url_prefix='/story')
 
+    # Ensure the images directory exists
+    images_dir = os.path.join(app.static_folder, 'images')
+    if not os.path.exists(images_dir):
+        os.makedirs(images_dir)
+
     if app.debug:
         app.logger.setLevel('DEBUG')
 

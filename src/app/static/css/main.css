@@ -1,10 +1,13 @@
 /* Reset and base styles */
 body {
-    font-family: 'Lora', serif;
+    font-family: 'Poppins', sans-serif;
     background: #f8f9fa;
     color: #2d3436;
     margin: 0;
     padding: 0;
+    background-color: #f8f9fa;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%2374b9ff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+    background-attachment: fixed;
 }
 
 /* Hero Section */
@@ -14,6 +17,7 @@ body {
     margin-bottom: 2rem;
     border-radius: 15px;
     will-change: opacity, transform;
+    background: transparent;
 }
 
 .hero-section h1 {
@@ -30,6 +34,18 @@ body {
     font-size: 22px;
     color: rgba(255, 255, 255, 0.9);
     margin-bottom: 0.5rem;
+}
+
+/* Hero logo styling */
+.hero-logo {
+    height: 70px;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .hero-logo {
+        height: 56px;
+    }
 }
 
 /* Main Layout */
@@ -81,18 +97,18 @@ body {
         padding: 2rem 1rem !important;
         margin-bottom: 1.5rem !important;
         border-radius: 0 0 1rem 1rem !important;
+        padding-bottom: 1rem;
     }
     
     .hero-section h1 {
-        font-size: 2rem !important;
-        line-height: 1.2 !important;
+        font-size: 1.8rem !important;
+        line-height: 1.3 !important;
         margin-bottom: 0.5rem !important;
     }
     
     .hero-subtitle {
-        font-size: 1.1rem !important;
-        line-height: 1.4 !important;
-        padding: 0 1rem !important;
+        font-size: 1rem !important;
+        margin-bottom: 0.5rem !important;
     }
 
     /* Upload and input sections */
@@ -126,12 +142,20 @@ body {
     }
 
     /* Button spacing */
-    .button-row {
+    .button-row,
+    .navigation-buttons {
         width: 95% !important;
-        margin-top: 180px !important;
+        padding: 0.5rem 0 !important;
+        margin-top: clamp(120px, 20vh, 180px) !important;
     }
 
     /* Story content */
+    .story-content {
+        padding: 15px !important;
+        font-size: clamp(14px, 3.5vw, 16px) !important;
+    }
+
+    /* Generated story container */
     .generated-story {
         padding: 15px !important;
         height: calc(100vh - 180px) !important;
@@ -158,42 +182,51 @@ body {
         min-height: calc(100vh - 100px) !important;
     }
 
-    /* Button adjustments */
-    .button-row,
-    .navigation-buttons {
-        width: 95% !important;
-        padding: 0.5rem 0 !important;
-        margin-top: clamp(120px, 20vh, 180px) !important;
-    }
-
-    /* Story content */
-    .story-content {
-        padding: 15px !important;
-        font-size: clamp(14px, 3.5vw, 16px) !important;
-    }
-
     /* Story output adjustments */
     .story-output h2 {
         font-size: clamp(20px, 5vw, 24px) !important;
         padding: 0.5rem 0 !important;
     }
 
-    /* Additional fields adjustments */
+    /* Additional fields spacing adjustments */
+    .input-group {
+        margin-bottom: 0.25rem !important;
+    }
+
     .additional-fields {
-        padding: clamp(0.5rem, 3vw, 1rem) !important;
+        padding: 0.25rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    .additional-fields .input-field {
+        margin-bottom: 0 !important;
+    }
+
+    .additional-fields label {
+        margin-bottom: 0.15rem !important;
+        font-size: 0.9rem !important;
+        line-height: 1.2 !important;
     }
 
     .additional-fields textarea {
-        font-size: clamp(14px, 3.5vw, 16px) !important;
+        padding: 0.35rem !important;
+        min-height: 2rem !important;
+        margin-bottom: 0.25rem !important;
     }
 
-    /* Navigation adjustments */
-    .nav-wrapper {
-        padding: clamp(0.5rem, 3vw, 1rem) !important;
+    .main-prompt::placeholder,
+    .detail-input::placeholder {
+        color: inherit !important;
+        opacity: 0.6 !important;
     }
 
-    .brand-logo {
-        font-size: clamp(1.2rem, 4vw, 1.5rem) !important;
+    .detail-input {
+        margin-bottom: 0.25rem !important;
+        font-size: 0.9rem !important;
+    }
+
+    .input-group + .input-group {
+        margin-top: 0.25rem !important;
     }
 
     /* Button adjustments */
@@ -203,6 +236,36 @@ body {
     .secondary-button {
         padding: clamp(0.5rem, 2vw, 0.8rem) clamp(1rem, 3vw, 1.5rem) !important;
         font-size: clamp(14px, 3.5vw, 16px) !important;
+    }
+
+    /* Input spacing adjustments */
+    .main-prompt {
+        margin: 1.5rem auto !important;
+        padding: 1.2rem !important;
+        min-height: 120px !important;
+    }
+
+    .main-input-section {
+        padding: 1.5rem 1rem !important;
+    }
+
+    /* Remove autofill styling */
+    .main-prompt:-webkit-autofill,
+    .main-prompt:-webkit-autofill:hover,
+    .main-prompt:-webkit-autofill:focus {
+        -webkit-box-shadow: 0 0 0px 1000px white inset;
+        transition: background-color 5000s ease-in-out 0s;
+    }
+    
+    .main-prompt {
+        -webkit-text-fill-color: initial;
+    }
+
+    /* Restore placeholder visibility */
+    .main-prompt::placeholder,
+    .detail-input::placeholder {
+        color: inherit !important;
+        opacity: 0.6 !important;
     }
 }
 
@@ -232,7 +295,7 @@ body:not(.modal-open) .keywords-input {
 
 /* Form Elements */
 .main-prompt {
-    font-family: 'Lora', serif;
+    font-family: 'Poppins', sans-serif;
     font-size: 16px !important;
     padding: 1rem !important;
     border: 2px solid #e0e0e0 !important;
@@ -259,11 +322,11 @@ body:not(.modal-open) .keywords-input {
 
 /* Buttons */
 .secondary-button {
-    font-family: 'Lora', serif;
+    font-family: 'Poppins', sans-serif;
     font-size: 16px;
     background: none;
-    border: 2px solid #A29BFE;
-    color: #A29BFE;
+    border: 2px solid #74b9ff;
+    color: #74b9ff;
     padding: 0.8rem 1.5rem;
     border-radius: 8px;
     cursor: pointer;
@@ -275,12 +338,12 @@ body:not(.modal-open) .keywords-input {
 }
 
 .secondary-button:hover {
-    background: #A29BFE;
+    background: #74b9ff;
     color: white;
 }
 
 .primary-button {
-    background: linear-gradient(135deg, #A29BFE 0%, #74B9FF 100%);
+    background: linear-gradient(135deg, #74b9ff 0%, #a29bfe 100%);
     color: white;
     padding: 1rem 2rem;
     border: none;
@@ -295,36 +358,90 @@ body:not(.modal-open) .keywords-input {
 
 /* Additional Fields */
 .additional-fields {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 1rem;
-    margin-top: 1rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     display: none;
+    transition: all 0.3s ease;
+    opacity: 0;
+    padding: 0.25rem !important;
+}
+
+.additional-fields.show {
+    display: block;
+    opacity: 1;
 }
 
 .additional-fields .input-field {
-    margin-bottom: 1rem;
-    padding: 0 0.5rem;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .additional-fields label {
-    font-family: 'Lora', serif;
-    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem !important;
     color: #4a5568;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.15rem !important;
     display: block;
+    line-height: 1.2 !important;
 }
 
-.additional-fields textarea {
-    font-family: 'Lora', serif;
-    font-size: 16px !important;
-    padding: 0.8rem !important;
+.additional-fields textarea,
+.detail-input {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem !important;
+    padding: 0.35rem !important;
     border: 2px solid #e0e0e0 !important;
     border-radius: 0.5rem !important;
     width: 100% !important;
-    min-height: 60px !important;
+    min-height: 2rem !important;
+    margin: 0 !important;
     resize: vertical;
+}
+
+/* Input Group */
+.input-group {
+    position: relative !important;
+    width: 85% !important;
+    max-width: 450px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    margin: 5px auto !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+}
+
+.input-group + .input-group {
+    margin-top: 5px !important;
+}
+
+/* Override any other spacing that might interfere */
+@media (max-width: 768px) {
+    .input-group,
+    .additional-fields .input-group {
+        margin: 5px auto !important;
+        padding: 0 !important;
+    }
+    
+    .additional-fields {
+        padding: 0.25rem !important;
+    }
+    
+    .additional-fields .input-field,
+    .detail-input,
+    .additional-fields textarea {
+        margin: 0 !important;
+        padding: 0.35rem !important;
+        min-height: 2rem !important;
+    }
+    
+    .additional-fields label {
+        margin-bottom: 0.15rem !important;
+        font-size: 0.9rem !important;
+        line-height: 1.2 !important;
+    }
+    
+    .input-group + .input-group {
+        margin-top: 5px !important;
+    }
 }
 
 /* Responsive Design */
@@ -443,11 +560,16 @@ body:not(.modal-open) .keywords-input {
     box-sizing: border-box !important;
     border: 3px dashed #ccc;
     text-align: center;
-    transition: border-color 0.3s;
+    transition: all 0.3s ease;
 }
 
 .upload-box:hover {
     border-color: #4CAF50;
+}
+
+.upload-box.dragover {
+    border-color: #A29BFE;
+    background: rgba(162, 155, 254, 0.1);
 }
 
 .upload-content {
@@ -484,7 +606,7 @@ body:not(.modal-open) .keywords-input {
     padding: 1rem;
     border: 2px solid #e0e0e0;
     border-radius: 0.5rem;
-    font-family: 'Lora', serif;
+    font-family: 'Poppins', sans-serif;
     font-size: 1rem;
     margin-top: 0.25rem;
     transition: border-color 0.3s ease;
@@ -496,7 +618,7 @@ body:not(.modal-open) .keywords-input {
 }
 
 .analyze-btn {
-    background: linear-gradient(135deg, #A29BFE 0%, #74B9FF 100%);
+    background: linear-gradient(135deg, #74b9ff 0%, #a29bfe 100%);
     color: white;
     border: none;
     padding: 0.75rem 1.5rem !important;
@@ -592,7 +714,7 @@ body:not(.modal-open) .keywords-input {
     padding: clamp(0.5rem, 2vw, 1rem) !important;
     border: 2px solid #e0e0e0 !important;
     border-radius: 0.5rem !important;
-    font-family: 'Lora', serif !important;
+    font-family: 'Poppins', sans-serif !important;
     font-size: clamp(14px, 3vw, 16px) !important;
     line-height: 1.5 !important;
     margin: 1rem auto !important;
@@ -646,31 +768,9 @@ body:not(.modal-open) .keywords-input {
     width: 100%;
 }
 
-/* Input Group */
-.input-group {
-    position: relative !important;
-    width: 85% !important;
-    max-width: 450px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    margin: 20px auto !important;
-    padding: 0 !important;
-    box-sizing: border-box !important;
-}
-
-.story-input {
-    width: 100%;
-    padding: 1rem;
-    border: 2px solid #e0e0e0;
-    border-radius: 0.5rem;
-    font-size: 1rem;
-    margin-bottom: 1rem;
-}
-
 /* Inspire Button */
 .inspire-btn {
-    background: linear-gradient(135deg, #A29BFE 0%, #74B9FF 100%);
+    background: linear-gradient(135deg, #74b9ff 0%, #a29bfe 100%);
     color: white;
     border: none;
     padding: 0.8rem 1.5rem;
@@ -1123,9 +1223,9 @@ body:not(.modal-open) .keywords-input {
 
 .input-group {
     position: relative;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     width: 100%;
-    padding: 0 1rem;
+    padding: 0 0.5rem;
 }
 
 .story-input {
@@ -1153,7 +1253,7 @@ body:not(.modal-open) .keywords-input {
 
 #storyProgress .progress-bar {
     transition: width 0.3s ease-in-out;
-    background: linear-gradient(135deg, #A29BFE 0%, #74B9FF 100%);
+    background: linear-gradient(135deg, #74b9ff 0%, #a29bfe 100%);
     height: 100%;
 }
 
@@ -1188,7 +1288,7 @@ body:not(.modal-open) .keywords-input {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    margin: 20px auto !important;
+    margin: 10px auto !important;  /* Reduced from 20px */
     padding: 0 !important;
     box-sizing: border-box !important;
 }
@@ -1202,7 +1302,7 @@ body:not(.modal-open) .keywords-input {
     resize: vertical !important;
     padding: 0.5rem 1rem !important; /* Added horizontal padding */
     line-height: 1.5 !important;
-    font-family: 'Lora', serif !important;
+    font-family: 'Poppins', sans-serif !important;
     border: 2px solid #e0e0e0 !important;
     border-radius: 8px !important;
     box-sizing: border-box !important;
@@ -1225,7 +1325,7 @@ body:not(.modal-open) .keywords-input {
 
     .input-group {
         width: 95% !important;
-        margin: 10px auto !important;
+        margin: 5px auto !important;  /* Further reduce margin on mobile */
         overflow: visible !important;
         padding-bottom: 200px !important;  /* Add space for suggestions */
         position: relative !important;
@@ -1413,7 +1513,7 @@ body.modal-open .modal {
     left: 0 !important;
     top: 0 !important;
     height: 100% !important;
-    background: linear-gradient(135deg, #A29BFE 0%, #74B9FF 100%) !important;
+    background: linear-gradient(135deg, #74b9ff 0%, #a29bfe 100%) !important;
     transition: width 0.3s ease-in-out !important;
     border-radius: 1rem 0 0 0 !important;  /* Round only the left corner of fill */
 }
@@ -1457,6 +1557,7 @@ body.modal-open .modal {
     padding: 2rem;
     margin-bottom: 2rem;
     border-radius: 15px;
+    background: transparent;
 }
 
 .hero-section h1 {
@@ -1498,11 +1599,11 @@ body.modal-open .modal {
 }
 
 .artwork-option {
-    background: linear-gradient(135deg, #6dd5ed, #2193b0);
+    background: linear-gradient(135deg, #74b9ff 0%, #a29bfe 100%);
 }
 
 .scratch-option {
-    background: linear-gradient(135deg, #f6d365, #fda085);
+    background: linear-gradient(135deg, #FFD700, #FFA500);
 }
 
 .option-content {
@@ -1522,14 +1623,18 @@ body.modal-open .modal {
 }
 
 .option-content h2 {
+    font-family: 'Poppins', sans-serif;
     color: white;
     font-size: 1.8rem;
     margin-bottom: 1rem;
+    font-weight: 500;
 }
 
 .option-content p {
+    font-family: 'Poppins', sans-serif;
     color: white;
     font-size: 1.1rem;
+    opacity: 0.9;
 }
 
 /* Enhanced Mobile Responsiveness */
@@ -1542,22 +1647,22 @@ body.modal-open .modal {
         padding: 2rem 1rem;
         margin-bottom: 1.5rem;
         text-align: center;
+        padding-bottom: 1rem;
     }
     
     .hero-section h1 {
-        font-size: 2rem;
-        line-height: 1.2;
+        font-size: 1.8rem;
+        line-height: 1.3;
         margin-bottom: 0.5rem;
     }
     
     .hero-subtitle {
-        font-size: 1.1rem;
-        line-height: 1.4;
-        padding: 0 1rem;
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
     }
 
     .creation-options {
-        gap: 1rem;
+        gap: 1.5rem;
         padding: 0.5rem;
     }
 
@@ -1603,37 +1708,311 @@ body.modal-open .modal {
     }
 }
 
-/* Brand Navigation */
+/* Brand Navigation - update to have logo on left with brand name */
 .nav-bar {
-    background: linear-gradient(135deg, #A29BFE 0%, #74B9FF 100%);
-    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #74b9ff 0%, #a29bfe 100%);
+    padding: 0.8rem 2rem;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .nav-bar .brand {
     max-width: 1200px;
     margin: 0 auto;
+    display: flex;
+    justify-content: flex-start; /* Align to left */
+    align-items: center;
 }
 
-.nav-bar .brand a {
+.brand-link {
+    display: flex;
+    align-items: center;
     text-decoration: none;
 }
 
-.nav-bar .brand h1 {
-    color: white;
+.brand-logo {
+    height: 36px;
+    width: auto;
+    margin-right: 10px;
+}
+
+.brand-name {
     font-family: 'Poppins', sans-serif;
-    font-size: 1.8rem;
-    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+}
+
+.brand-name em {
+    font-style: italic;
     font-weight: 700;
 }
 
-/* Mobile adjustments */
 @media (max-width: 768px) {
     .nav-bar {
-        padding: 0.8rem 1rem;
+        padding: 0.7rem 1rem;
+    }
+    
+    .brand-logo {
+        height: 32px;
+    }
+    
+    .brand-name {
+        font-size: 1.3rem;
+    }
+}
+
+/* Add this after the existing .screen styles */
+.screen.screen-kudos {
+    /* Inherit common screen styles */
+    text-align: center;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.screen-kudos h2 {
+    /* Inherit existing h2 styles from other screens */
+    margin-bottom: 1.5rem;
+}
+
+.kudos-content {
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 1rem auto;
+    width: 85%;
+    max-width: 450px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Keep the animation styles */
+.kudos-content::before,
+.kudos-content::after {
+    content: '✨';
+    position: absolute;
+    opacity: 0;
+    animation: float 3s ease-in-out infinite;
+}
+
+.kudos-content::before {
+    left: 10%;
+    animation-delay: 0.5s;
+}
+
+.kudos-content::after {
+    right: 10%;
+    animation-delay: 1s;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(100%) rotate(0deg);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100%) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+.kudos-message {
+    font-family: 'Lora', serif; /* Match existing font family */
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #333;
+    margin: 1rem 0;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.kudos-icon {
+    font-size: 2.5rem;
+    margin: 1rem 0;
+    color: #FFD700;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Update button styles to match existing ones */
+.screen-kudos .next-btn {
+    /* Remove this section since it's redundant */
+}
+
+/* Use the common next-btn styles for all screens */
+.next-btn {
+    background: linear-gradient(135deg, #74b9ff 0%, #a29bfe 100%);
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.next-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(116, 185, 255, 0.3);
+}
+
+/* Update mobile styles to match existing patterns */
+@media (max-width: 768px) {
+    .screen-kudos {
+        padding: 1rem 0;
     }
 
-    .nav-bar .brand h1 {
-        font-size: 1.5rem;
+    .kudos-content {
+        width: 95%;
+        padding: 1.5rem;
     }
-} 
+
+    .kudos-message {
+        font-size: clamp(14px, 3.5vw, 16px);
+    }
+}
+
+/* Add consistent focus states for better accessibility */
+button:focus,
+input:focus,
+textarea:focus {
+    outline: 2px solid #74b9ff;
+    outline-offset: 2px;
+}
+
+/* Add subtle hover effects to buttons */
+.primary-button:hover,
+.analyze-btn:hover,
+.inspire-btn:hover,
+.next-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(116, 185, 255, 0.3);
+}
+
+/* Add consistent border radius throughout the app */
+.modal-content,
+.upload-box,
+.story-input,
+.keywords-input,
+.suggestions,
+.kudos-content,
+.generated-story {
+    border-radius: 12px;
+}
+
+/* Add subtle transitions for smoother interactions */
+.screen,
+.suggestions,
+.modal-content,
+.kudos-content {
+    transition: all 0.3s ease;
+}
+
+/* Update hero section gradient to match the new color scheme */
+.hero-section {
+    background: transparent;
+}
+
+/* Add a subtle pattern or texture to the background for more visual interest */
+body {
+    background-color: #f8f9fa;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%2374b9ff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+    background-attachment: fixed;
+}
+
+/* Consistent button row positioning for all screens */
+.button-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 85%;
+    max-width: 450px;
+    margin: 1.5rem auto;
+    padding: 0 1rem;
+}
+
+/* For screens with only next button, center it */
+.button-row:only-child {
+    justify-content: center;
+}
+
+/* Add mobile-specific adjustments */
+@media (max-width: 768px) {
+    .input-group {
+        margin-bottom: 0.25rem !important;
+    }
+    
+    .additional-fields {
+        padding: 0.25rem !important;
+    }
+    
+    .additional-fields .input-field {
+        margin: 0 !important;
+    }
+    
+    .additional-fields label {
+        margin-bottom: 0.15rem !important;
+        font-size: 0.9rem !important;
+        line-height: 1.2 !important;
+    }
+    
+    .additional-fields textarea {
+        padding: 0.35rem !important;
+        min-height: 2rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+    
+    .main-prompt::placeholder,
+    .detail-input::placeholder {
+        color: inherit !important;
+        opacity: 0.6 !important;
+    }
+    
+    .detail-input {
+        margin: 0 !important;
+        padding: 0.35rem !important;
+        min-height: 2rem !important;
+        font-size: 0.9rem !important;
+    }
+    
+    .input-group + .input-group {
+        margin-top: 5px !important;
+    }
+}
+
+/* Additional specific fixes for mobile spacing */
+@media (max-width: 768px) {
+    .detail-input {
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .input-group + .input-group {
+        margin-top: 0.5rem !important;
+    }
+}
