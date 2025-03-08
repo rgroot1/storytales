@@ -2,137 +2,173 @@
 
 {% block title %}StoryTales - Create Stories from Kids' Artwork{% endblock %}
 
-{% block content %}
-<div class="story-landing">
-    <div class="hero-section">
-        <h1>Where Every Scribble Sparks a Magical Journey</h1>
-        <p class="hero-subtitle">Create magical stories from your child's artwork or start from scratch</p>
-    </div>
-
-    <div class="creation-options">
-        <a href="{{ url_for('story.create', type='scratch') }}" class="creation-option scratch-option">
-            <div class="option-content">
-                <i class="fas fa-pencil-alt"></i>
-                <h2>Create from Scratch</h2>
-                <p>Start with your own creative ideas</p>
-            </div>
-        </a>
-        
-        <a href="{{ url_for('story.create', type='artwork') }}" class="creation-option artwork-option">
-            <div class="option-content">
-                <i class="fas fa-image"></i>
-                <h2>Create from Artwork</h2>
-                <p>Turn your artwork into a story</p>
-            </div>
-        </a>
-    </div>
-</div>
-{% endblock %}
-
 {% block styles %}
 <style>
-/* Version: 1.0.0 */
-.story-landing {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
+/* Add a specific ID to the body for this page only */
+#dark-theme-home {
+    background-color: #38373d !important;
+    background-image: none !important;
 }
 
+#dark-theme-home .container,
+#dark-theme-home .main-input-section {
+    background-color: #38373d !important;
+    box-shadow: none !important;
+}
+
+/* Center-aligned hero section */
 .hero-section {
     text-align: center;
-    margin-bottom: 2rem;  /* Reduced from 3rem */
+    margin: 0 auto;
+    max-width: 800px;
 }
 
 .hero-section h1 {
-    font-size: 2.5rem;
-    color: #2c3e50;
+    font-size: 3.5rem;
+    line-height: 1.2;
     margin-bottom: 1rem;
+    font-weight: 700;
 }
 
 .hero-subtitle {
     font-size: 1.2rem;
-    color: #666;
+    margin-bottom: 2.5rem;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 600px;
 }
 
-.creation-options {
+/* Center-aligned buttons */
+.action-buttons {
     display: flex;
-    gap: 2rem;
+    gap: 1.5rem;
+    align-items: center;
     justify-content: center;
-    flex-wrap: wrap;
+    margin-top: 2rem;
 }
 
-.creation-option {
-    flex: 1;
-    min-width: 280px;
-    max-width: 400px;
-    height: 300px;
-    border-radius: 15px;
+.btn {
+    padding: 0.8rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
     text-decoration: none;
-    color: inherit;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.creation-option:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-}
-
-.artwork-option {
-    background: linear-gradient(135deg, #74b9ff 0%, #a29bfe 100%);
-}
-
-.scratch-option {
-    background: linear-gradient(135deg, #FFD700, #FFA500);
-}
-
-.option-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     text-align: center;
-    width: 100%;
-    padding: 2rem;
+    transition: all 0.3s ease;
+    display: inline-block;
 }
 
-.option-content i {
-    font-size: 3rem;
+.btn-primary {
+    background: linear-gradient(135deg, #A29BFE 0%, #74B9FF 100%);
     color: white;
-    margin-bottom: 1rem;
+    box-shadow: 0 4px 15px rgba(116, 185, 255, 0.4);
 }
 
-.option-content h2 {
-    font-family: 'Poppins', sans-serif;
+.btn-secondary {
+    background: transparent;
     color: white;
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
-    font-weight: 500;
+    border: 2px solid rgba(255, 255, 255, 0.3);
 }
 
-.option-content p {
-    font-family: 'Poppins', sans-serif;
-    color: white;
-    font-size: 1.1rem;
-    opacity: 0.9;
+.btn:hover {
+    transform: translateY(-2px);
 }
 
-/* Responsive Design */
+.btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(116, 185, 255, 0.6);
+}
+
+.btn-secondary:hover {
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Mobile styles */
 @media (max-width: 768px) {
+    .split-container {
+        flex-direction: column !important;
+    }
+    
+    .split-left {
+        max-width: 100% !important;
+        order: 1;
+    }
+    
+    .split-right {
+        max-width: 100% !important;
+        order: 2;
+        display: block !important;
+        margin-top: 1.5rem;
+    }
+    
     .hero-section h1 {
-        font-size: 1.8rem;
-        line-height: 1.3;
+        font-size: 2.2rem !important;
+        margin-bottom: 0.5rem !important;
+        line-height: 1.2 !important;
     }
-
+    
     .hero-subtitle {
-        font-size: 1rem;
+        font-size: 1.1rem !important;
+        margin-bottom: 1rem !important;
     }
-
-    .creation-option {
-        min-width: 100%;
-        height: 180px;
+    
+    .action-buttons {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 0.5rem;
+        gap: 1rem !important;
+    }
+    
+    .btn {
+        padding: 0.6rem 1.5rem !important;
+        font-size: 1rem !important;
+    }
+    
+    .hero-image {
+        max-width: 100% !important;
+        margin: 0 auto;
+        display: block;
+    }
+    
+    .container {
+        padding: 0.8rem !important;
+    }
+    
+    .main-input-section {
+        padding: 0.8rem !important;
     }
 }
 </style>
+{% endblock %}
+
+{% block body_attributes %}id="dark-theme-home"{% endblock %}
+
+{% block content %}
+<div class="split-container" style="display: flex; flex-direction: row; width: 100%; gap: 2rem;">
+    <!-- Left Side -->
+    <div class="split-left" style="flex: 1; max-width: 50%; display: flex; flex-direction: column; justify-content: center;">
+        <div class="hero-section">
+            <h1 style="color: white;">Where Every Scribble Sparks a Magical Journey</h1>
+            <p class="hero-subtitle" style="color: #d1d1d1;">Create magical stories from your child's artwork or start from scratch</p>
+        </div>
+
+        <div class="action-buttons">
+            <a href="{{ url_for('story.create', type='artwork') }}" class="btn btn-primary">
+                Create from Artwork
+            </a>
+            
+            <a href="{{ url_for('story.create', type='scratch') }}" class="btn btn-secondary">
+                Create from Scratch
+            </a>
+        </div>
+    </div>
+
+    <!-- Right Side -->
+    <div class="split-right" style="flex: 1; max-width: 50%; display: flex; align-items: center; justify-content: center;">
+        <img src="{{ url_for('static', filename='images/story-hero.jpg') }}" 
+             alt="Story Creation" 
+             class="hero-image"
+             style="max-width: 100%; height: auto; border-radius: 12px;">
+    </div>
+</div>
 {% endblock %} 
