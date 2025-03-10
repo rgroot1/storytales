@@ -603,18 +603,30 @@ body:not(.modal-open) .keywords-input {
 .keywords-input {
     width: 90% !important;
     max-width: 450px !important;
-    padding: 1rem;
-    border: 2px solid #e0e0e0;
+    padding: 0.5rem 1rem !important;
     border-radius: 0.5rem;
     font-family: 'Poppins', sans-serif;
     font-size: 1rem;
-    margin-top: 0.25rem;
+    margin: 0.5rem auto !important;
+    min-height: 36px !important;
     transition: border-color 0.3s ease;
+    line-height: 1.5 !important;
 }
 
-.keywords-input:focus {
-    border-color: #a29bfe;
+.keywords-input input {
+    width: 100% !important;
+    border: 2px solid #e0e0e0;
+    border-radius: 0.5rem;
     outline: none;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    padding: 0.5rem 1rem;
+}
+
+.keywords-input input:focus {
+    border-color: #74b9ff;
+    box-shadow: 0 0 0 2px rgba(116, 185, 255, 0.2);
 }
 
 .analyze-btn {
@@ -1114,16 +1126,32 @@ body:not(.modal-open) .keywords-input {
 /* Only show modal when explicitly shown */
 .modal.show {
     display: flex !important;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(3px);
+}
+
+/* Ensure simplified story screen is visible when modal is shown */
+.modal.show .simplified-story-screen {
+    display: flex !important;
 }
 
 .modal-content {
-    background-color: white;
-    width: 90%;
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    display: flex !important;
+    flex-direction: column;
+    align-items: center !important;
+    justify-content: flex-start;
+    padding: 40px 20px !important;
+    width: 100% !important;
+    max-width: 600px !important;
+    max-height: 85vh !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    overflow-y: auto !important;
+    margin: 0 auto !important;
+    background: #fff !important;
+    border-radius: 12px !important;
+    box-shadow: none !important;
 }
 
 .modal-close {
@@ -1158,9 +1186,20 @@ body:not(.modal-open) .keywords-input {
 /* Mobile responsiveness */
 @media (max-width: 768px) {
     .modal-content {
-        width: 95%;
-        margin: 10px auto;
-        padding: 15px;
+        height: 100vh !important;
+        max-height: none !important;
+        border-radius: 0 !important;
+        width: 100% !important;
+        max-width: none !important;
+        box-shadow: none !important;
+    }
+
+    .kudo-section {
+        margin-bottom: 1.5rem !important;
+    }
+
+    .kudo-section h2 {
+        font-size: 1.5rem !important;
     }
 
     .screen {
@@ -1276,8 +1315,15 @@ body:not(.modal-open) .keywords-input {
     justify-content: flex-start;
     padding: 40px 20px !important;
     width: 100% !important;
+    max-width: 600px !important;
+    max-height: 85vh !important;
     box-sizing: border-box !important;
-    position: relative !important;  /* Added to ensure proper stacking context */
+    position: relative !important;
+    overflow-y: auto !important;
+    margin: 0 auto !important;
+    background: #fff !important;
+    border-radius: 12px !important;
+    box-shadow: none !important;
 }
 
 /* Input Group Container */
@@ -1842,21 +1888,21 @@ body.modal-open .modal {
 }
 
 .kudos-icon {
-    font-size: 2.5rem;
-    margin: 1rem 0;
+    font-size: 32px; /* Reduced from 48px */
     color: #FFD700;
-    animation: pulse 2s ease-in-out infinite;
+    margin-left: 12px;
+    animation: bounce 2s infinite;
 }
 
-@keyframes pulse {
-    0% {
-        transform: scale(1);
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
     }
-    50% {
-        transform: scale(1.2);
+    40% {
+        transform: translateY(-15px);
     }
-    100% {
-        transform: scale(1);
+    60% {
+        transform: translateY(-7px);
     }
 }
 
@@ -2015,4 +2061,261 @@ body {
     .input-group + .input-group {
         margin-top: 0.5rem !important;
     }
+}
+
+/* ==========================================
+   SIMPLIFIED ARTWORK STORY GENERATION UI
+   v2.0 - Single Screen Flow
+   ========================================== */
+
+/* Hide legacy screens by default when simplified UI is active */
+.legacy-screen {
+    display: none !important;
+}
+
+/* Simplified story screen container */
+.simplified-story-screen {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 0.8rem !important;
+    padding: 0 !important;
+    background-color: white !important;
+    border-radius: 12px !important;
+    box-shadow: none !important;
+}
+
+/* Story elements section */
+.story-elements-section {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1.2rem !important;
+    width: 100% !important;
+    padding: 0 1rem !important;
+    overflow-y: auto !important;
+}
+
+/* Button row - ensure it stays at the bottom */
+.simplified-story-screen .button-row {
+    position: sticky !important;
+    bottom: 0 !important;
+    background: white !important;
+    padding: 1.2rem 1rem !important;
+    margin: 0 !important;
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.8rem !important;
+    box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+    z-index: 10 !important;
+}
+
+/* Ensure proper spacing for the last story element */
+.story-element:last-child {
+    margin-bottom: 1rem !important;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .modal-content {
+        height: 100vh !important;
+        max-height: none !important;
+        border-radius: 0 !important;
+    }
+
+    .simplified-story-screen {
+        height: 100% !important;
+    }
+
+    .story-elements-section {
+        padding: 0 0.8rem !important;
+    }
+
+    .simplified-story-screen .button-row {
+        padding: 0.8rem !important;
+    }
+}
+
+/* ==========================================
+   NOTIFICATION COMPONENT
+   ========================================== */
+
+.story-notification {
+    position: fixed;
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 2000;
+    transition: bottom 0.3s ease-in-out;
+    max-width: 90%;
+    text-align: center;
+}
+
+.story-notification.show {
+    bottom: 20px;
+}
+
+.story-notification.info {
+    background-color: #e3f2fd;
+    color: #0d47a1;
+    border-left: 4px solid #2196f3;
+}
+
+.story-notification.warning {
+    background-color: #fff3e0;
+    color: #e65100;
+    border-left: 4px solid #ff9800;
+}
+
+.story-notification.error {
+    background-color: #ffebee;
+    color: #b71c1c;
+    border-left: 4px solid #f44336;
+}
+
+@media (max-width: 768px) {
+    .story-notification {
+        padding: 10px 16px;
+        font-size: 13px;
+        max-width: 95%;
+    }
+    
+    .story-notification.show {
+        bottom: 15px;
+    }
+}
+
+/* Character count display */
+.character-count {
+    font-size: 12px;
+    color: #666;
+    text-align: right;
+    margin-top: 4px;
+}
+
+.character-count.limit-reached {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+/* Modal show state */
+.modal.show {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(3px);
+}
+
+/* Hide the star icon completely */
+.star-icon {
+    display: none !important;
+}
+
+/* Adjust the kudo section to account for removed star */
+.kudo-section {
+    text-align: center !important;
+    position: relative !important;
+    margin-bottom: 2.5rem !important;
+    padding: 0 1rem !important;
+    width: 100% !important;
+}
+
+/* Kudo section heading styles */
+.kudo-section h2 {
+    font-size: 1.75rem !important;
+    font-weight: 700 !important;
+    color: #333 !important;
+    margin: 0 auto !important;
+    line-height: 1.3 !important;
+    max-width: 100% !important;
+    padding: 0.5rem 0 !important;
+}
+
+/* Story elements section with increased spacing */
+.story-elements-section {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1.2rem !important;
+    width: 100% !important;
+    padding: 0 1rem !important;
+    overflow-y: auto !important;
+}
+
+/* Add more spacing to the section heading */
+.story-elements-section h3 {
+    margin-bottom: 1.5rem !important;
+    font-size: 1.2rem !important;
+    font-weight: 600 !important;
+    color: #444 !important;
+}
+
+/* Primary button styling */
+#looks-good-btn {
+    background-color: #4CAF50 !important;
+    color: white !important;
+    padding: 0.8rem 1.5rem !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: background-color 0.3s !important;
+    text-transform: none !important;
+}
+
+#looks-good-btn:hover {
+    background-color: #3e8e41 !important;
+}
+
+/* Secondary button styling */
+#other-options-btn {
+    background-color: transparent !important;
+    color: #555 !important;
+    padding: 0.8rem 1.5rem !important;
+    border: 1px solid #ddd !important;
+    border-radius: 8px !important;
+    font-size: 0.95rem !important;
+    cursor: pointer !important;
+    transition: background-color 0.3s, color 0.3s !important;
+    text-transform: none !important;
+}
+
+#other-options-btn:hover {
+    background-color: #f5f5f5 !important;
+    color: #333 !important;
+}
+
+/* Individual story element styling */
+.story-element {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.story-element label {
+    font-weight: 600 !important;
+    color: #444 !important;
+    font-size: 1rem !important;
+}
+
+.story-element input {
+    padding: 0.8rem 1rem !important;
+    border: 1px solid #ddd !important;
+    border-radius: 8px !important;
+    font-size: 1rem !important;
+    transition: border-color 0.3s, box-shadow 0.3s !important;
+}
+
+.story-element input:focus {
+    border-color: #74b9ff !important;
+    box-shadow: 0 0 0 2px rgba(116, 185, 255, 0.2) !important;
+    outline: none !important;
 }

@@ -49,39 +49,37 @@ class ArtworkAnalyzer:
         
         # TASK
         Analyze the child's artwork and provide:
-        1. Positive comments about the artwork
-        2. Questions to ask the child about their artwork
-        3. Story elements that could be used to create a story based on the artwork
+        1. Positive comments about the specific elements you can see in the artwork
+        2. Questions to ask the child about specific details in their artwork
+        3. Story elements that are directly inspired by what you can see in the artwork
         
         # OUTPUT FORMAT
         Respond with a JSON object with the following structure:
         ```json
         {{
           "comments": ["comment1", "comment2", ...],
-          "questions": ["question1", "question2", ...],
           "story_elements": {{
             "characters": ["character1", "character2", ...],
             "setting": ["setting1", "setting2", ...],
-            "moral": "A story about..."
+            "moral": ["moral1", "moral2", ...],
           }}
         }}
         ```
         
         # GUIDELINES
-        - Be encouraging and positive
-        - Focus on creativity and imagination
-        - Suggest story elements that would appeal to young children
-        - Keep all text appropriate for young children
-        - Limit each comment, question, and story element to 300 characters or less
-        - Include 2-3 comments
-        - Include 2-3 questions
-        - Include 2-4 characters
-        - Include 1-2 settings
-        - Include a brief moral or theme for the story
+        - Comments should be specific and reference actual visual elements you can see in the artwork
+        - Make story elements directly connected to what's in the artwork
+        - Suggest characters that could represent the figures or objects in the drawing
+        - Keep all text appropriate for kids
+        - Limit each comment, question, and story element to 300 characters or less, return no periods or commas
+        - Include 3 comments that specifically mention elements in the artwork
+        - Include 3 characters that could represent elements in the artwork
+        - Include 3 settings that match the scene in the artwork
+        - Include 3 brief morals or themes that relate to the content of the artwork
         
         # KEYWORDS
-        If provided, incorporate these keywords into your analysis: {keywords}
-        """
+        If provided, incorporate these keywords into your analysis and story elements: {keywords}   
+       """
 
     def _compress_image(self, image_file, max_size=(800, 800), quality=85):
         """Compress uploaded image for API processing"""

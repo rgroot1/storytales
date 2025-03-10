@@ -1,6 +1,7 @@
 const FEATURES = {
     ARTWORK_UPLOAD: true,
-    ARTWORK_ANALYSIS: true
+    ARTWORK_ANALYSIS: true,
+    SIMPLIFIED_ARTWORK_FLOW: true  // v2.0: Feature flag for simplified artwork flow
 };
 
 console.log('Script starting...');
@@ -107,6 +108,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
+            // Setup keywords character counter
+            const keywordsInput = document.querySelector('.keywords-input input');
+            const keywordsCounter = document.getElementById('keywords-count');
+            if (keywordsInput && keywordsCounter) {
+                keywordsInput.addEventListener('input', function() {
+                    const length = this.value.length;
+                    keywordsCounter.textContent = length;
+                    
+                    // Add warning class when approaching limit
+                    const counterContainer = keywordsCounter.parentElement;
+                    if (length >= 90) {
+                        counterContainer.classList.add('limit-reached');
+                    } else {
+                        counterContainer.classList.remove('limit-reached');
+                    }
+                    
+                    // Show warning when limit is reached
+                    if (length === 100) {
+                        showNotification('Maximum character limit reached for keywords', 'warning');
+                    }
+                });
+            }
+
             // Setup delete button handler
             uploadBox.addEventListener('click', function(e) {
                 const deleteBtn = e.target.closest('.delete-image');
@@ -117,6 +141,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Reset file input value so same file can be uploaded again
                     artworkInput.value = '';
                     uploadedFile = null;
+                    
+                    // Clear the cached analysis results
+                    lastAnalysisResult = null;
                     
                     // Reset upload box UI
                     uploadBox.innerHTML = `
@@ -186,6 +213,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 try {
+                    // Check if we have cached results for this image
+                    if (lastAnalysisResult) {
+                        console.log('Using cached analysis results');
+                        showAnalysisResults(lastAnalysisResult);
+                        if (analyzeBtn) {
+                            analyzeBtn.disabled = false;
+                            analyzeBtn.textContent = 'Start the Magic! ✨';
+                        }
+                        return;
+                    }
+
                     const formData = new FormData();
                     formData.append('artwork', uploadedFile);
                     formData.append('keywords', document.querySelector('.keywords-input input')?.value || '');
@@ -200,6 +238,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         throw new Error(data.error || 'Failed to analyze artwork');
                     }
 
+                    // Store the result for caching
+                    lastAnalysisResult = data;
                     showAnalysisResults(data);
                 } catch (error) {
                     console.error('Error:', error);
@@ -238,9 +278,21 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize analysis trigger flag at page load
     window.analysisTriggered = false;
 
-    // Global handlers that should work on both pages
+    // Add basic implementations of the missing functions
+    // Function to handle global UI interactions
+    function setupGlobalHandlers() {
+        console.log('Setting up global handlers');
+        // This function was previously missing - add basic implementation
+    }
+    
+    // Function to set up modal-related handlers
+    function setupModalHandlers() {
+        console.log('Setting up modal handlers');
+        // This function was previously missing - add basic implementation
+    }
+    
+    // Call the functions now that they're defined
     setupGlobalHandlers();
-
     setupModalHandlers();
 
     // Search for event handler setup for the "More Details" button
@@ -370,47 +422,433 @@ function showAnalysisResults(analysisData) {
     if (isArtworkPage) {
         const modal = document.getElementById('storyModal');
         if (modal) {
-            const modalContent = modal.querySelector('.modal-content');
-            
-            // Remove any existing kudos screens first
-            modalContent.querySelectorAll('.screen-kudos').forEach(screen => screen.remove());
-            
-            // Extract comments from the response
-            const comments = analysisData.comments || analysisData.analysis?.comments || [];
-            
-            // Create kudos screen
-            const kudosScreen = createKudosScreen(comments);
-            
-            // Insert kudos screen before the first existing screen
-            const firstScreen = modalContent.querySelector('.screen');
-            if (firstScreen) {
-                modalContent.insertBefore(kudosScreen, firstScreen);
-            } else {
-                modalContent.appendChild(kudosScreen);
-            }
-            
+            // Show the modal
+            console.log('Showing modal');
             modal.classList.add('show');
             document.body.classList.add('modal-open');
 
-            // Show kudos screen first, hide others
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.style.display = 'none';
-                screen.classList.remove('active');
-            });
-            kudosScreen.style.display = 'block';
-            kudosScreen.classList.add('active');
-            
-            // Setup modal close handlers
-            setupModalCloseHandlers(modal);
+            // Add a small delay to ensure modal is visible before manipulating content
+            setTimeout(() => {
+                console.log('Modal visibility check:', {
+                    modalDisplay: window.getComputedStyle(modal).display,
+                    modalVisibility: window.getComputedStyle(modal).visibility,
+                    modalOpacity: window.getComputedStyle(modal).opacity
+                });
+                
+                // Check if we should use the simplified flow
+                if (FEATURES.SIMPLIFIED_ARTWORK_FLOW) {
+                    console.log('Using simplified artwork flow');
+                    
+                    // Hide all screens first
+                    document.querySelectorAll('.screen').forEach(screen => {
+                        console.log('Hiding screen:', screen.id);
+                        screen.style.display = 'none';
+                        screen.classList.remove('active');
+                    });
+                    
+                    // Show the simplified screen
+                    const simplifiedScreen = document.getElementById('simplified-story-screen');
+                    console.log('Simplified screen element:', simplifiedScreen);
+                    
+                    if (simplifiedScreen) {
+                        console.log('Setting simplified screen display to flex');
+                        simplifiedScreen.style.display = 'flex';
+                        simplifiedScreen.classList.add('active');
+                        
+                        // Pre-fill the story elements with random suggestions
+                        prefillStoryElements(analysisData);
+                        
+                        // Setup button handlers
+                        setupSimplifiedFlowHandlers(analysisData);
+                    } else {
+                        console.error('Could not find simplified-story-screen element!');
+                    }
+                    
+                    // Hide progress bar for simplified flow
+                    const progressBar = document.querySelector('.progress-bar');
+                    if (progressBar) {
+                        progressBar.style.display = 'none';
+                    }
+                } else {
+                    // Legacy multi-screen flow
+                    // Remove any existing kudos screens first
+                    const modalContent = modal.querySelector('.modal-content');
+                    modalContent.querySelectorAll('.screen-kudos').forEach(screen => screen.remove());
+                    
+                    // Extract comments from the response
+                    const comments = analysisData.comments || analysisData.analysis?.comments || [];
+                    
+                    // Create kudos screen
+                    const kudosScreen = createKudosScreen(comments);
+                    
+                    // Insert kudos screen before the first existing screen
+                    const firstScreen = modalContent.querySelector('.screen');
+                    if (firstScreen) {
+                        modalContent.insertBefore(kudosScreen, firstScreen);
+                    } else {
+                        modalContent.appendChild(kudosScreen);
+                    }
+                    
+                    // Show kudos screen first, hide others
+                    document.querySelectorAll('.screen').forEach(screen => {
+                        screen.style.display = 'none';
+                        screen.classList.remove('active');
+                    });
+                    kudosScreen.style.display = 'block';
+                    kudosScreen.classList.add('active');
+                    
+                    // Setup legacy navigation handlers
+                    setupNavigationHandlers();
+                    setupSuggestionHandlers();
+                    setupCreateButton();
+                    
+                    // Start with kudos screen in progress bar
+                    updateStoryProgress('screen-kudos');
+                }
+                
+                // Setup modal close handlers
+                setupModalCloseHandlers(modal);
+            }, 100);
         }
     }
+}
 
-    setupNavigationHandlers();
-    setupSuggestionHandlers();
-    setupCreateButton();
+// Function to pre-fill story elements with random suggestions from the analysis
+function prefillStoryElements(analysisData) {
+    console.log('Pre-filling story elements with suggestions');
     
-    // Start with kudos screen in progress bar
-    updateStoryProgress('screen-kudos');
+    // Default fallback content in case of API failure
+    const defaultStoryElements = {
+        characters: ["Shadow the grey cat", "Sparkle the friendly dragon", "Max the brave puppy", "Lily the curious rabbit"],
+        setting: ["A sunny garden", "A magical forest", "A cozy treehouse", "A secret cave"],
+        moral: "A story about friendship and helping others"
+    };
+    
+    // Default fallback comments
+    const defaultComments = [
+        "Wow, you did a great job cutting out all the shapes!",
+        "I love the colors you used in your artwork!",
+        "Your drawing shows so much creativity and imagination!"
+    ];
+    
+    // Extract story elements from the analysis data or use defaults if not available
+    let storyElements = {};
+    let comments = [];
+    
+    try {
+        // Check if we have valid analysis data
+        if (analysisData && analysisData.analysis) {
+            if (analysisData.analysis.story_elements) {
+                storyElements = analysisData.analysis.story_elements;
+                console.log('Using API-provided story elements:', storyElements);
+            }
+            
+            if (analysisData.analysis.comments && analysisData.analysis.comments.length > 0) {
+                comments = analysisData.analysis.comments;
+                console.log('Using API-provided comments:', comments);
+            } else if (analysisData.comments && analysisData.comments.length > 0) {
+                comments = analysisData.comments;
+                console.log('Using API-provided comments (legacy format):', comments);
+            }
+        }
+        
+        // Use defaults if data is missing
+        if (Object.keys(storyElements).length === 0) {
+            storyElements = defaultStoryElements;
+            console.log('API data missing, using default story elements');
+            showNotification('Using default story elements due to API limitations', 'info');
+        }
+        
+        if (comments.length === 0) {
+            comments = defaultComments;
+            console.log('API comments missing, using default comments');
+        }
+    } catch (error) {
+        // Use defaults if there's an error
+        storyElements = defaultStoryElements;
+        comments = defaultComments;
+        console.error('Error processing API data:', error);
+        showNotification('Using default story elements due to an error', 'warning');
+    }
+    
+    // Update the kudo message with a random comment from the API
+    const kudoMessage = document.getElementById('kudo-message');
+    if (kudoMessage && comments.length > 0) {
+        const randomComment = comments[Math.floor(Math.random() * comments.length)];
+        kudoMessage.textContent = randomComment;
+    }
+    
+    // Get the input fields
+    const characterInput = document.getElementById('character');
+    const settingInput = document.getElementById('setting');
+    const themeInput = document.getElementById('theme');
+    
+    // Randomly select and pre-fill character
+    if (storyElements.characters && storyElements.characters.length > 0) {
+        const randomCharacter = storyElements.characters[Math.floor(Math.random() * storyElements.characters.length)];
+        if (characterInput) characterInput.value = randomCharacter;
+    } else if (characterInput) {
+        characterInput.value = defaultStoryElements.characters[0];
+    }
+    
+    // Randomly select and pre-fill setting
+    if (storyElements.setting && storyElements.setting.length > 0) {
+        const randomSetting = storyElements.setting[Math.floor(Math.random() * storyElements.setting.length)];
+        if (settingInput) settingInput.value = randomSetting;
+    } else if (settingInput) {
+        settingInput.value = defaultStoryElements.setting[0];
+    }
+    
+    // Pre-fill theme/moral
+    if (storyElements.moral) {
+        // Handle both string and array formats for moral
+        const moral = Array.isArray(storyElements.moral) 
+            ? storyElements.moral[Math.floor(Math.random() * storyElements.moral.length)]
+            : storyElements.moral;
+            
+        if (themeInput) themeInput.value = moral;
+    } else if (themeInput) {
+        themeInput.value = defaultStoryElements.moral;
+    }
+    
+    // Store the used suggestions to avoid duplicates when showing other options
+    window.usedSuggestions = {
+        characters: characterInput ? [characterInput.value] : [],
+        setting: settingInput ? [settingInput.value] : [],
+        moral: themeInput ? [themeInput.value] : []
+    };
+    
+    // Store all available suggestions for reference
+    window.allSuggestions = {
+        characters: storyElements.characters || defaultStoryElements.characters,
+        setting: storyElements.setting || defaultStoryElements.setting,
+        moral: Array.isArray(storyElements.moral) ? storyElements.moral : [storyElements.moral || defaultStoryElements.moral]
+    };
+}
+
+// Function to show other story element options
+function showOtherOptions(analysisData) {
+    console.log('Showing other story element options');
+    
+    // Get the input fields
+    const characterInput = document.getElementById('character');
+    const settingInput = document.getElementById('setting');
+    const themeInput = document.getElementById('theme');
+    
+    // Initialize used suggestions if not already done
+    if (!window.usedSuggestions) {
+        window.usedSuggestions = {
+            characters: [],
+            setting: [],
+            moral: []
+        };
+    }
+    
+    // Initialize all suggestions if not already done
+    if (!window.allSuggestions) {
+        // Default fallback content
+        window.allSuggestions = {
+            characters: ["Shadow the grey cat", "Sparkle the friendly dragon", "Max the brave puppy", "Lily the curious rabbit"],
+            setting: ["A sunny garden", "A magical forest", "A cozy treehouse", "A secret cave"],
+            moral: ["A story about friendship and helping others"]
+        };
+    }
+    
+    // Check if we've used all available suggestions
+    const allCharactersUsed = window.usedSuggestions.characters.length >= window.allSuggestions.characters.length;
+    const allSettingsUsed = window.usedSuggestions.setting.length >= window.allSuggestions.setting.length;
+    const allMoralsUsed = window.usedSuggestions.moral.length >= window.allSuggestions.moral.length;
+    
+    if (allCharactersUsed && allSettingsUsed && allMoralsUsed) {
+        // We've used all available suggestions
+        showNotification("You've seen all available suggestions! Feel free to edit the text directly.", 'info');
+        return;
+    }
+    
+    // Find unused character suggestion
+    if (!allCharactersUsed && window.allSuggestions.characters.length > 0) {
+        const unusedCharacters = window.allSuggestions.characters.filter(
+            char => !window.usedSuggestions.characters.includes(char)
+        );
+        
+        if (unusedCharacters.length > 0) {
+            const randomCharacter = unusedCharacters[Math.floor(Math.random() * unusedCharacters.length)];
+            if (characterInput) {
+                characterInput.value = randomCharacter;
+                window.usedSuggestions.characters.push(randomCharacter);
+            }
+        }
+    }
+    
+    // Find unused setting suggestion
+    if (!allSettingsUsed && window.allSuggestions.setting.length > 0) {
+        const unusedSettings = window.allSuggestions.setting.filter(
+            setting => !window.usedSuggestions.setting.includes(setting)
+        );
+        
+        if (unusedSettings.length > 0) {
+            const randomSetting = unusedSettings[Math.floor(Math.random() * unusedSettings.length)];
+            if (settingInput) {
+                settingInput.value = randomSetting;
+                window.usedSuggestions.setting.push(randomSetting);
+            }
+        }
+    }
+    
+    // For moral/theme, we might not have multiple options, so just keep the existing one
+    // or try to find a variation if possible
+    if (!allMoralsUsed && window.allSuggestions.moral.length > 0) {
+        const unusedMorals = window.allSuggestions.moral.filter(
+            moral => !window.usedSuggestions.moral.includes(moral)
+        );
+        
+        if (unusedMorals.length > 0) {
+            const randomMoral = unusedMorals[Math.floor(Math.random() * unusedMorals.length)];
+            if (themeInput) {
+                themeInput.value = randomMoral;
+                window.usedSuggestions.moral.push(randomMoral);
+            }
+        }
+    }
+}
+
+// Helper function to show notifications
+function showNotification(message, type = 'info') {
+    // Create notification element if it doesn't exist
+    let notification = document.querySelector('.story-notification');
+    if (!notification) {
+        notification = document.createElement('div');
+        notification.className = 'story-notification';
+        document.body.appendChild(notification);
+    }
+    
+    // Set notification content and type
+    notification.textContent = message;
+    notification.className = `story-notification ${type}`;
+    
+    // Show notification
+    notification.classList.add('show');
+    
+    // Hide notification after 5 seconds
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 5000);
+}
+
+// Function to setup handlers for the simplified flow
+function setupSimplifiedFlowHandlers(analysisData) {
+    console.log('Setting up simplified flow handlers');
+    
+    // Setup character count handlers
+    setupCharacterCounters();
+    
+    // "Looks good" button handler
+    const looksGoodBtn = document.getElementById('looks-good-btn');
+    if (looksGoodBtn) {
+        looksGoodBtn.addEventListener('click', async function() {
+            console.log('Looks good button clicked');
+            
+            // Disable the button while generating
+            looksGoodBtn.disabled = true;
+            looksGoodBtn.textContent = 'Creating...';
+            
+            try {
+                // Get the story elements
+                const character = document.getElementById('character').value.trim();
+                const setting = document.getElementById('setting').value.trim();
+                const theme = document.getElementById('theme').value.trim();
+                
+                console.log('Story inputs:', { character, setting, theme });
+                
+                if (!character || !setting || !theme) {
+                    // Use notification instead of alert
+                    showNotification('Please fill in all story elements before creating the story', 'error');
+                    throw new Error('Please fill in all story elements before creating the story');
+                }
+                
+                // Call story generation API
+                const response = await fetch('/story/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        mainPrompt: `A story about ${character} in ${setting} who ${theme}`,
+                        ageGroup: 'preK',
+                        isArtworkFlow: true,
+                        context: { character, setting, theme }
+                    })
+                });
+                
+                console.log('Story generation response status:', response.status);
+                const data = await response.json();
+                console.log('Story generation response:', data);
+                
+                if (!data.success && !data.story) {
+                    // Use notification instead of alert
+                    showNotification(data.error || 'No story content received', 'error');
+                    throw new Error(data.error || 'No story content received');
+                }
+                
+                // Handle successful story generation
+                showGeneratedStory(data);
+                
+            } catch (error) {
+                console.error('Error in story creation:', error);
+                // Don't show alert, we're using notifications now
+            } finally {
+                looksGoodBtn.disabled = false;
+                looksGoodBtn.textContent = 'Looks good';
+            }
+        });
+    }
+    
+    // "Show me other options" button handler
+    const otherOptionsBtn = document.getElementById('other-options-btn');
+    if (otherOptionsBtn) {
+        otherOptionsBtn.addEventListener('click', function() {
+            console.log('Show other options button clicked');
+            showOtherOptions(analysisData);
+        });
+    }
+}
+
+// Function to setup character counters for input fields
+function setupCharacterCounters() {
+    const inputFields = [
+        { input: 'character', counter: 'character-count' },
+        { input: 'setting', counter: 'setting-count' },
+        { input: 'theme', counter: 'theme-count' }
+    ];
+    
+    inputFields.forEach(field => {
+        const inputElement = document.getElementById(field.input);
+        const counterElement = document.getElementById(field.counter);
+        
+        if (inputElement && counterElement) {
+            // Update counter on initial load
+            counterElement.textContent = inputElement.value.length;
+            
+            // Update counter on input
+            inputElement.addEventListener('input', function() {
+                const length = this.value.length;
+                counterElement.textContent = length;
+                
+                // Add warning class when approaching limit
+                const counterContainer = counterElement.parentElement;
+                if (length >= 90) {
+                    counterContainer.classList.add('limit-reached');
+                } else {
+                    counterContainer.classList.remove('limit-reached');
+                }
+                
+                // Show warning when limit is reached
+                if (length === 100) {
+                    showNotification(`Maximum character limit reached for ${field.input}`, 'warning');
+                }
+            });
+        }
+    });
 }
 
 // Helper function to setup modal close handlers
@@ -1041,12 +1479,26 @@ function setupInspireButton(analysisData) {
 }
 
 function resetModalState() {
-    // Reset screens visibility
-    document.querySelectorAll('.screen').forEach((screen) => {
-        // All screens start hidden
-        screen.classList.add('hidden');
-        screen.style.display = 'none';
-    });
+    if (FEATURES.SIMPLIFIED_ARTWORK_FLOW) {
+        // For simplified flow, only reset legacy screens
+        document.querySelectorAll('.legacy-screen').forEach((screen) => {
+            screen.classList.add('hidden');
+            screen.style.display = 'none';
+        });
+        
+        // Don't hide the simplified screen
+        const simplifiedScreen = document.getElementById('simplified-story-screen');
+        if (simplifiedScreen) {
+            simplifiedScreen.classList.remove('hidden');
+        }
+    } else {
+        // Legacy behavior - reset all screens visibility
+        document.querySelectorAll('.screen').forEach((screen) => {
+            // All screens start hidden
+            screen.classList.add('hidden');
+            screen.style.display = 'none';
+        });
+    }
 
     // Reset suggestions
     document.querySelectorAll('.suggestions').forEach(suggestion => {
@@ -1058,7 +1510,7 @@ function resetModalState() {
     document.querySelectorAll('.story-input').forEach(input => {
         input.value = '';
     });
-
+    
     // Reset progress bar to 20% (first of 5 screens)
     const progressFill = document.querySelector('.progress-fill');
     if (progressFill) {
@@ -1162,3 +1614,6 @@ function createKudosScreen(comments) {
     
     return kudosScreen;
 }
+
+// Store the last analysis result for caching
+let lastAnalysisResult = null;

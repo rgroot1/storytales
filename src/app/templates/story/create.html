@@ -19,8 +19,7 @@
                     <input type="file" id="artwork" name="artwork" accept=".jpg,.jpeg,.png,.gif" hidden>
                     <div class="keywords-input" hidden>
                         <label for="keywords">Tell us about the artwork (optional):</label>
-                        <input type="text" id="keywords" name="keywords" 
-                            placeholder="e.g., dragon, castle, flying">
+                        <input type="text" id="keywords" name="keywords" maxlength="100">
                     </div>
                     <button type="submit" id="analyze-btn" class="primary-button">
                         Start the Magic! ✨
@@ -100,8 +99,41 @@
     <div class="modal-content">
         <button class="modal-close" aria-label="Close">×</button>
         
+        <!-- FEATURE FLAG: SIMPLIFIED_ARTWORK_FLOW -->
+        <!-- v2.0: Simplified Artwork Story Generation - Single Screen UI -->
+        <div id="simplified-story-screen" class="screen simplified-story-screen">
+            <div class="kudo-section">
+                <h2 id="kudo-message">Wow, you did a great job cutting out all the shapes!</h2>
+            </div>
+            
+            <div class="story-elements-section">
+                <h3>Here're story elements based on your craft:</h3>
+                
+                <div class="story-element">
+                    <label for="character">Who's Our Hero?</label>
+                    <input type="text" id="character" class="story-input" placeholder="Main character..." maxlength="100">
+                </div>
+                
+                <div class="story-element">
+                    <label for="setting">Where's Our Story?</label>
+                    <input type="text" id="setting" class="story-input" placeholder="Story setting..." maxlength="100">
+                </div>
+                
+                <div class="story-element">
+                    <label for="theme">What Happens?</label>
+                    <input type="text" id="theme" class="story-input" placeholder="Story theme..." maxlength="100">
+                </div>
+            </div>
+            
+            <div class="button-row">
+                <button id="looks-good-btn" class="primary-button">Sounds Good!</button>
+                <button id="other-options-btn" class="secondary-button">Give Me Other Options</button>
+            </div>
+        </div>
+        
+        <!-- LEGACY UI: Multi-screen flow -->
         <!-- Character Screen -->
-        <div id="screen-character" class="screen">
+        <div id="screen-character" class="screen legacy-screen">
             <h2>Who's Our Hero?</h2>
             <input type="text" class="story-input" placeholder="Tell us about the main character...">
             <div class="button-row">
@@ -112,7 +144,7 @@
         </div>
 
         <!-- Setting Screen -->
-        <div id="screen-setting" class="screen">
+        <div id="screen-setting" class="screen legacy-screen">
             <h2>Where's Our Story?</h2>
             <input type="text" class="story-input" placeholder="Describe the setting...">
             <div class="button-row">
@@ -124,7 +156,7 @@
         </div>
 
         <!-- Theme Screen -->
-        <div id="screen-theme" class="screen">
+        <div id="screen-theme" class="screen legacy-screen">
             <h2>What Happens?</h2>
             <input type="text" class="story-input" placeholder="What does our hero do...">
             <div class="button-row">
@@ -136,7 +168,7 @@
         </div>
 
         <!-- Review Screen -->
-        <div id="screen-review" class="screen">
+        <div id="screen-review" class="screen legacy-screen">
             <h2>Ready to Create?</h2>
             <div class="review-content"></div>
             <div class="button-row">
