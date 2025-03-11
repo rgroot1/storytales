@@ -207,6 +207,38 @@ class ArtworkAnalyzer:
             self.logger.error(f"Problematic text: {text}")
             raise
 
+    def _repair_json(self, json_text):
+        """
+        Attempt to repair common JSON syntax errors
+        """
+        try:
+            # First try to parse as is
+            return json.loads(json_text)
+        except json.JSONDecodeError:
+            # Fix missing commas in arrays (e.g., "item1" "item2")
+            json_text = re.sub(r'"\s*"', '", "', json_text)
+            
+            # Fix the specific issue we saw in the questions array
+            # Look for patterns like: "question1" "question2" or "question1"\n "question2"
+            json_text = re.sub(r'"\s*\n?\s*"', '", "', json_text)
+            
+            # Fix trailing commas in arrays (e.g., [1, 2, 3,])
+            json_text = re.sub(r',\s*]', ']', json_text)
+            json_text = re.sub(r',\s*}', '}', json_text)
+            
+            # Fix missing quotes around keys
+            json_text = re.sub(r'([{,]\s*)([a-zA-Z0-9_]+)(\s*:)', r'\1"\2"\3', json_text)
+            
+            # Log the repaired JSON for debugging
+            self.logger.debug(f"Repaired JSON: {json_text}")
+            
+            try:
+                return json.loads(json_text)
+            except json.JSONDecodeError as e:
+                self.logger.error(f"Failed to repair JSON: {str(e)}")
+                self.logger.error(f"Attempted repair on: {json_text}")
+                raise
+
     def _try_analyze(self, image_file, keywords, model):
         """
         Try to analyze the artwork using the specified model.
@@ -313,7 +345,14 @@ class ArtworkAnalyzer:
                 except json.JSONDecodeError as e:
                     self.logger.error(f"Failed to parse JSON: {str(e)}")
                     self.logger.error(f"JSON text: {analysis_json}")
-                    return self.default_analysis
+                    
+                    # Try to repair the JSON
+                    try:
+                        analysis = self._repair_json(analysis_json)
+                        self.logger.info("Successfully repaired and parsed JSON after fixing syntax errors")
+                    except Exception as repair_error:
+                        self.logger.error(f"Failed to repair JSON: {str(repair_error)}")
+                        return self.default_analysis
                 
                 # Validate the analysis structure
                 if not isinstance(analysis, dict):

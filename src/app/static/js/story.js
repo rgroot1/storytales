@@ -644,6 +644,15 @@ function showOtherOptions(analysisData) {
         };
     }
     
+    // Store previous values if not already stored
+    if (!window.previousValues) {
+        window.previousValues = {
+            character: characterInput ? characterInput.value : '',
+            setting: settingInput ? settingInput.value : '',
+            theme: themeInput ? themeInput.value : ''
+        };
+    }
+    
     // Initialize all suggestions if not already done
     if (!window.allSuggestions) {
         // Default fallback content
@@ -660,10 +669,32 @@ function showOtherOptions(analysisData) {
     const allMoralsUsed = window.usedSuggestions.moral.length >= window.allSuggestions.moral.length;
     
     if (allCharactersUsed && allSettingsUsed && allMoralsUsed) {
-        // We've used all available suggestions
-        showNotification("You've seen all available suggestions! Feel free to edit the text directly.", 'info');
+        // We've used all available suggestions - show error and return to previous values
+        showNotification("You've seen all available suggestions! Now going back to the previous content", 'warning');
+        
+        // Restore previous values
+        if (window.previousValues) {
+            if (characterInput) characterInput.value = window.previousValues.character;
+            if (settingInput) settingInput.value = window.previousValues.setting;
+            if (themeInput) themeInput.value = window.previousValues.theme;
+            
+            // Reset used suggestions to allow cycling through options again
+            window.usedSuggestions = {
+                characters: [],
+                setting: [],
+                moral: []
+            };
+        }
+        
         return;
     }
+    
+    // Store current values as previous before changing them
+    window.previousValues = {
+        character: characterInput ? characterInput.value : '',
+        setting: settingInput ? settingInput.value : '',
+        theme: themeInput ? themeInput.value : ''
+    };
     
     // Find unused character suggestion
     if (!allCharactersUsed && window.allSuggestions.characters.length > 0) {

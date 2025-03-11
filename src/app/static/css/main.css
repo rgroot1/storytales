@@ -6,7 +6,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f8f9fa;
-    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%2374b9ff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%2374b9ff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
     background-attachment: fixed;
 }
 
@@ -219,43 +219,6 @@ body {
         color: inherit !important;
         opacity: 0.6 !important;
     }
-
-    .detail-input {
-        margin-bottom: 0.25rem !important;
-        font-size: 0.9rem !important;
-    }
-
-    .input-group + .input-group {
-        margin-top: 0.25rem !important;
-    }
-
-    /* Button adjustments */
-    .inspire-btn,
-    .next-btn,
-    .back-btn,
-    .secondary-button {
-        padding: clamp(0.5rem, 2vw, 0.8rem) clamp(1rem, 3vw, 1.5rem) !important;
-        font-size: clamp(14px, 3.5vw, 16px) !important;
-    }
-
-    /* Input spacing adjustments */
-    .main-prompt {
-        margin: 1.5rem auto !important;
-        padding: 1.2rem !important;
-        min-height: 120px !important;
-    }
-
-    .main-input-section {
-        padding: 1.5rem 1rem !important;
-    }
-
-    /* Remove autofill styling */
-    .main-prompt:-webkit-autofill,
-    .main-prompt:-webkit-autofill:hover,
-    .main-prompt:-webkit-autofill:focus {
-        -webkit-box-shadow: 0 0 0px 1000px white inset;
-        transition: background-color 5000s ease-in-out 0s;
-    }
     
     .main-prompt {
         -webkit-text-fill-color: initial;
@@ -322,24 +285,21 @@ body:not(.modal-open) .keywords-input {
 
 /* Buttons */
 .secondary-button {
-    font-family: 'Poppins', sans-serif;
-    font-size: 16px;
-    background: none;
-    border: 2px solid #74b9ff;
-    color: #74b9ff;
-    padding: 0.8rem 1.5rem;
-    border-radius: 8px;
-    cursor: pointer;
-    margin: 1rem 0;
-    transition: all 0.3s;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
+    background-color: #f5f5f5 !important;
+    color: #666 !important;
+    padding: 0.8rem 1.5rem !important;
+    border: 2px solid #e0e0e0 !important;
+    border-radius: 8px !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s !important;
+    text-transform: none !important;
 }
 
 .secondary-button:hover {
-    background: #74b9ff;
-    color: white;
+    background-color: #eeeeee !important;
+    border-color: #cccccc !important;
 }
 
 .primary-button {
@@ -1136,15 +1096,18 @@ body:not(.modal-open) .keywords-input {
     display: flex !important;
 }
 
+/* Modal Content Styling */
 .modal-content {
     display: flex !important;
     flex-direction: column;
     align-items: center !important;
     justify-content: flex-start;
-    padding: 40px 20px !important;
+    padding: 50px 40px !important;
     width: 100% !important;
-    max-width: 600px !important;
-    max-height: 85vh !important;
+    max-width: 600px !important;  /* Default width for mobile */
+    height: auto !important;
+    min-height: 300px !important;
+    max-height: 90vh !important;
     box-sizing: border-box !important;
     position: relative !important;
     overflow-y: auto !important;
@@ -1154,28 +1117,100 @@ body:not(.modal-open) .keywords-input {
     box-shadow: none !important;
 }
 
+/* Desktop-specific modal width */
+@media (min-width: 769px) {
+    .modal-content {
+        max-width: 800px !important;  /* Increased width only for desktop */
+    }
+    
+    /* Increased top margin for kudo section on desktop only */
+    .kudo-section {
+        margin-top: 2rem !important;
+    }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .modal-content {
+        height: 100vh !important;
+        max-height: none !important;
+        border-radius: 0 !important;
+        width: 100% !important;
+        padding: 20px 10px !important;
+        margin: 0 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important; /* Prevent horizontal scrolling */
+    }
+    
+    .kudo-section {
+        margin-top: 1.5rem !important;
+        margin-bottom: 1rem !important;
+        padding: 0 1rem !important;
+    }
+    
+    .kudo-section h2 {
+        font-size: 1.5rem !important;
+        line-height: 1.4 !important;
+        padding: 0 !important;
+    }
+    
+    .simplified-story-screen {
+        height: auto !important;
+        min-height: 100vh !important;
+        overflow-y: auto !important;
+    }
+    
+    .story-elements-section {
+        padding: 0 1rem !important;
+    }
+    
+    .story-elements-section h3 {
+        margin-bottom: 1.2rem !important;
+        font-size: 1.1rem !important;
+    }
+    
+    .simplified-story-screen .button-row {
+        padding: 1rem 0 0 !important;
+        background: transparent !important;
+    }
+}
+
+/* Remove sticky positioning from buttons */
+.simplified-story-screen .button-row {
+    position: static !important; /* Not fixed or sticky */
+    background: white !important;
+    padding: 1.2rem 1rem !important;
+    margin: 1rem 0 !important;
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.8rem !important;
+    box-sizing: border-box !important;
+}
+
+/* Modal close button */
 .modal-close {
     position: absolute !important;
-    right: 20px !important;
-    top: 20px !important;
-    font-size: 24px !important;
+    right: 25px !important;
+    top: 25px !important;
+    font-size: 28px !important;
     color: #666 !important;
     background: none !important;
     border: none !important;
     cursor: pointer !important;
     z-index: 102 !important;
-    padding: 10px !important;  /* Larger click target */
-    width: 40px !important;
-    height: 40px !important;
+    padding: 10px !important;
+    width: 44px !important;
+    height: 44px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     border-radius: 50% !important;
-    transition: background-color 0.2s ease !important;
+    transition: background-color 0.2s !important;
 }
 
 .modal-close:hover {
-    background-color: rgba(0, 0, 0, 0.1) !important;
+    background-color: rgba(0,0,0,0.05) !important;
 }
 
 .modal-close:focus {
@@ -1189,9 +1224,11 @@ body:not(.modal-open) .keywords-input {
         height: 100vh !important;
         max-height: none !important;
         border-radius: 0 !important;
-        width: 100% !important;
-        max-width: none !important;
-        box-shadow: none !important;
+    }
+
+    .screen {
+        padding: 15px;
+        height: auto !important;
     }
 
     .kudo-section {
@@ -1200,11 +1237,6 @@ body:not(.modal-open) .keywords-input {
 
     .kudo-section h2 {
         font-size: 1.5rem !important;
-    }
-
-    .screen {
-        padding: 15px;
-        height: auto !important;
     }
 }
 
@@ -1307,24 +1339,7 @@ body:not(.modal-open) .keywords-input {
     }
 }
 
-/* Modal Content Centering */
-.modal-content {
-    display: flex !important;
-    flex-direction: column;
-    align-items: center !important;
-    justify-content: flex-start;
-    padding: 40px 20px !important;
-    width: 100% !important;
-    max-width: 600px !important;
-    max-height: 85vh !important;
-    box-sizing: border-box !important;
-    position: relative !important;
-    overflow-y: auto !important;
-    margin: 0 auto !important;
-    background: #fff !important;
-    border-radius: 12px !important;
-    box-shadow: none !important;
-}
+/* Duplicate modal-content styles removed - see main definition at line ~1140 */
 
 /* Input Group Container */
 .input-group {
@@ -1988,7 +2003,7 @@ textarea:focus {
 /* Add a subtle pattern or texture to the background for more visual interest */
 body {
     background-color: #f8f9fa;
-    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%2374b9ff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%2374b9ff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
     background-attachment: fixed;
 }
 
@@ -2078,62 +2093,68 @@ body {
     display: flex !important;
     flex-direction: column !important;
     width: 100% !important;
-    gap: 0.8rem !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
     padding: 0 !important;
     background-color: white !important;
-    border-radius: 12px !important;
-    box-shadow: none !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important; /* Prevent horizontal scrolling */
+    max-width: 100% !important; /* Ensure no horizontal overflow */
+    height: auto !important;
+    min-height: 100vh !important;
 }
 
-/* Story elements section */
+/* Treat story-elements-section as a container for all content */
 .story-elements-section {
-    flex: 1 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 1.2rem !important;
     width: 100% !important;
     padding: 0 1rem !important;
-    overflow-y: auto !important;
+    box-sizing: border-box !important;
+    /* Remove flex, gap, and overflow properties that might cause separation */
 }
 
-/* Button row - ensure it stays at the bottom */
+/* Center and style the subheading */
+.story-elements-section h3 {
+    text-align: center !important;
+    margin-bottom: 1.5rem !important;
+    font-size: 1.2rem !important;
+    font-weight: 400 !important;
+    color: #666 !important;
+}
+
+/* Button row - fully integrated with story elements */
 .simplified-story-screen .button-row {
-    position: sticky !important;
-    bottom: 0 !important;
-    background: white !important;
-    padding: 1.2rem 1rem !important;
-    margin: 0 !important;
+    position: static !important; /* Not fixed or sticky */
+    background: transparent !important; /* No background to blend with elements */
+    padding: 1rem 0 0 !important; /* Only top padding to separate from inputs */
+    margin: 0 !important; /* No margins */
     width: 100% !important;
     display: flex !important;
     flex-direction: column !important;
     gap: 0.8rem !important;
-    box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.05) !important;
-    z-index: 10 !important;
+    box-sizing: border-box !important;
+    border: none !important;
 }
 
-/* Ensure proper spacing for the last story element */
-.story-element:last-child {
-    margin-bottom: 1rem !important;
-}
-
-/* Mobile adjustments */
+/* Mobile responsiveness */
 @media (max-width: 768px) {
-    .modal-content {
-        height: 100vh !important;
-        max-height: none !important;
-        border-radius: 0 !important;
-    }
-
     .simplified-story-screen {
-        height: 100% !important;
+        height: auto !important;
+        min-height: 100vh !important;
+        overflow-y: auto !important;
     }
-
+    
     .story-elements-section {
-        padding: 0 0.8rem !important;
+        padding: 0 1rem !important;
     }
-
+    
+    .story-elements-section h3 {
+        margin-bottom: 1.2rem !important;
+        font-size: 1.1rem !important;
+    }
+    
     .simplified-story-screen .button-row {
-        padding: 0.8rem !important;
+        padding: 1rem 0 0 !important;
+        background: transparent !important;
     }
 }
 
@@ -2217,16 +2238,68 @@ body {
     display: none !important;
 }
 
-/* Adjust the kudo section to account for removed star */
+/* Story element inputs - Desktop (horizontal layout) */
+@media (min-width: 769px) {
+    .story-element {
+        display: flex !important;
+        align-items: center !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .story-element label {
+        width: 30% !important;
+        min-width: 150px !important;
+        text-align: right !important;
+        padding-right: 1rem !important;
+        margin-bottom: 0 !important;
+        color: #444 !important;
+        font-weight: 500 !important;
+    }
+    
+    .story-element input {
+        flex: 1 !important;
+    }
+}
+
+/* Story element inputs - Mobile (vertical layout) */
+@media (max-width: 768px) {
+    .story-element {
+        margin-bottom: 1.5rem !important;
+        width: 100% !important;
+    }
+    
+    .story-element label {
+        display: block !important;
+        margin-bottom: 0.5rem !important;
+        color: #444 !important;
+        font-weight: 500 !important;
+    }
+}
+
+/* Mobile responsiveness for modal content */
+@media (max-width: 768px) {
+    .modal-content {
+        height: 100vh !important;
+        max-height: none !important;
+        border-radius: 0 !important;
+        width: 100% !important;
+        padding: 20px 10px !important;
+        margin: 0 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important; /* Prevent horizontal scrolling */
+    }
+}
+
+/* Add a single definition for kudo-section */
 .kudo-section {
     text-align: center !important;
     position: relative !important;
-    margin-bottom: 2.5rem !important;
+    margin-bottom: 1rem !important;
     padding: 0 1rem !important;
     width: 100% !important;
+    box-sizing: border-box !important;
 }
 
-/* Kudo section heading styles */
 .kudo-section h2 {
     font-size: 1.75rem !important;
     font-weight: 700 !important;
@@ -2237,85 +2310,201 @@ body {
     padding: 0.5rem 0 !important;
 }
 
-/* Story elements section with increased spacing */
-.story-elements-section {
-    flex: 1 !important;
+/* Desktop-specific modal width */
+@media (min-width: 769px) {
+    .modal-content {
+        max-width: 800px !important;  /* Increased width only for desktop */
+    }
+    
+    /* Increased top margin for kudo section on desktop only */
+    .kudo-section {
+        margin-top: 2rem !important;
+    }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .modal-content {
+        height: 100vh !important;
+        max-height: none !important;
+        border-radius: 0 !important;
+        width: 100% !important;
+        padding: 20px 10px !important;
+        margin: 0 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important; /* Prevent horizontal scrolling */
+    }
+    
+    .kudo-section {
+        margin-top: 1.5rem !important;
+        margin-bottom: 1rem !important;
+        padding: 0 1rem !important;
+    }
+    
+    .kudo-section h2 {
+        font-size: 1.5rem !important;
+        line-height: 1.4 !important;
+        padding: 0 !important;
+    }
+}
+
+/* ==========================================
+   CONSOLIDATED STYLES FOR STORY CREATION MODAL
+   ========================================== */
+
+/* Unified kudo-section styles */
+.kudo-section {
+    text-align: center !important;
+    position: relative !important;
+    margin-bottom: 1rem !important;
+    padding: 0 1rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.kudo-section h2 {
+    font-size: 1.75rem !important;
+    font-weight: 700 !important;
+    color: #333 !important;
+    margin: 0 auto !important;
+    line-height: 1.3 !important;
+    max-width: 100% !important;
+    padding: 0.5rem 0 !important;
+}
+
+/* Simplified story screen container */
+.simplified-story-screen {
     display: flex !important;
     flex-direction: column !important;
-    gap: 1.2rem !important;
+    width: 100% !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding: 0 !important;
+    background-color: white !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important; /* Prevent horizontal scrolling */
+    max-width: 100% !important; /* Ensure no horizontal overflow */
+    height: auto !important;
+    min-height: 100vh !important;
+}
+
+/* Treat story-elements-section as a container for all content */
+.story-elements-section {
     width: 100% !important;
     padding: 0 1rem !important;
-    overflow-y: auto !important;
+    box-sizing: border-box !important;
+    /* Remove flex, gap, and overflow properties that might cause separation */
 }
 
-/* Add more spacing to the section heading */
+/* Center and style the subheading */
 .story-elements-section h3 {
+    text-align: center !important;
     margin-bottom: 1.5rem !important;
     font-size: 1.2rem !important;
-    font-weight: 600 !important;
-    color: #444 !important;
+    font-weight: 400 !important;
+    color: #666 !important;
 }
 
-/* Primary button styling */
-#looks-good-btn {
-    background-color: #4CAF50 !important;
-    color: white !important;
-    padding: 0.8rem 1.5rem !important;
-    border: none !important;
-    border-radius: 8px !important;
-    font-size: 1rem !important;
-    font-weight: 600 !important;
-    cursor: pointer !important;
-    transition: background-color 0.3s !important;
-    text-transform: none !important;
-}
-
-#looks-good-btn:hover {
-    background-color: #3e8e41 !important;
-}
-
-/* Secondary button styling */
-#other-options-btn {
-    background-color: transparent !important;
-    color: #555 !important;
-    padding: 0.8rem 1.5rem !important;
-    border: 1px solid #ddd !important;
-    border-radius: 8px !important;
-    font-size: 0.95rem !important;
-    cursor: pointer !important;
-    transition: background-color 0.3s, color 0.3s !important;
-    text-transform: none !important;
-}
-
-#other-options-btn:hover {
-    background-color: #f5f5f5 !important;
-    color: #333 !important;
-}
-
-/* Individual story element styling */
-.story-element {
+/* Button row - fully integrated with story elements */
+.simplified-story-screen .button-row {
+    position: static !important; /* Not fixed or sticky */
+    background: transparent !important; /* No background to blend with elements */
+    padding: 1rem 0 0 !important; /* Only top padding to separate from inputs */
+    margin: 0 !important; /* No margins */
+    width: 100% !important;
     display: flex !important;
     flex-direction: column !important;
-    gap: 0.5rem !important;
-    margin-bottom: 1rem !important;
+    gap: 0.8rem !important;
+    box-sizing: border-box !important;
+    border: none !important;
 }
 
-.story-element label {
-    font-weight: 600 !important;
-    color: #444 !important;
-    font-size: 1rem !important;
+/* Story element inputs - Desktop (horizontal layout) */
+@media (min-width: 769px) {
+    .modal-content {
+        max-width: 800px !important;  /* Increased width only for desktop */
+    }
+    
+    /* Increased top margin for kudo section on desktop only */
+    .kudo-section {
+        margin-top: 2rem !important;
+    }
+    
+    .story-element {
+        display: flex !important;
+        align-items: center !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .story-element label {
+        width: 30% !important;
+        min-width: 150px !important;
+        text-align: right !important;
+        padding-right: 1rem !important;
+        margin-bottom: 0 !important;
+        color: #444 !important;
+        font-weight: 500 !important;
+    }
+    
+    .story-element input {
+        flex: 1 !important;
+    }
 }
 
-.story-element input {
-    padding: 0.8rem 1rem !important;
-    border: 1px solid #ddd !important;
-    border-radius: 8px !important;
-    font-size: 1rem !important;
-    transition: border-color 0.3s, box-shadow 0.3s !important;
-}
-
-.story-element input:focus {
-    border-color: #74b9ff !important;
-    box-shadow: 0 0 0 2px rgba(116, 185, 255, 0.2) !important;
-    outline: none !important;
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .modal-content {
+        height: 100vh !important;
+        max-height: none !important;
+        border-radius: 0 !important;
+        width: 100% !important;
+        padding: 20px 10px !important;
+        margin: 0 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important; /* Prevent horizontal scrolling */
+    }
+    
+    .kudo-section {
+        margin-top: 1.5rem !important;
+        margin-bottom: 1rem !important;
+        padding: 0 1rem !important;
+    }
+    
+    .kudo-section h2 {
+        font-size: 1.5rem !important;
+        line-height: 1.4 !important;
+        padding: 0 !important;
+    }
+    
+    .simplified-story-screen {
+        height: auto !important;
+        min-height: 100vh !important;
+        overflow-y: auto !important;
+    }
+    
+    .story-elements-section {
+        padding: 0 1rem !important;
+    }
+    
+    .story-elements-section h3 {
+        margin-bottom: 1.2rem !important;
+        font-size: 1.1rem !important;
+    }
+    
+    .simplified-story-screen .button-row {
+        padding: 1rem 0 0 !important;
+        background: transparent !important;
+    }
+    
+    .story-element {
+        margin-bottom: 1.5rem !important;
+        width: 100% !important;
+    }
+    
+    .story-element label {
+        display: block !important;
+        margin-bottom: 0.5rem !important;
+        color: #444 !important;
+        font-weight: 500 !important;
+    }
 }
