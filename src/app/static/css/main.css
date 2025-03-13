@@ -214,18 +214,18 @@ body {
         margin-bottom: 0.25rem !important;
     }
 
-    .main-prompt::placeholder,
-    .detail-input::placeholder {
-        color: inherit !important;
-        opacity: 0.6 !important;
+    /* Hide main prompt placeholder on mobile */
+    .main-prompt::placeholder {
+        color: transparent !important;
+        opacity: 0 !important;
+        font-size: 0 !important;
     }
     
     .main-prompt {
         -webkit-text-fill-color: initial;
     }
 
-    /* Restore placeholder visibility */
-    .main-prompt::placeholder,
+    /* Keep detail input placeholders visible */
     .detail-input::placeholder {
         color: inherit !important;
         opacity: 0.6 !important;
@@ -318,15 +318,29 @@ body:not(.modal-open) .keywords-input {
 
 /* Additional Fields */
 .additional-fields {
-    display: none;
-    transition: all 0.3s ease;
+    max-height: 0;
+    overflow: hidden;
     opacity: 0;
-    padding: 0.25rem !important;
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+    margin-top: 0;
 }
 
 .additional-fields.show {
-    display: block;
+    max-height: 1000px;
     opacity: 1;
+    margin-top: 1rem;
+}
+
+.additional-fields .input-group {
+    margin-bottom: 1rem;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.additional-fields:not(.show) .input-group {
+    opacity: 0;
+    transform: translateY(-10px);
 }
 
 .additional-fields .input-field {
@@ -401,6 +415,33 @@ body:not(.modal-open) .keywords-input {
     
     .input-group + .input-group {
         margin-top: 5px !important;
+    }
+    
+    /* Hide placeholder on mobile for main prompt */
+    .main-prompt::placeholder {
+        color: transparent !important;
+        opacity: 0 !important;
+    }
+}
+
+/* Add a new more specific rule for mobile devices */
+@media screen and (max-width: 428px) {
+    .story-creator {
+        padding: 0 3vw !important;
+    }
+
+    .upload-box, 
+    .preview-container,
+    .suggestions,
+    .input-group {
+        width: 95% !important;
+    }
+    
+    /* Ensure placeholder is hidden on smaller mobile devices */
+    .main-prompt::placeholder {
+        color: transparent !important;
+        opacity: 0 !important;
+        font-size: 0 !important; /* Additional property to ensure it's hidden */
     }
 }
 
@@ -1780,7 +1821,7 @@ body.modal-open .modal {
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
-    justify-content: flex-start; /* Align to left */
+    justify-content: flex-start;
     align-items: center;
 }
 
@@ -2098,10 +2139,11 @@ body {
     padding: 0 !important;
     background-color: white !important;
     overflow-y: auto !important;
-    overflow-x: hidden !important; /* Prevent horizontal scrolling */
-    max-width: 100% !important; /* Ensure no horizontal overflow */
+    overflow-x: hidden !important;
+    max-width: 100% !important;
     height: auto !important;
     min-height: 100vh !important;
+    gap: 0 !important; /* Remove any gap between sections */
 }
 
 /* Treat story-elements-section as a container for all content */
@@ -2109,7 +2151,7 @@ body {
     width: 100% !important;
     padding: 0 1rem !important;
     box-sizing: border-box !important;
-    /* Remove flex, gap, and overflow properties that might cause separation */
+    margin-top: 0 !important; /* Remove top margin */
 }
 
 /* Center and style the subheading */
@@ -2138,23 +2180,34 @@ body {
 /* Mobile responsiveness */
 @media (max-width: 768px) {
     .simplified-story-screen {
-        height: auto !important;
-        min-height: 100vh !important;
-        overflow-y: auto !important;
+        padding: 0 !important;
+    }
+    
+    .kudo-section {
+        margin-top: 0.5rem !important;
+        margin-bottom: 0.5rem !important;
+        padding: 0 1rem !important;
     }
     
     .story-elements-section {
         padding: 0 1rem !important;
+        margin-top: 0 !important;
     }
     
     .story-elements-section h3 {
-        margin-bottom: 1.2rem !important;
+        margin: 0.5rem 0 1rem 0 !important;
         font-size: 1.1rem !important;
+        line-height: 1.4 !important;
     }
     
     .simplified-story-screen .button-row {
-        padding: 1rem 0 0 !important;
+        padding: 1rem !important;
+        margin-top: 0.5rem !important;
         background: transparent !important;
+    }
+    
+    .modal-content {
+        padding: 15px 10px !important;
     }
 }
 
@@ -2294,7 +2347,7 @@ body {
 .kudo-section {
     text-align: center !important;
     position: relative !important;
-    margin-bottom: 1rem !important;
+    margin-bottom: 0.5rem !important; /* Reduce bottom margin */
     padding: 0 1rem !important;
     width: 100% !important;
     box-sizing: border-box !important;
@@ -2356,7 +2409,7 @@ body {
 .kudo-section {
     text-align: center !important;
     position: relative !important;
-    margin-bottom: 1rem !important;
+    margin-bottom: 0.5rem !important; /* Reduce bottom margin */
     padding: 0 1rem !important;
     width: 100% !important;
     box-sizing: border-box !important;
@@ -2382,10 +2435,11 @@ body {
     padding: 0 !important;
     background-color: white !important;
     overflow-y: auto !important;
-    overflow-x: hidden !important; /* Prevent horizontal scrolling */
-    max-width: 100% !important; /* Ensure no horizontal overflow */
+    overflow-x: hidden !important;
+    max-width: 100% !important;
     height: auto !important;
     min-height: 100vh !important;
+    gap: 0 !important; /* Remove any gap between sections */
 }
 
 /* Treat story-elements-section as a container for all content */
@@ -2393,7 +2447,7 @@ body {
     width: 100% !important;
     padding: 0 1rem !important;
     box-sizing: border-box !important;
-    /* Remove flex, gap, and overflow properties that might cause separation */
+    margin-top: 0 !important; /* Remove top margin */
 }
 
 /* Center and style the subheading */

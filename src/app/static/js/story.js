@@ -294,24 +294,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Call the functions now that they're defined
     setupGlobalHandlers();
     setupModalHandlers();
-
-    // Search for event handler setup for the "More Details" button
-    const tellMoreBtn = document.getElementById('tell-more-btn');
-    const additionalFields = document.getElementById('additional-fields');
-
-    if (tellMoreBtn) {
-        tellMoreBtn.addEventListener('click', function() {
-            additionalFields.classList.toggle('show');
-            const icon = this.querySelector('i');
-            if (additionalFields.classList.contains('show')) {
-                icon.classList.remove('fa-chevron-down');
-                icon.classList.add('fa-chevron-up');
-            } else {
-                icon.classList.remove('fa-chevron-up');
-                icon.classList.add('fa-chevron-down');
-            }
-        });
-    }
 });
 
 // ==========================================
@@ -322,31 +304,36 @@ function setupCreateFormHandlers() {
     
     // More Options button
     const moreOptionsBtn = document.getElementById('tell-more-btn');
+    const additionalFields = document.getElementById('additional-fields');
     console.log('Found more options button:', !!moreOptionsBtn);
     
-    if (moreOptionsBtn) {
-        // Remove any existing listeners first
-        const newMoreOptionsBtn = moreOptionsBtn.cloneNode(true);
-        moreOptionsBtn.parentNode.replaceChild(newMoreOptionsBtn, moreOptionsBtn);
+    if (moreOptionsBtn && additionalFields) {
+        // Initialize the state
+        additionalFields.style.display = 'none';
+        additionalFields.classList.remove('show');
         
-        newMoreOptionsBtn.addEventListener('click', function(e) {
+        moreOptionsBtn.addEventListener('click', function(e) {
+            e.preventDefault();
             console.log('More options button clicked');
-            const additionalFields = document.getElementById('additional-fields');
-            console.log('Additional fields element:', !!additionalFields);
-            console.log('Current display state:', additionalFields.style.display);
             
-            additionalFields.classList.toggle('show');
-            const icon = this.querySelector('i');
+            const isVisible = additionalFields.classList.contains('show');
+            console.log('Current visibility state:', isVisible);
             
-            if (additionalFields.classList.contains('show')) {
-                icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
-                additionalFields.style.display = 'block';  // Force display block
+            if (isVisible) {
+                additionalFields.classList.remove('show');
+                setTimeout(() => {
+                    additionalFields.style.display = 'none';
+                }, 300); // Match this with your CSS transition duration
+                this.querySelector('i').classList.replace('fa-chevron-up', 'fa-chevron-down');
             } else {
-                icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
-                additionalFields.style.display = 'none';   // Force display none
+                additionalFields.style.display = 'block';
+                // Force a reflow
+                additionalFields.offsetHeight;
+                additionalFields.classList.add('show');
+                this.querySelector('i').classList.replace('fa-chevron-down', 'fa-chevron-up');
             }
             
-            console.log('New display state:', additionalFields.style.display);
+            console.log('New visibility state:', !isVisible);
         });
     }
 
